@@ -5,10 +5,24 @@ onMounted(() => {
     const video2 = document.querySelector("#video2") as HTMLVideoElement;
     function handleResize() {
         const height = document.documentElement.clientHeight;
-        var proportion = height / 1080;
-        const width = 1920 * proportion;
+        const width = document.documentElement.clientWidth;
+        var proportion = 1;
+        if (height / width > 1080 / 1920) {
+            proportion = height / 1080;
+            video1.style.top = '0';
+            video2.style.top = '0';
+        } else {
+            proportion = width / 1920;
+            video1.style.top = -(proportion * 1080 - height) / 2 + 'px';
+            video2.style.top = -(proportion * 1080 - height) / 2 + 'px';
+        }
+        video1.style.height = proportion * 1080 + 'px';
+        video1.style.width = proportion * 1920 + 'px';
+        video2.style.height = proportion * 1080 + 'px';
+        video2.style.width = proportion * 1920 + 'px';
     }
     function handleLoadVideo() {
+        handleResize();
         setTimeout(() => {
             video1.play();
             setTimeout(() => {
@@ -78,9 +92,8 @@ onMounted(() => {
 }
 
 .fv-movie video {
-    height: 100vh;
     position: absolute;
-    top: 0;
+    left: 0;
 }
 
 .fv-movie #video1 {
@@ -112,12 +125,14 @@ onMounted(() => {
     left: 50%;
     transform: translateX(-50%);
 }
+
 .scroll-text {
     font-size: 10px;
     color: #fff;
     margin-bottom: 5px;
     font-family: Syncopate, sans-serif;
 }
+
 .scroll-text::after {
     content: '';
     position: absolute;
@@ -131,16 +146,19 @@ onMounted(() => {
     animation: pathmove 1.4s ease-in-out infinite;
     opacity: 0;
 }
+
 @keyframes pathmove {
     0% {
         height: 0;
         top: 15px;
         opacity: 0;
     }
+
     30% {
         height: 30px;
         opacity: 1;
     }
+
     100% {
         height: 0;
         top: 65px;
