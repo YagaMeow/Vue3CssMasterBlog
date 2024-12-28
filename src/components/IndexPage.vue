@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import MyCard from './MyCard.vue';
-import Loading from './Loading.vue';
+import Loading from './Loading/Loading.vue';
+import Nav from './NavMenu/Nav.vue';
+import FirstScreen from './FirstScreen/FirstScreen.vue';
 import Lenis from 'lenis';
 const lenis = new Lenis({});
 function raf(time: number) {
@@ -12,6 +14,10 @@ requestAnimationFrame(raf);
 <template>
     <div class="container">
         <Loading></Loading>
+        <header class="top">
+            <Nav></Nav>
+        </header>
+        <FirstScreen></FirstScreen>
         <MyCard v-for="id in 7" :num="id"></MyCard>
     </div>
 </template>
@@ -21,5 +27,9 @@ requestAnimationFrame(raf);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+}
+.top {
+    width: 100%;
+    position: relative;
 }
 </style>
