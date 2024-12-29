@@ -3,6 +3,7 @@ import MyCard from './MyCard.vue';
 import Loading from './Loading/Loading.vue';
 import Nav from './NavMenu/Nav.vue';
 import FirstScreen from './FirstScreen/FirstScreen.vue';
+import ScrollBar from './ScrollBar/ScrollBar.vue';
 import Lenis from 'lenis';
 const lenis = new Lenis({});
 function raf(time: number) {
@@ -18,7 +19,9 @@ requestAnimationFrame(raf);
             <Nav></Nav>
         </header>
         <FirstScreen></FirstScreen>
-        <MyCard v-for="id in 7" :num="id"></MyCard>
+        <div style="height: 10vh;width: 100%;"></div>
+        <ScrollBar :lenis="lenis"></ScrollBar>
+        <!-- <MyCard v-for="id in 7" :num="id"></MyCard> -->
     </div>
 </template>
 <style scoped>

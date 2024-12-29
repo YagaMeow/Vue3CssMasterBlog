@@ -39,8 +39,8 @@ onMounted(() => {
 <template>
     <section class="fv">
         <h1 class="title-logo">
-            <img src="../../assets/img/logo.svg" alt="">
-            <img src="../../assets/img/logo2.svg" alt="">
+            <img src="../../assets/img/logo.svg" alt="" class="v-pc">
+            <img src="../../assets/img/logo2.svg" alt="" class="v-sp">
         </h1>
         <div class="fv-movie">
             <video id="video1" preload="auto" muted>
@@ -51,8 +51,8 @@ onMounted(() => {
             </video>
         </div>
         <div class="fv-overlay">
-            <!-- <img src="../../assets/img/layout2.webp" alt=""> -->
-            <img src="../../assets/img/layout.webp" alt="">
+            <img src="../../assets/img/layout.webp" alt="" class="v-pc">
+            <img src="../../assets/img/layout2.webp" alt="" class="v-sp">
         </div>
         <div class="scroll-box">
             <div class="scroll-text">SCROLL</div>
@@ -102,21 +102,63 @@ onMounted(() => {
 
 .title-logo {
     display: block;
-    width: 137px;
-    height: 96px;
     position: absolute;
-    top: 73px;
-    left: 51px;
+    top: 50%;
+    left: 70%;
+    width: 303px;
+    height: 211px;
+    transform: translate(-50%, -50%);
     z-index: 100;
 }
 
 .title-logo img {
+    position: absolute;
+    left: 0;
+    top: 0;
     height: 100%;
     width: 100%;
 }
 
-.title-logo img:nth-child(1) {
+.title-logo img.v-sp {
     display: none;
+}
+
+.fv-overlay .v-sp {
+    display: none;
+}
+
+
+@media screen and (max-width: 1280px) {
+    .title-logo {
+        width: calc(303px* 1600 / 1920);
+        height: calc(211px* 1600 / 1920);
+        left: 80%;
+    }
+}
+
+@media screen and (max-width: 1040px) {
+    .title-logo {
+        width: 137px;
+        height: 96px;
+        top: 73px;
+        left: 51px;
+        height: 96px;
+        transform: translate(0, 0);
+    }
+
+    .title-logo img.v-sp {
+        display: block;
+    }
+
+    .title-logo img.v-pc {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 750px) {
+    .fv-overlay .v-sp {
+        display: block;
+    }
 }
 
 .scroll-box {
