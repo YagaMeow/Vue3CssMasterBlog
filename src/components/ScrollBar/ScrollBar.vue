@@ -13,10 +13,13 @@ onMounted(() => {
         container: document.querySelector(".pin-spacer") as HTMLElement,
         chara: document.querySelector(".chara") as HTMLElement,
         carousel: document.querySelector(".chara-carousel") as HTMLElement,
+        cardWidth: document.querySelector(".chara-slide")?.clientWidth || 0,
+        textWidth: document.querySelector(".chara-text-box")?.clientWidth || 0,
         distance_scroll: 0,
         distance_trigger: 0,
         distance_edge: 0,
         binded_scroll: null as Function | null,
+        bgColor: 0,
         observe() {
             this.observer = new IntersectionObserver((e) => {
                 if (e[0].isIntersecting) {
@@ -42,22 +45,31 @@ onMounted(() => {
             this.distance_scroll = Math.min(this.distance_scroll, this.distance_edge);
             this.chara.style.transform = `translate(0,${this.distance_scroll}px)`;
             this.carousel.style.transform = `translate(${-this.distance_scroll}px,0)`;
-            let proportion = this.distance_scroll * 14 / sf.carousel.scrollWidth;
-            this.clearBgColor()
-            console.log(proportion);
-            proportion = Math.min(10,Math.floor(proportion));
-            for(let i=0;i<11;++i){
-                if(proportion == i){
-                    this.chara.classList.add("bg"+(i+1));
-                }
+            
+            let nowColor = this.getColor();
+            if(this.bgColor != nowColor){
+                this.clearBgColor();
+                this.bgColor = nowColor;
+                this.chara.classList.add("bg" + nowColor);
             }
-        }, clearBgColor() {
+            
+        },
+        getColor() {
+            console.log(this.textWidth);
+            if (this.distance_scroll < this.textWidth) {
+                return 1;
+            } else if(this.distance_scroll <= this.textWidth + 9*this.cardWidth) {
+                return Math.floor((this.distance_scroll-this.textWidth)/this.cardWidth + 0.0000001 + 2);
+            } else return 11;
+        },
+        clearBgColor() {
             let classList = [];
             for (let i = 1; i <= 11; ++i)
                 classList.push('bg' + i);
             this.chara.classList.remove(...classList);
         }, reset() {
             this.clearBgColor();
+            this.bgColor = 0;
             if (scrollY < this.distance_trigger) {
                 this.distance_scroll = 0;
             }
@@ -71,7 +83,7 @@ onMounted(() => {
             this.observer = null;
         }
     }
-    sf.container.style.height = sf.carousel.scrollWidth + "px";
+    sf.container.style.height = sf.carousel.scrollWidth - sf.carousel.clientWidth + sf.chara.clientHeight + "px";
     sf.resize();
     sf.observe();
     window.addEventListener("resize", sf.resize.bind(sf));
@@ -230,7 +242,7 @@ onMounted(() => {
 
 .chara {
     background-color: #5ba4d7;
-    transition: background-color 0.5s ease-in-out;
+    transition: background-color 0.5s ease;
 }
 
 .chara.bg1 {
