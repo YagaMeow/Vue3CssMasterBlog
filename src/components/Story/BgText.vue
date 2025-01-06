@@ -1,5 +1,5 @@
 <template>
-    <div class="wrapper">
-        
+    <div class="bg-text">
+
     </div>
 </template>

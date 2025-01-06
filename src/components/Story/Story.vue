@@ -8,3 +8,9 @@ import Wrapper from './Wrapper.vue';
         <BgText></BgText>
     </section>
 </template>
+<style scoped>
+    .story {
+        width: 100%;
+        background-color: #c0d5e8;
+    }
+</style>

@@ -20,9 +20,8 @@ requestAnimationFrame(raf);
             <Nav></Nav>
         </header>
         <FirstScreen></FirstScreen>
-        <div style="height: 10vh;width: 100%;"></div>
-        <ScrollBar :lenis="lenis"></ScrollBar>
         <story></story>
+        <ScrollBar :lenis="lenis"></ScrollBar>
         <!-- <MyCard v-for="id in 7" :num="id"></MyCard> -->
     </div>
 </template>
