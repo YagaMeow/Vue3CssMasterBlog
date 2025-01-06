@@ -4,6 +4,7 @@ import Loading from './Loading/Loading.vue';
 import Nav from './NavMenu/Nav.vue';
 import FirstScreen from './FirstScreen/FirstScreen.vue';
 import ScrollBar from './ScrollBar/ScrollBar.vue';
+import Story from './Story/Story.vue';
 import Lenis from 'lenis';
 const lenis = new Lenis({});
 function raf(time: number) {
@@ -21,6 +22,7 @@ requestAnimationFrame(raf);
         <FirstScreen></FirstScreen>
         <div style="height: 10vh;width: 100%;"></div>
         <ScrollBar :lenis="lenis"></ScrollBar>
+        <story></story>
         <!-- <MyCard v-for="id in 7" :num="id"></MyCard> -->
     </div>
 </template>
