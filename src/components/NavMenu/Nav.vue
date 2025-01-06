@@ -13,7 +13,7 @@ const menu_list = [
         <ul class="nav">
             <li v-for="(name,idx) in menu_list">
                 <a href="">
-                    <img :src="`../../../public/img/${name}.svg`" :alt="name">
+                    <img :src="`/img/${name}.svg`" :alt="name">
                 </a>
             </li>
         </ul>

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, triggerRef } from 'vue';
 import Lenis, { type ScrollCallback } from 'lenis';
-import { loadRouteLocation } from 'vue-router';
 const props = defineProps({
     lenis: {
         type: Lenis
@@ -112,7 +111,7 @@ onMounted(() => {
                     <ul class="chara-list">
                         <li v-for="i in 10" class="chara-slide">
                             <a class="chara-image" href="">
-                                <img :src="`../../../public/img/ch${i}.webp`" alt="">
+                                <img :src="`/img/ch${i}.webp`" alt="">
                             </a>
                         </li>
                     </ul>
@@ -135,7 +134,7 @@ onMounted(() => {
                     <ul class="chara-list">
                         <li v-for="i in 3" class="chara-slide">
                             <a class="chara-image" href="">
-                                <img :src="`../../../public/img/ch${10 + i}.webp`" alt="">
+                                <img :src="`/img/ch${10 + i}.webp`" alt="">
                             </a>
                         </li>
                     </ul>

@@ -1,7 +1,26 @@
+<script setup lang="ts">
+import { onMounted } from 'vue';
+
+onMounted(() => {
+    const observer= new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if(e.isIntersecting){
+                e.target.classList.add("run");
+            }
+        })
+    },{
+        threshold: 0.5
+    })
+    const storys = document.querySelectorAll(".story-text-box, .story-img");
+    storys.forEach(s => {
+        observer.observe(s);
+    })
+});
+</script>
 <template>
     <div class="wrapper">
         <div class="introduction">
-            <div class="introduction-text">
+            <div class="introduction-text story-text-box">
                 <h2 class="introduction-title">
                     <span>
                         Introduction
@@ -25,11 +44,11 @@
                     </p>
                 </div>
             </div>
-            <div class="introduction-img"></div>
+            <div class="introduction-img story-img"></div>
         </div>
         <div class="features">
-            <div class="features-img"></div>
-            <div class="features-text">
+            <div class="features-img story-img"></div>
+            <div class="features-text story-text-box">
                 <h2 class="features-title">
                     Features
                 </h2>
@@ -49,7 +68,7 @@
             </div>
         </div>
         <div class="gamesystem">
-            <div class="gamesystem-text">
+            <div class="gamesystem-text story-text-box">
                 <h2 class="gamesystem-title">
                     Game System
                 </h2>
@@ -67,7 +86,7 @@
                     </p>
                 </div>
             </div>
-            <div class="gamesystem-img"></div>
+            <div class="gamesystem-img story-img"></div>
         </div>
         <div class="story-text3"></div>
     </div>
@@ -95,6 +114,7 @@
 .features {
     justify-content: flex-start;
 }
+
 
 .features {
     margin-top: 87px;
@@ -130,7 +150,29 @@
     height: 425px;
     width: calc(1000 / 1920 * 100vw);
     max-width: 1000px;
+    overflow: hidden;
 
+}
+
+.introduction-img::before,
+.features-img::before,
+.gamesystem-img::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    transform: translateY(0);
+}
+
+.introduction-img.run::before,
+.features-img.run::before,
+.gamesystem-img.run::before {
+    transform: translateY(-100%);
+    transition: transform 0.3s linear;
 }
 
 .features-img {
