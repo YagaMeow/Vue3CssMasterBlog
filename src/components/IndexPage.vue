@@ -4,7 +4,7 @@ import Loading from './Loading/Loading.vue';
 import Nav from './NavMenu/Nav.vue';
 import FirstScreen from './FirstScreen/FirstScreen.vue';
 import ScrollBar from './ScrollBar/ScrollBar.vue';
-import Story from './Story/Story.vue';
+import Story from './Story/index.vue'
 import Lenis from 'lenis';
 const lenis = new Lenis({});
 function raf(time: number) {

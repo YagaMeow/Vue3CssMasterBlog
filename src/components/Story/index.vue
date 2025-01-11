@@ -8,9 +8,14 @@ import Wrapper from './Wrapper.vue';
         <BgText></BgText>
     </section>
 </template>
+<script lang="ts">
+export default {
+    name: 'Story'
+}
+</script>
 <style scoped>
     .story {
         width: 100%;
-        background-color: #c0d5e8;
+        background-color: #c0d5e8   ;
     }
 </style>

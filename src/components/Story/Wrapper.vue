@@ -33,11 +33,11 @@ onMounted(() => {
                         to attack your dorm.
 
                     </p>
-                    <p>
+                    <p style="padding-top: 60px;">
                         In the midst of chaos, you awaken to your Persona—a powerful force that can be used to fight
                         back.
                     </p>
-                    <p>
+                    <p style="padding-top: 90px;">
                         A group of others who share this power recruit you into their Specialized Extracurricular
                         Excecution Squad (S.E.E.S.), and so begins your journey to uncover the mysteries behind these
                         incidents...
@@ -59,7 +59,7 @@ onMounted(() => {
                             love while introducing new quality-of-life mechanics and a complete graphical overhaul.
                         </span>
                     </p>
-                    <p>
+                    <p style="padding-top: 75px;">
                         <span>
                             Experience what made this game leave such an impact, now better than ever.
                         </span>
@@ -78,7 +78,7 @@ onMounted(() => {
                             The Persona 3 experience becomes even more enjoyable while retaining its originality.
                         </span>
                     </p>
-                    <p>
+                    <p style="padding-top: 21px;">
                         <span>
                             A more exhilarating battle system and new graphics and gimmicks make Tartarus easier to
                             explore. Dormitory life and community have also legitimately evolved!
