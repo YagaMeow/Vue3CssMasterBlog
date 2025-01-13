@@ -9,7 +9,6 @@ const service = axios.create({
 
 service.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-        console.log(config)
         const userStore = useUserStore()
         config.headers['Content-Type'] = 'application/json'
         return config
