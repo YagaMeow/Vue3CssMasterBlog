@@ -66,7 +66,7 @@ defineExpose({
 
 #loading.run {
     background-color: transparent;
-    transition: background-color 5s ease;
+    transition: background-color 4s ease;
 }
 
 .wavebox {

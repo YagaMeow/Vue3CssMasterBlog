@@ -1,11 +1,25 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { useUserStore } from '@/pinia/modules/user';
+import axios from 'axios';
+import { onMounted,ref } from 'vue';
 
-onMounted(() => {
+interface FormData {
+    username: '',
+    password: ''
+}
+
+const form = ref<FormData>({
+    username: '',
+    password: ''
 })
 
-function handleLogin() {
-    
+const userStore = useUserStore()
+const login = async () => {
+    return await userStore.LoginIn(form.value)
+}
+
+async function handleLogin() {
+    await login()
 }
 
 </script>
@@ -16,13 +30,13 @@ function handleLogin() {
                 <span>Login</span>
             </h2>
             <form action="" class="form">
-                <label for="" >
+                <label for="">
                     <span>Username:</span>
-                    <input type="text">
+                    <input type="text" v-model="form.username">
                 </label>
-                <label for="" >
+                <label for="">
                     <span>Password:</span>
-                    <input type="password">
+                    <input type="password" v-model="form.password">
                 </label>
             </form>
             <button class="login-button" @click="handleLogin">
@@ -58,7 +72,7 @@ function handleLogin() {
 }
 
 .form {
-    display: flex;    
+    display: flex;
     flex-direction: column;
     width: 100%;
     justify-content: space-around;
@@ -104,14 +118,13 @@ function handleLogin() {
     right: 40px;
     background-color: transparent;
     border: 0;
-    border-radius: 10px; 
+    border-radius: 10px;
     box-shadow: -5px -5px 20px #fff inset,
-    5px 5px 20px #d1d9e6 inset;
+        5px 5px 20px #d1d9e6 inset;
 }
 
 .login-button:hover {
     box-shadow: -5px -5px 5px #fff inset,
-    5px 5px 5px #d1d9e6 inset;
+        5px 5px 5px #d1d9e6 inset;
 }
-
 </style>
