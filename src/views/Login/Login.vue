@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useUserStore } from '@/pinia/modules/user';
+import router from '@/router';
 import axios from 'axios';
 import { onMounted,ref } from 'vue';
 
@@ -19,7 +20,10 @@ const login = async () => {
 }
 
 async function handleLogin() {
-    await login()
+    const flag = await login()
+    if(flag) {
+        router.push('edit')
+    }
 }
 
 </script>

@@ -1,7 +1,6 @@
 ﻿<script setup>
 import WaveBox from './WaveBox.vue';
 import LoadingText from './LoadingText.vue';
-import { defineProps } from 'vue';
 
 const props = defineProps({
     check: {
