@@ -20,16 +20,16 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
-  server: {
-    open: true,
-    port: parseInt(env.VITE_CLI_PORT),
-    proxy: {
-      [env.VITE_BASE_API]: {
-        target: `${env.VITE_BASE_PATH}:${env.VITE_SERVER_PORT}`,
-        changeOrigin: true,
-        rewrite: (path: string) =>
-          path.replace(new RegExp('^' + env.VITE_BASE_API), '')
-      }
-    }
-  }
+  // server: {
+  //   open: true,
+  //   port: parseInt(env.VITE_CLI_PORT),
+  //   proxy: {
+  //     [env.VITE_BASE_API]: {
+  //       target: `${env.VITE_BASE_PATH}:${env.VITE_SERVER_PORT}`,
+  //       changeOrigin: true,
+  //       rewrite: (path: string) =>
+  //         path.replace(new RegExp('^' + env.VITE_BASE_API), '')
+  //     }
+  //   }
+  // }
 })

@@ -56,7 +56,7 @@ import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 class MyButtonMenu {
     constructor() {
         this.title = 'menu1',
-        this.tag = 'button'
+            this.tag = 'button'
     }
     getValue() { return '' }
     isActive() { return false }
@@ -67,10 +67,10 @@ class MyButtonMenu {
     }
 }
 const menuConf = {
-  key: 'my-menu-1', // menu key ，唯一。注册之后，需通过 toolbarKeys 配置到工具栏
-  factory() {
-    return new MyButtonMenu()
-  },
+    key: 'my-menu-1', // menu key ，唯一。注册之后，需通过 toolbarKeys 配置到工具栏
+    factory() {
+        return new MyButtonMenu()
+    },
 }
 Boot.registerMenu(menuConf)
 console.log(1111111111)
@@ -160,30 +160,68 @@ const getHtml = () => {
 </script>
 
 <template>
-    <div>
-        <button @click="getHtml">获取 html</button>
+    <div class="editpage-container">
+        <div class="editor-header">
+            <span class="title-label">标题:</span>
+            <el-input class="title-input"></el-input>
+
+        </div>
+        <div class="editor-container">
+            <!-- 工具栏 -->
+            <Toolbar :editor="editorRef" :defaultConfig="toolbarConfig" style="border-bottom: 1px solid #ccc" />
+            <!-- 编辑器 -->
+            <Editor v-model="valueHtml" :defaultConfig="editorConfig" @onChange="handleChange"
+                @onCreated="handleCreated" @onDestroyed="handleDestroyed" @onFocus="handleFocus" @onBlur="handleBlur"
+                @customAlert="customAlert" @customPaste="customPaste" style="height: 500px" />
+            <div class="button-container">
+                <el-button @click="getHtml">提交</el-button>
+            </div>
+        </div>
     </div>
-    <div style="border: 1px solid #ccc">
-        <!-- 工具栏 -->
-        <Toolbar
-            :editor="editorRef"
-            :defaultConfig="toolbarConfig"
-            style="border-bottom: 1px solid #ccc"
-        />
-        <!-- 编辑器 -->
-        <Editor
-            v-model="valueHtml"
-            :defaultConfig="editorConfig"
-            @onChange="handleChange"
-            @onCreated="handleCreated"
-            @onDestroyed="handleDestroyed"
-            @onFocus="handleFocus"
-            @onBlur="handleBlur"
-            @customAlert="customAlert"
-            @customPaste="customPaste"
-            style="height: 500px"
-        />
-    </div>
+
 </template>
 
 <style src="@wangeditor/editor/dist/css/style.css"></style>
+
+<style scoped>
+.editpage-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 10px
+}
+
+.editor-container {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 0 20px;
+    /* background-color: #fff; */
+}
+
+.editor-header {
+    display: flex;
+    position: relative;
+    align-items: center;
+    padding: 20px 100px;
+    height: 100px;
+    background-color: #fff;
+    box-shadow: 0 1px 5px rgba(0,0,0,.2);
+}
+
+.editor-header .title-label {
+    position: absolute;
+    left: 100px;
+}
+
+.editor-header .title-input {
+    margin-left: 100px;
+}
+
+.button-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 60px;
+}
+</style>

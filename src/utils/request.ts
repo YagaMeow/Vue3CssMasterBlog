@@ -21,15 +21,9 @@ service.interceptors.request.use(
 service.interceptors.response.use(
     (response) => {
         const useStore = useUserStore()
-        if (response.data.code === 0 || response.headers.success === 'true') {
-            if (response.headers.msg) {
-                response.data.msg = response.headers.msg
-            }
+        if (response.data.code === 0) {
             return response.data
-        } else {
-
-        }
-        return response.data.msg ? response.data : response
+        } else return response.data.msg ? response.data : response
     },
     (error) => {
         return error

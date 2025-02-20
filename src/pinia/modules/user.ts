@@ -30,6 +30,7 @@ export const useUserStore = defineStore('user', () => {
 
     const LoginIn = async (loginInfo: any) => {
         const res = await login(loginInfo) as unknown
+        console.log(res)
         if ((res as LoginResponse).code !== 0) {
             ElMessage.error((res as LoginResponse).message || '登录失败')
             return false
