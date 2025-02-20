@@ -73,7 +73,6 @@ const menuConf = {
     },
 }
 Boot.registerMenu(menuConf)
-console.log(1111111111)
 
 
 // 编辑器实例，必须用 shallowRef ，重要！
@@ -164,7 +163,6 @@ const getHtml = () => {
         <div class="editor-header">
             <span class="title-label">标题:</span>
             <el-input class="title-input"></el-input>
-
         </div>
         <div class="editor-container">
             <!-- 工具栏 -->

@@ -4,7 +4,8 @@ function login(req) {
     return {
         code: 0,
         data: {
-            username: Random.cname(),
+            name: Random.cname(),
+            id: Random.integer(),
             token: Random.guid(),
             message: "Login succeed"
         },

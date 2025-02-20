@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+import {useUserStore} from '../pinia'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -11,7 +13,7 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: () => import('@/views/Login/Login.vue')
+      component: () => import('@/views/LoginPage/LoginPage.vue')
     },
     {
       path: '/about',
@@ -27,6 +29,20 @@ const router = createRouter({
       component: () => import('@/views/EditPage/EditPage.vue')
     }
   ],
+})
+
+router.beforeEach((to, from, next) => {
+  const userStore = useUserStore()
+  const user = userStore.GetUserInfo()
+  console.log(user.name)
+  if(to.path === '/login' && userStore.CheckLogin()){
+    next('/edit')
+  }else if(to.path === 'edit' && !userStore.CheckLogin()) {
+    next('/login')
+  }else {
+    next()
+  }
+  
 })
 
 export default router

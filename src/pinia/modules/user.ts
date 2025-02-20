@@ -8,6 +8,7 @@ import { ElMessage } from "element-plus";
 import { useRouterStore } from "./router";
 import router from "@/router";
 import type { RouteRecordRaw } from "vue-router";
+import { fa } from "element-plus/es/locales.mjs";
 
 interface LoginResponse {
     code: number
@@ -35,7 +36,7 @@ export const useUserStore = defineStore('user', () => {
             ElMessage.error((res as LoginResponse).message || '登录失败')
             return false
         }
-        setUserInfo((res as LoginResponse).data.user)
+        setUserInfo((res as LoginResponse).data)
         setToken((res as LoginResponse).data.token)
         const routerStore = useRouterStore()
         await routerStore.SetAsyncRouter()
@@ -52,11 +53,25 @@ export const useUserStore = defineStore('user', () => {
 
     const setToken = (val: string) => {
         token.value = val
-        xToken.set('x-token',val)
+        xToken.set('x-token', val)
+    }
+
+    const GetUserInfo = () => {
+        return userInfo.value
+    }
+
+    const CheckLogin = () => {
+        const token = localStorage.getItem('token')
+        if (token)
+            return true
+        else
+            return false
     }
 
     return {
-        LoginIn
+        CheckLogin,
+        LoginIn,
+        GetUserInfo
     }
 })
 
