@@ -6,14 +6,14 @@ import router from './router'
 
 interface LoadingInstance {
     _out: () => void
-    _in: (next: Function) => void
+    _in: (next: () => void) => void
 }
 
 const loading = ref<LoadingInstance | null>(null)
 
 function check_loading() {
     console.log('[Loading] Check Loading')
-    let timer = setInterval(() => {
+    const timer = setInterval(() => {
         if (document.readyState === 'complete'){
             clearInterval(timer)
             loading.value?._out();

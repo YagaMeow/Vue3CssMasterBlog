@@ -7,18 +7,18 @@ export const useRouterStore = defineStore('router', () => {
 
         }
     ]
-    const SetAsyncRouter = async () => {
-        const asyncRouter = [{
-            path: '/edit',
-            name: 'edit',
-            component: () => import('@/views/EditPage/EditPage.vue')
-        }]
-        console.log(asyncRouter)
-        asyncRouters.value = asyncRouter
-        return true
-    }
+    // const SetAsyncRouter = async () => {
+    //     const asyncRouter = [{
+    //         path: '/edit',
+    //         name: 'edit',
+    //         component: () => import('@/views/EditPage/EditPage.vue')
+    //     }]
+    //     console.log(asyncRouter)
+    //     asyncRouters.value = asyncRouter
+    //     return true
+    // }
     return {
-        asyncRouters,
-        SetAsyncRouter
+        // asyncRouters,
+        // SetAsyncRouter
     }
 })

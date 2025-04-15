@@ -1,7 +1,12 @@
 import service from "@/utils/request";
-export const login = (data: any) => {
+interface LoginData {
+    username: string;
+    password: string;
+}
+
+export const login = (data: LoginData) => {
     return service({
-        url: '/base/login',
+        url: 'http://127.0.0.1:8889/login',
         method: 'post',
         data: data
     })

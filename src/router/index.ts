@@ -22,11 +22,6 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('@/views/AboutView.vue'),
-    },
-    {
-      path: '/edit',
-      name: 'edit',
-      component: () => import('@/views/EditPage/EditPage.vue')
     }
   ],
 })
@@ -36,13 +31,11 @@ router.beforeEach((to, from, next) => {
   const user = userStore.GetUserInfo()
   console.log(user.name)
   if(to.path === '/login' && userStore.CheckLogin()){
-    next('/edit')
-  }else if(to.path === 'edit' && !userStore.CheckLogin()) {
-    next('/login')
+    next('/')
   }else {
     next()
   }
-  
+
 })
 
 export default router

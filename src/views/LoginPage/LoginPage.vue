@@ -22,7 +22,7 @@ const login = async () => {
 async function handleLogin() {
     const flag = await login()
     if(flag) {
-        router.push('edit')
+        router.push('/')
     }
 }
 
