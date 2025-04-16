@@ -122,18 +122,24 @@
         </button>
       </div>
     </div>
+    <div class="back-button" @click="$router.back()">
+      <img class="back-icon" src="@/assets/svg/back.svg" alt="" />返回
+    </div>
+    <h1>{{}}</h1>
     <editor-content :editor="editor" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { Color } from '@tiptap/extension-color'
-import { Highlight } from '@tiptap/extension-highlight'
 import ListItem from '@tiptap/extension-list-item'
 import TextStyle from '@tiptap/extension-text-style'
+import Highlight from '@tiptap/extension-highlight'
+import Typography from '@tiptap/extension-typography'
 import StarterKit from '@tiptap/starter-kit'
 import { Editor, EditorContent } from '@tiptap/vue-3'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import '@/assets/editor.css'
 
 interface Paragraph {
   id: string
@@ -199,6 +205,7 @@ const editor = new Editor({
     TextStyle.configure({ types: [ListItem.name] }),
     StarterKit,
     Highlight,
+    Typography,
   ],
   content: contentString.value,
   // onUpdate: ({ editor }) => {
@@ -207,50 +214,31 @@ const editor = new Editor({
   // },
 })
 
-console.log(JSON.parse(localContent.value))
-console.log(paragraphs.value)
-
 // 防抖保存（500ms 延迟）
 // const debouncedSave = _.debounce(async (content) => {
 //   await axios.put(`/api/articles/${props.articleId}`, { content })
 // }, 500)
-
-// 双击段落进入编辑模式
-const handleEnableEdit = (event) => {
-  if (false) return
-  isEditing.value = true
-  // 聚焦到对应段落
-  const targetParagraph = event.target.closest('.paragraph')
-  if (targetParagraph) {
-    const id = targetParagraph.dataset.id
-    if (editor.value) {
-      editor.value.commands.focus(id)
-    }
-  }
-}
-// 段落悬停显示方法
-const showParagraphHover = (index: number) => {
-  console.log(`Hovered over paragraph ${index}`)
-}
-
-// 段落悬停隐藏方法
-const hideParagraphHover = () => {
-  console.log('Mouse left paragraph')
-}
 </script>
-
-<style lang="scss">
-/* 段落悬停效果 */
-.paragraph:hover {
-  background: #f5f5f5;
-  cursor: text;
+<style scoped>
+.back-icon {
+  vertical-align: middle;
+  height: 1em;
 }
 
-/* 编辑器样式 */
-.editor-content {
-  border: 1px solid #ddd;
-  padding: 20px;
-  min-height: 300px;
+.back-button {
+  padding: 10px;
+  border: 1px solid #eee;
+  background-color: #eee;
+  border-top: none;
+  border-left: none;
+  border-bottom-right-radius: 10%;
+  cursor: pointer;
+}
+</style>
+<style lang="scss">
+.tiptap {
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 .tiptap {
@@ -289,21 +277,21 @@ const hideParagraphHover = () => {
   }
 
   h1 {
-    font-size: 1.4rem;
+    font-size: 2rem;
   }
 
   h2 {
-    font-size: 1.2rem;
+    font-size: 1.7rem;
   }
 
   h3 {
-    font-size: 1.1rem;
+    font-size: 1.4rem;
   }
 
   h4,
   h5,
   h6 {
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
 
   /* Code and preformatted text styles */
@@ -326,7 +314,7 @@ const hideParagraphHover = () => {
     code {
       background: none;
       color: inherit;
-      font-size: 0.8rem;
+      font-size: 1rem;
       padding: 0;
     }
   }
