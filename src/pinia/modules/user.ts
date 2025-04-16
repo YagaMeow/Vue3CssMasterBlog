@@ -28,6 +28,7 @@ export const useUserStore = defineStore('user', () => {
   const token = useStorage('token', '')
   const xToken = useCookies(['x-token'])
   const currentToken = computed(() => token.value || xToken.get('x-token') || '')
+  const isLoggedIn = computed(() => !!currentToken.value)
 
   interface LoginInfo {
     username: string
@@ -67,6 +68,12 @@ export const useUserStore = defineStore('user', () => {
     return userInfo.value
   }
 
+  const Logout = () => {
+    localStorage.removeItem('token')
+    xToken.remove('x-token')
+    userInfo.value = { id: '', name: '' }
+  }
+
   const CheckLogin = () => {
     const token = localStorage.getItem('token')
     if (token) return true
@@ -74,7 +81,9 @@ export const useUserStore = defineStore('user', () => {
   }
 
   return {
+    isLoggedIn,
     CheckLogin,
+    Logout,
     LoginIn,
     GetUserInfo,
   }

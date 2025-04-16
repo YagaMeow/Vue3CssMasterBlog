@@ -21,7 +21,7 @@ function _in(next: () => void): void {
   const container = document.querySelector('#loading') as HTMLElement
   container.classList.remove('run')
   setTimeout(() => {
-    (props.check as () => void)()
+    ;(props.check as () => void)()
     next()
   }, 1000)
 }
@@ -71,7 +71,7 @@ defineExpose({
 
 #loading.run {
   background-color: transparent;
-  transition: background-color 4s ease;
+  transition: background-color 3s ease;
 }
 
 .wavebox {
