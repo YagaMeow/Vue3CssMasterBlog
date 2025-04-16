@@ -18,7 +18,7 @@ onMounted(() => {
 })
 </script>
 <template>
-
+  <div class="wavebox"></div>
 </template>
 <style scoped>
 

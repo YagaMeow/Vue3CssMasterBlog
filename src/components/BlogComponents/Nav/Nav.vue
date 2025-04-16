@@ -1,4 +1,7 @@
-<script setup lang="ts">
+<script lang="ts" setup>
+defineOptions({
+    name: 'NavBar'
+});
 import { ref } from 'vue'
 import NavItem from './NavItem.vue';
 import router from '@/router';
@@ -17,7 +20,7 @@ const navList = ref([{
 <template>
     <div class="nav-container">
         <ul class="pc">
-            <li v-for="item of navList">
+            <li v-for="item of navList" :key="item.href">
                 <NavItem :name="item.name" :href="item.href">
                 </NavItem>
             </li>
