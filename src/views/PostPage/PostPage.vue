@@ -136,6 +136,7 @@ import ListItem from '@tiptap/extension-list-item'
 import TextStyle from '@tiptap/extension-text-style'
 import Highlight from '@tiptap/extension-highlight'
 import Typography from '@tiptap/extension-typography'
+import Placeholder from '@tiptap/extension-placeholder'
 import StarterKit from '@tiptap/starter-kit'
 import { Editor, EditorContent } from '@tiptap/vue-3'
 import { ref, computed, onMounted } from 'vue'
@@ -181,17 +182,6 @@ const s = `[{
 }]`
 
 const localContent = ref(props.content || s.replace(/\r|\n/g, ''))
-// 编辑状态控制
-const isEditing = ref(false)
-
-// 将内容解析为段落数组
-const paragraphs = computed(() => {
-  try {
-    return JSON.parse(localContent.value || '[]')
-  } catch {
-    return []
-  }
-})
 
 const contentString = computed(() => {
   return JSON.parse(localContent.value || '[]').reduce((acc: string, cur: Paragraph) => {
@@ -203,9 +193,12 @@ const editor = new Editor({
   extensions: [
     Color.configure({ types: [TextStyle.name, ListItem.name] }),
     TextStyle.configure({ types: [ListItem.name] }),
-    StarterKit,
     Highlight,
     Typography,
+    Placeholder.configure({
+      placeholder: 'Type something ...',
+    }),
+    StarterKit,
   ],
   content: contentString.value,
   // onUpdate: ({ editor }) => {
@@ -220,6 +213,13 @@ const editor = new Editor({
 // }, 500)
 </script>
 <style scoped>
+.empty-node {
+  background-color: black;
+  border-radius: 0.4rem;
+  font-size: 0.85rem;
+  padding: 0.25em 0.3em;
+}
+
 .back-icon {
   vertical-align: middle;
   height: 1em;
@@ -329,6 +329,10 @@ const editor = new Editor({
     border: none;
     border-top: 1px solid var(--gray-2);
     margin: 2rem 0;
+  }
+
+  p.is-empty::before {
+    content: attr(data-placeholder) !important;
   }
 }
 </style>
