@@ -4,12 +4,18 @@ defineOptions({
 })
 import { ref } from 'vue'
 import Post from './Post.vue'
-const postList = ref([
-  { name: 'Post 1', id: 1, uri: 'page1' },
-  { name: 'Post 2', id: 2, uri: 'page2' },
-  { name: 'Post 3', id: 3, uri: 'page3' },
-  { name: 'Post 4', id: 4, uri: 'page4' },
-])
+import { ArticleAPI } from '@/api/api'
+
+const postList = ref([])
+
+ArticleAPI.getList({ page: 1, limit: 10 })
+  .then((response) => {
+    postList.value = response.data
+    console.log(postList.value)
+  })
+  .catch((error) => {
+    console.error('Failed to fetch posts:', error)
+  })
 </script>
 <template>
   <div class="posts-container">

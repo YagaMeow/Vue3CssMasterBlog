@@ -81,6 +81,7 @@ export const useUserStore = defineStore('user', () => {
   }
 
   return {
+    currentToken,
     isLoggedIn,
     CheckLogin,
     Logout,

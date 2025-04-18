@@ -11,13 +11,17 @@ const props = defineProps({
     default: () => ({}),
   },
 })
+function formatDate(date: string): string {
+  const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' }
+  return new Date(date).toLocaleDateString(undefined, options)
+}
 </script>
 <template>
   <div class="post-container">
     <h2 class="post-title">
       <RouterLink :to="`/posts/${data.uri}`" class="post-link">
-        <span class="title">{{ data.name }}</span>
-        <span class="date">1970-01-01</span>
+        <span class="title">{{ data.title }}</span>
+        <span class="date">{{ formatDate(data.created_at) }}</span>
       </RouterLink>
     </h2>
     <p class="abstract"></p>
