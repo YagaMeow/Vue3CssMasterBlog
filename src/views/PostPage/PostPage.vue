@@ -1,7 +1,11 @@
 <!-- src/components/ArticleEditor.vue -->
+
 <template>
   <div v-if="editor" class="container">
-    <div class="control-group">
+    <div class="control-group" display="flex">
+      <div class="title">
+        <h1>{{ _data.title || '' }}</h1>
+      </div>
       <div class="button-group">
         <button @click="editor.setEditable(false)">ban</button>
         <button
@@ -122,16 +126,48 @@
         </button>
       </div>
     </div>
-    <div class="back-button" @click="$router.back()">
-      <img class="back-icon" src="@/assets/svg/back.svg" alt="" />返回
+    <div class="back-button-container">
+      <div class="back-button" @click="$router.back()">
+        <img class="back-icon" src="@/assets/svg/back.svg" alt="" />返回
+      </div>
     </div>
     <h1>{{}}</h1>
-    <editor-content :editor="editor" />
+
+    <drag-handle :editor="editor">
+      <div class="custom-drag-handle" />
+    </drag-handle>
   </div>
+  <div
+    :class="{
+      'character-count': true,
+      'character-count--warning': editor.storage.characterCount.characters() === limit,
+    }"
+  >
+    <svg height="20" width="20" viewBox="0 0 20 20">
+      <circle r="10" cx="10" cy="10" fill="#c1e3f7" />
+      <circle
+        r="5"
+        cx="10"
+        cy="10"
+        fill="transparent"
+        stroke="#68c3f7"
+        stroke-width="10"
+        :stroke-dasharray="`calc(${percentage} * 31.4 / 100) 31.4`"
+        transform="rotate(-90) translate(-20)"
+      />
+      <circle r="6" cx="10" cy="10" fill="rgb(232, 231, 231)" />
+    </svg>
+
+    {{ editor.storage.characterCount.characters() }} / {{ limit }} characters
+    <br />
+    {{ editor.storage.characterCount.words() }} words
+  </div>
+  <editor-content :editor="editor" />
 </template>
 
 <script lang="ts" setup>
 import { Color } from '@tiptap/extension-color'
+import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
 import ListItem from '@tiptap/extension-list-item'
 import TextStyle from '@tiptap/extension-text-style'
 import Highlight from '@tiptap/extension-highlight'
@@ -139,58 +175,48 @@ import Typography from '@tiptap/extension-typography'
 import Placeholder from '@tiptap/extension-placeholder'
 import StarterKit from '@tiptap/starter-kit'
 import { Editor, EditorContent } from '@tiptap/vue-3'
-import { ref, computed, onMounted } from 'vue'
-import '@/assets/editor.css'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { DragHandle } from '@tiptap-pro/extension-drag-handle-vue-3'
+import NodeRange from '@tiptap-pro/extension-node-range'
+import '@/assets/editor.scss'
+import { useRoute } from 'vue-router'
+import { ArticleAPI } from '@/api/api'
+import { ElNotification } from 'element-plus'
+import 'element-plus/theme-chalk/el-notification.css'
+import css from 'highlight.js/lib/languages/css'
+import js from 'highlight.js/lib/languages/javascript'
+import ts from 'highlight.js/lib/languages/typescript'
+import html from 'highlight.js/lib/languages/xml'
+import { all, createLowlight } from 'lowlight'
+import Table from '@tiptap/extension-table'
+import TableCell from '@tiptap/extension-table-cell'
+import TableHeader from '@tiptap/extension-table-header'
+import TableRow from '@tiptap/extension-table-row'
+import Image from '@tiptap/extension-image'
+import Text from '@tiptap/extension-text'
+import Dropcursor from '@tiptap/extension-dropcursor'
+import { Mathematics } from '@tiptap-pro/extension-mathematics'
+import CharacterCount from '@tiptap/extension-character-count'
+import 'katex/dist/katex.min.css'
 
-interface Paragraph {
-  id: string
-  content: string
-}
+const percentage = computed(() =>
+  Math.round((100 / limit) * editor.storage.characterCount.characters()),
+)
 
-interface EditorUpdate {
-  editor: {
-    getJSON: () => Record<string, unknown>
-  }
-}
+const lowlight = createLowlight(all)
 
-const props = defineProps({
-  content: String, // 原始文章内容（JSON 或 HTML）
-  articleId: Number,
-})
+lowlight.register('html', html)
+lowlight.register('css', css)
+lowlight.register('js', js)
+lowlight.register('ts', ts)
 
-const s = `[{
-  "id": 0,
-  "content": "<h2>Hi there,</h2>"
-}, {
-  "id": 1,
-  "content": "<p>this is a <em>basic</em> example of <strong>Tiptap</strong>. Sure, there are all kind of basic text styles you’d probably expect from a text editor. But wait until you see the lists:</p>"
-}, {
-  "id": 2,
-  "content": "<ul><li>That’s a bullet list with one …</li><li>… or two list items.</li></ul>"
-}, {
-  "id": 3,
-  "content": "<p>Isn’t that great? And all of that is editable. But wait, there’s more. Let’s try a code block:</p>"
-}, {
-  "id": 4,
-  "content": "<pre><code class=\\"language-css\\">body {\n  display: none;\n}</code></pre>"
-}, {
-  "id": 5,
-  "content": "<p>I know, I know, this is impressive. It’s only the tip of the iceberg though. Give it a try and click a little bit around. Don’t forget to check the other examples too.</p>"
-}, {
-  "id": 6,
-  "content": "<blockquote>Wow, that\’s amazing. Good work, boy! 👏<br/>— Mom</blockquote>"
-}]`
-
-const localContent = ref(props.content || s.replace(/\r|\n/g, ''))
-
-const contentString = computed(() => {
-  return JSON.parse(localContent.value || '[]').reduce((acc: string, cur: Paragraph) => {
-    return acc + cur.content
-  }, '')
-})
+const limit = 1000 // 字数限制
 
 const editor = new Editor({
   extensions: [
+    Mathematics,
+    Text,
+    Dropcursor,
     Color.configure({ types: [TextStyle.name, ListItem.name] }),
     TextStyle.configure({ types: [ListItem.name] }),
     Highlight,
@@ -198,21 +224,163 @@ const editor = new Editor({
     Placeholder.configure({
       placeholder: 'Type something ...',
     }),
+    CodeBlockLowlight.configure({
+      lowlight,
+    }),
+    Table.configure({
+      resizable: true,
+    }),
+    Image,
+    TableRow,
+    TableHeader,
+    TableCell,
+    NodeRange.configure({
+      // allow to select only on depth 0
+      // depth: 0,
+      key: null,
+    }),
     StarterKit,
+    CharacterCount.configure({
+      limit: limit,
+    }),
   ],
-  content: contentString.value,
-  // onUpdate: ({ editor }) => {
-  //   // 使用防抖函数触发保存
-  //   // debouncedSave(editor.getJSON())
-  // },
 })
+
+interface Paragraph {
+  id: string
+  content: string
+}
+
+interface Article {
+  id: number
+  title: string
+  content: string
+  uri: string
+}
+
+const route = useRoute()
+
+const _data: Article = {
+  id: 0,
+  title: '',
+  content: '',
+  uri: Array.isArray(route.params.uri) ? route.params.uri[0] : route.params.uri,
+}
+
+const saveHandler = (e: KeyboardEvent) => {
+  if (
+    (e.key === 's' || e.key === 'S') &&
+    (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)
+  ) {
+    e.preventDefault()
+    ArticleAPI.update({
+      title: _data.title,
+      content: JSON.stringify(editor.getJSON()),
+      uri: _data.uri,
+    }).then(() =>
+      ElNotification({
+        title: '保存成功',
+        message: '文章已保存',
+        type: 'success',
+        duration: 2000,
+      }),
+    )
+  }
+}
+
+onMounted(async () => {
+  const res = await ArticleAPI.getByUri(_data.uri)
+
+  _data.id = res.data.id
+  _data.title = res.data.title
+  _data.content = res.data.content
+
+  window.addEventListener('keydown', saveHandler)
+  console.log(JSON.parse(_data.content))
+  editor.commands.setContent(JSON.parse(_data.content))
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', saveHandler)
+  // editor.destroy()
+})
+
+const props = defineProps({
+  content: String, // 原始文章内容（JSON 或 HTML）
+  articleId: Number,
+})
+
+// const s = `[{
+//   "id": 0,
+//   "content": "<h2>Hi there,</h2>"
+// }, {
+//   "id": 1,
+//   "content": "<p>this is a <em>basic</em> example of <strong>Tiptap</strong>. Sure, there are all kind of basic text styles you’d probably expect from a text editor. But wait until you see the lists:</p>"
+// }, {
+//   "id": 2,
+//   "content": "<ul><li>That’s a bullet list with one …</li><li>… or two list items.</li></ul>"
+// }, {
+//   "id": 3,
+//   "content": "<p>Isn’t that great? And all of that is editable. But wait, there’s more. Let’s try a code block:</p>"
+// }, {
+//   "id": 4,
+//   "content": "<pre><code class=\\"language-css\\">body {\n  display: none;\n}</code></pre>"
+// }, {
+//   "id": 5,
+//   "content": "<p>I know, I know, this is impressive. It’s only the tip of the iceberg though. Give it a try and click a little bit around. Don’t forget to check the other examples too.</p>"
+// }, {
+//   "id": 6,
+//   "content": "<blockquote>Wow, that\’s amazing. Good work, boy! 👏<br/>— Mom</blockquote>"
+// }]`
+
+// const localContent = ref(props.content || s.replace(/\r|\n/g, ''))
+
+// const contentString = computed(() => {
+//   return JSON.parse(localContent.value || '[]').reduce((acc: string, cur: Paragraph) => {
+//     return acc + cur.content
+//   }, '')
+// })
 
 // 防抖保存（500ms 延迟）
 // const debouncedSave = _.debounce(async (content) => {
 //   await axios.put(`/api/articles/${props.articleId}`, { content })
 // }, 500)
 </script>
-<style scoped>
+<style lang="scss" scoped>
+.character-count {
+  position: absolute;
+  left: calc(50% + 350px);
+  align-items: center;
+  color: var(--gray-5);
+  display: flex;
+  font-size: 0.75rem;
+  gap: 0.5rem;
+  margin: 1.5rem;
+
+  svg {
+    color: var(--purple);
+  }
+
+  &--warning,
+  &--warning svg {
+    color: var(--red);
+  }
+}
+.control-group {
+  padding: 5px 10px;
+  background-color: #fff;
+
+  .button-group {
+    display: none;
+  }
+
+  .title {
+    max-width: 700px;
+    margin: 0 auto;
+    padding-left: 10px;
+  }
+}
+
 .empty-node {
   background-color: black;
   border-radius: 0.4rem;
@@ -225,10 +393,16 @@ const editor = new Editor({
   height: 1em;
 }
 
+.back-button-container {
+  background-color: #eee;
+}
+
 .back-button {
+  margin: 0 auto;
+  max-width: 700px;
   padding: 10px;
   border: 1px solid #eee;
-  background-color: #eee;
+
   border-top: none;
   border-left: none;
   border-bottom-right-radius: 10%;

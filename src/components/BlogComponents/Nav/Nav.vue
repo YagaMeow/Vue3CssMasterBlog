@@ -15,10 +15,10 @@ const navList = ref([
     name: '关于',
     href: '/about',
   },
-  {
-    name: '归档',
-    href: '/archive',
-  },
+  // {
+  //   name: '归档',
+  //   href: '/archive',
+  // },
 ])
 
 const userStore = useUserStore()

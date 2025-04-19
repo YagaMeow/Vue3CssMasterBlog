@@ -37,12 +37,12 @@ export const useUserStore = defineStore('user', () => {
 
   const LoginIn = async (loginInfo: LoginInfo) => {
     const res = (await login(loginInfo)) as unknown as LoginResponse
-    if ((res.data as unknown as LoginResponse).code !== 200) {
+    if ((res as unknown as LoginResponse).code !== 200) {
       ElMessage.error((res as LoginResponse).message || '登录失败')
       return false
     }
-    setUserInfo((res.data as unknown as LoginResponse).data.user)
-    setToken((res.data as unknown as LoginResponse).data.token)
+    setUserInfo((res as unknown as LoginResponse).data.user)
+    setToken((res as unknown as LoginResponse).data.token)
     // const routerStore = useRouterStore()
     // await routerStore.SetAsyncRouter()
     // const asyncRouters = routerStore.asyncRouters

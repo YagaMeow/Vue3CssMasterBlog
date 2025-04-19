@@ -35,4 +35,21 @@ export const ArticleAPI = {
       },
     })
   },
+  update(data: Article) {
+    return service({
+      url: `/api/articles/uri/${data.uri}`,
+      method: 'PUT',
+      data: {
+        title: data.title,
+        content: data.content,
+        uri: data.uri,
+      },
+    })
+  },
+  getByUri(uri: string) {
+    return service({
+      url: `/api/articles/uri/${uri}`,
+      method: 'GET',
+    })
+  },
 }
