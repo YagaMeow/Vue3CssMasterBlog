@@ -21,15 +21,20 @@ function formatDate(date: string): string {
     <h2 class="post-title">
       <RouterLink :to="`/posts/${data.uri}`" class="post-link">
         <span class="title">{{ data.title }}</span>
-        <span class="date">{{ formatDate(data.created_at) }}</span>
       </RouterLink>
     </h2>
     <p class="abstract"></p>
+    <p class="post-footer">
+      <span class="date">{{ formatDate(data.created_at) }}</span>
+    </p>
   </div>
 </template>
 <style scoped>
 .post-container {
-  width: 800px;
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  min-width: 350px;
   height: 300px;
   background-color: #fff;
   border-radius: 20px;
@@ -41,7 +46,13 @@ function formatDate(date: string): string {
   padding: 20px 20px;
 }
 
-.post-title .date {
+.post-footer {
+  padding: 20px;
+  margin-top: auto;
+  margin-left: auto;
+}
+
+.post-footer .post-footer .date {
   font-size: 0.8rem;
   margin-left: 20px;
 }

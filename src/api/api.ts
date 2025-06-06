@@ -46,6 +46,13 @@ export const ArticleAPI = {
       },
     })
   },
+  delete(uri: string) {
+    return service({
+      url: `/api/articles/uri/${uri}`,
+      method: 'DELETE',
+      data: {},
+    })
+  },
   getByUri(uri: string) {
     return service({
       url: `/api/articles/uri/${uri}`,
