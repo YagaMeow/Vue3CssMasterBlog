@@ -11,8 +11,11 @@ import { store } from './pinia'
 import App from './App.vue'
 import router from './router'
 
+import 'virtual:svg-icons-register'
+import initSvgIcon from '@/assets/icons/index'
+
 const app = createApp(App)
 
-app.use(router).use(store).use(ElementPlus)
+app.use(router).use(store).use(ElementPlus).use(initSvgIcon)
 
 app.mount('#app')
