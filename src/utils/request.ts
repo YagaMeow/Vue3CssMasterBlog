@@ -21,13 +21,18 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
   (response) => {
+    console.log(response)
     const useStore = useUserStore()
     if (response.data.code === 200) {
       return response.data
     } else return response.data.msg ? response.data : response
   },
   (error) => {
-    return error
+    if (error.response && error.response.status === 400) {
+      const errMessage = error.response.data.message || '请求错误'
+      return Promise.reject(new Error(errMessage))
+    }
+    return Promise.reject(error)
   },
 )
 

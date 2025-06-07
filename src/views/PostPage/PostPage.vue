@@ -277,14 +277,14 @@ const saveHandler = (e: KeyboardEvent) => {
       title: _data.title,
       content: JSON.stringify(editor.getJSON()),
       uri: _data.uri,
-    }).then(() =>
+    }).then(() => {
       ElNotification({
         title: '保存成功',
         message: '文章已保存',
         type: 'success',
         duration: 2000,
-      }),
-    )
+      })
+    })
   }
 }
 

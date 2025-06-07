@@ -59,16 +59,15 @@ async function handleLogout() {
 <style scoped>
 .nav-container {
   width: 100%;
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0.3);
   position: fixed;
-  display: flexg;
   box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.2);
 }
 
 .nav-container .pc {
   list-style: none;
   display: flex;
-  margin-left: 200px;
+  margin-left: 100px;
   /* justify-content: center; */
   align-items: center;
 }

@@ -63,7 +63,7 @@ defineExpose({
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  z-index: 999;
+  z-index: 1000;
   overflow: visible;
   pointer-events: none;
   transition: background-color 1s ease;

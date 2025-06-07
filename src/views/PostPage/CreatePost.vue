@@ -81,6 +81,7 @@ import Dropcursor from '@tiptap/extension-dropcursor'
 import { Mathematics } from '@tiptap-pro/extension-mathematics'
 import CharacterCount from '@tiptap/extension-character-count'
 import 'katex/dist/katex.min.css'
+import router from '@/router'
 
 const percentage = computed(() =>
   Math.round((100 / limit) * editor.storage.characterCount.characters()),
@@ -160,14 +161,27 @@ const saveHandler = (e: KeyboardEvent) => {
       title: _data.value.title,
       content: JSON.stringify(editor.getJSON()),
       uri: _data.value.uri,
-    }).then(() =>
-      ElNotification({
-        title: '保存成功',
-        message: '文章已保存',
-        type: 'success',
-        duration: 2000,
-      }),
-    )
+    })
+      .then(() => {
+        ElNotification({
+          title: '创建成功',
+          message: '文章已保存',
+          type: 'success',
+          duration: 2000,
+        })
+        router.push({
+          name: 'Post',
+          params: { uri: _data.value.uri },
+        })
+      })
+      .catch((error) => {
+        ElNotification({
+          title: '创建失败',
+          message: error.message || '无法创建文章',
+          type: 'error',
+          duration: 2000,
+        })
+      })
   }
 }
 
