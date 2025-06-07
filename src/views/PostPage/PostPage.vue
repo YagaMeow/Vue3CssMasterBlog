@@ -12,7 +12,7 @@
         <img class="back-icon" src="@/assets/svg/back.svg" alt="" />返回
       </div>
     </div>
-    <div class="tools control-group">
+    <div class="tools control-group" v-if="editable">
       <div class="button-group">
         <!-- <button @click="editor.setEditable(false)">ban</button> -->
         <button
@@ -145,6 +145,7 @@
     {{ editor.storage.characterCount.words() }} words
   </div>
   <editor-content :editor="editor" />
+  <div class="home" @click="$router.push('/')"></div>
 </template>
 
 <script lang="ts" setup>
@@ -181,6 +182,7 @@ import { Mathematics } from '@tiptap-pro/extension-mathematics'
 import CharacterCount from '@tiptap/extension-character-count'
 import 'katex/dist/katex.min.css'
 import { sv } from 'element-plus/es/locales.mjs'
+import { getAuth } from '@/api/user'
 
 const percentage = computed(() =>
   Math.round((100 / limit) * editor.storage.characterCount.characters()),
@@ -271,7 +273,21 @@ const saveHandler = (e: KeyboardEvent) => {
   }
 }
 
+const editable = ref(true)
+
 onMounted(async () => {
+  const auth = await getAuth().catch((err) => {
+    ElNotification({
+      title: '访客模式',
+      message: '请先登录后再编辑文章',
+      type: 'info',
+      duration: 2000,
+    })
+    editable.value = false
+    editor.setEditable(false)
+    return
+  })
+
   const res = await ArticleAPI.getByUri(_data.uri)
 
   _data.id = res.data.id
@@ -312,42 +328,6 @@ function onImageSelected(event: Event) {
     reader.readAsDataURL(file)
   }
 }
-
-// const s = `[{
-//   "id": 0,
-//   "content": "<h2>Hi there,</h2>"
-// }, {
-//   "id": 1,
-//   "content": "<p>this is a <em>basic</em> example of <strong>Tiptap</strong>. Sure, there are all kind of basic text styles you’d probably expect from a text editor. But wait until you see the lists:</p>"
-// }, {
-//   "id": 2,
-//   "content": "<ul><li>That’s a bullet list with one …</li><li>… or two list items.</li></ul>"
-// }, {
-//   "id": 3,
-//   "content": "<p>Isn’t that great? And all of that is editable. But wait, there’s more. Let’s try a code block:</p>"
-// }, {
-//   "id": 4,
-//   "content": "<pre><code class=\\"language-css\\">body {\n  display: none;\n}</code></pre>"
-// }, {
-//   "id": 5,
-//   "content": "<p>I know, I know, this is impressive. It’s only the tip of the iceberg though. Give it a try and click a little bit around. Don’t forget to check the other examples too.</p>"
-// }, {
-//   "id": 6,
-//   "content": "<blockquote>Wow, that\’s amazing. Good work, boy! 👏<br/>— Mom</blockquote>"
-// }]`
-
-// const localContent = ref(props.content || s.replace(/\r|\n/g, ''))
-
-// const contentString = computed(() => {
-//   return JSON.parse(localContent.value || '[]').reduce((acc: string, cur: Paragraph) => {
-//     return acc + cur.content
-//   }, '')
-// })
-
-// 防抖保存（500ms 延迟）
-// const debouncedSave = _.debounce(async (content) => {
-//   await axios.put(`/api/articles/${props.articleId}`, { content })
-// }, 500)
 </script>
 <style lang="scss" scoped>
 .character-count {
@@ -373,7 +353,7 @@ function onImageSelected(event: Event) {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #eeefff !important;
+  background-color: #444 !important;
 }
 
 .control-group {
@@ -385,15 +365,14 @@ function onImageSelected(event: Event) {
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
-    background-color: #eeefff;
 
     button {
-      width: 30px;
-      height: 30px;
+      width: 20px;
+      height: 20px;
       border-radius: 0.4rem;
       border: none;
       background-color: lightpurple;
-      color: black;
+      color: #555;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -410,7 +389,7 @@ function onImageSelected(event: Event) {
 
       &:disabled {
         background-color: #ccc;
-        color: #eee;
+        color: #aaa;
         cursor: not-allowed;
       }
     }
@@ -549,6 +528,44 @@ function onImageSelected(event: Event) {
 
   p.is-empty::before {
     content: attr(data-placeholder) !important;
+  }
+}
+
+.home {
+  width: 50px;
+  height: 50px;
+  bottom: 20px;
+  left: 20px;
+  background-color: #fafafa;
+  position: fixed;
+  border-radius: 20%;
+  box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  background-image: url('@/assets/svg/home.svg');
+  background-size: 50%;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  &:hover {
+    animation: shake 0.5s ease-in-out;
+  }
+}
+
+@keyframes shake {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-10deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }
+  75% {
+    transform: rotate(-5deg);
+  }
+  100% {
+    transform: rotate(0deg);
   }
 }
 </style>

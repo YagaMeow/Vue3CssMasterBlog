@@ -122,7 +122,7 @@ function dragEnd(event: DragEvent) {
 
   const bin = document.querySelector('.bin')
   if (bin && x >= bin?.getBoundingClientRect().left && y >= bin?.getBoundingClientRect().top) {
-    handleDelete(target.dataset.uri || '')
+    handleDelete(target.getAttribute('uri') || '')
   }
   dragData.value.isDragging = false
   dragData.value.activeUri = ''

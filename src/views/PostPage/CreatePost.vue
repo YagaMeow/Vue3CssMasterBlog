@@ -46,6 +46,7 @@
     {{ editor.storage.characterCount.words() }} words
   </div>
   <editor-content :editor="editor" />
+  <div class="home" @click="$router.push('/')"></div>
 </template>
 
 <script lang="ts" setup>
@@ -360,6 +361,44 @@ const props = defineProps({
 
   p.is-empty::before {
     content: attr(data-placeholder) !important;
+  }
+}
+
+.home {
+  width: 50px;
+  height: 50px;
+  bottom: 20px;
+  left: 20px;
+  background-color: #fafafa;
+  position: fixed;
+  border-radius: 20%;
+  box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  background-image: url('@/assets/svg/home.svg');
+  background-size: 50%;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  &:hover {
+    animation: shake 0.5s ease-in-out;
+  }
+}
+
+@keyframes shake {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-10deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }
+  75% {
+    transform: rotate(-5deg);
+  }
+  100% {
+    transform: rotate(0deg);
   }
 }
 </style>

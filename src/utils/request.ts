@@ -32,6 +32,11 @@ service.interceptors.response.use(
       const errMessage = error.response.data.message || '请求错误'
       return Promise.reject(new Error(errMessage))
     }
+    if (error.response && error.response.status === 401) {
+      const userStore = useUserStore()
+      userStore.Logout()
+      return Promise.reject(new Error('未授权，请登录'))
+    }
     return Promise.reject(error)
   },
 )

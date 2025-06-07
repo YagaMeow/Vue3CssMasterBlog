@@ -11,3 +11,10 @@ export const login = (data: LoginData) => {
     data: data,
   })
 }
+
+export const getAuth = () => {
+  return service({
+    url: '/api/auth',
+    method: 'POST',
+  })
+}
