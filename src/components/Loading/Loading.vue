@@ -71,7 +71,7 @@ defineExpose({
 
 #loading.run {
   background-color: transparent;
-  transition: background-color 3s ease;
+  transition: background-color 1s ease;
 }
 
 .wavebox {
@@ -81,12 +81,12 @@ defineExpose({
   width: 100%;
   height: 100%;
   background: #029eeb;
-  transition: transform 1s cubic-bezier(0.03, 0.1, 0.25, 1.02);
+  transition: transform 0.7s cubic-bezier(0.03, 0.1, 0.25, 1.02);
 }
 
 #loading.run .wavebox {
   transform: translateY(110%);
-  transition: transform 1s cubic-bezier(0.03, 0.1, 0.25, 1.02);
+  transition: transform 0.7s cubic-bezier(0.03, 0.1, 0.25, 1.02);
 }
 
 .waves {

@@ -12,112 +12,112 @@
         <img class="back-icon" src="@/assets/svg/back.svg" alt="" />返回
       </div>
     </div>
-    <div class="tools control-group" v-if="editable">
-      <div class="button-group">
-        <!-- <button @click="editor.setEditable(false)">ban</button> -->
-        <button
-          @click="editor.chain().focus().toggleBold().run()"
-          :disabled="!editor.can().chain().focus().toggleBold().run()"
-          :class="{ 'is-active': editor.isActive('bold') }"
-        >
-          <svg-icon iconClass="bold"></svg-icon>
-        </button>
-        <button
-          @click="editor.chain().focus().toggleItalic().run()"
-          :disabled="!editor.can().chain().focus().toggleItalic().run()"
-          :class="{ 'is-active': editor.isActive('italic') }"
-        >
-          <svg-icon iconClass="italic"></svg-icon>
-        </button>
-        <button
-          @click="editor.chain().focus().toggleStrike().run()"
-          :disabled="!editor.can().chain().focus().toggleStrike().run()"
-          :class="{ 'is-active': editor.isActive('strike') }"
-        >
-          <svg-icon iconClass="strikethrough"></svg-icon>
-        </button>
-        <button
-          @click="editor.chain().focus().toggleCode().run()"
-          :disabled="!editor.can().chain().focus().toggleCode().run()"
-          :class="{ 'is-active': editor.isActive('code') }"
-        >
-          <svg-icon iconClass="code"></svg-icon>
-        </button>
-        <!-- <button @click="editor.chain().focus().unsetAllMarks().run()">Clear marks</button>
-        <button @click="editor.chain().focus().clearNodes().run()">Clear nodes</button> -->
-        <button
-          @click="editor.chain().focus().setParagraph().run()"
-          :class="{ 'is-active': editor.isActive('paragraph') }"
-        >
-          <svg-icon iconClass="paragraph"></svg-icon>
-        </button>
-        <button
-          @click="editor.chain().focus().toggleBulletList().run()"
-          :class="{ 'is-active': editor.isActive('bulletList') }"
-          id="bullet-list"
-        >
-          <svg-icon iconClass="unordered-list"></svg-icon>
-        </button>
-        <button
-          @click="editor.chain().focus().toggleOrderedList().run()"
-          :class="{ 'is-active': editor.isActive('orderedList') }"
-        >
-          <svg-icon iconClass="ordered-list"></svg-icon>
-        </button>
-        <button
-          @click="editor.chain().focus().toggleCodeBlock().run()"
-          :class="{ 'is-active': editor.isActive('codeBlock') }"
-        >
-          <svg-icon iconClass="code"></svg-icon>
-        </button>
-        <button
-          @click="editor.chain().focus().toggleBlockquote().run()"
-          :class="{ 'is-active': editor.isActive('blockquote') }"
-        >
-          <svg-icon iconClass="quote"></svg-icon>
-        </button>
-        <button @click="editor.chain().focus().setHorizontalRule().run()">
-          <svg-icon iconClass="separator"></svg-icon>
-        </button>
-        <button @click="editor.chain().focus().setHardBreak().run()">
-          <svg-icon iconClass="text-wrap"></svg-icon>
-        </button>
-        <button
-          @click="editor.chain().focus().undo().run()"
-          :disabled="!editor.can().chain().focus().undo().run()"
-          id="undo"
-        >
-          <svg-icon iconClass="undo"></svg-icon>
-        </button>
-        <button
-          @click="editor.chain().focus().redo().run()"
-          :disabled="!editor.can().chain().focus().redo().run()"
-          id="redo"
-        >
-          <svg-icon iconClass="redo"></svg-icon>
-        </button>
-        <button
-          @click="editor.chain().focus().setColor('#958DF1').run()"
-          :class="{ 'is-active': editor.isActive('textStyle', { color: '#958DF1' }) }"
-        >
-          <svg-icon iconClass="font-color"></svg-icon>
-        </button>
-        <button @click="onImageUploadClick">
-          <svg-icon iconClass="image"></svg-icon>
-        </button>
-        <input
-          id="imageInput"
-          type="file"
-          accept="image/*"
-          style="display: none"
-          @change="onImageSelected"
-        />
-      </div>
-    </div>
 
     <drag-handle :editor="editor">
       <div class="custom-drag-handle" />
     </drag-handle>
+  </div>
+  <div class="tools control-group" v-if="editable">
+    <div class="button-group">
+      <!-- <button @click="editor.setEditable(false)">ban</button> -->
+      <button
+        @click="editor.chain().focus().toggleBold().run()"
+        :disabled="!editor.can().chain().focus().toggleBold().run()"
+        :class="{ 'is-active': editor.isActive('bold') }"
+      >
+        <svg-icon iconClass="bold"></svg-icon>
+      </button>
+      <button
+        @click="editor.chain().focus().toggleItalic().run()"
+        :disabled="!editor.can().chain().focus().toggleItalic().run()"
+        :class="{ 'is-active': editor.isActive('italic') }"
+      >
+        <svg-icon iconClass="italic"></svg-icon>
+      </button>
+      <button
+        @click="editor.chain().focus().toggleStrike().run()"
+        :disabled="!editor.can().chain().focus().toggleStrike().run()"
+        :class="{ 'is-active': editor.isActive('strike') }"
+      >
+        <svg-icon iconClass="strikethrough"></svg-icon>
+      </button>
+      <button
+        @click="editor.chain().focus().toggleCode().run()"
+        :disabled="!editor.can().chain().focus().toggleCode().run()"
+        :class="{ 'is-active': editor.isActive('code') }"
+      >
+        <svg-icon iconClass="code"></svg-icon>
+      </button>
+      <!-- <button @click="editor.chain().focus().unsetAllMarks().run()">Clear marks</button>
+        <button @click="editor.chain().focus().clearNodes().run()">Clear nodes</button> -->
+      <button
+        @click="editor.chain().focus().setParagraph().run()"
+        :class="{ 'is-active': editor.isActive('paragraph') }"
+      >
+        <svg-icon iconClass="paragraph"></svg-icon>
+      </button>
+      <button
+        @click="editor.chain().focus().toggleBulletList().run()"
+        :class="{ 'is-active': editor.isActive('bulletList') }"
+        id="bullet-list"
+      >
+        <svg-icon iconClass="unordered-list"></svg-icon>
+      </button>
+      <button
+        @click="editor.chain().focus().toggleOrderedList().run()"
+        :class="{ 'is-active': editor.isActive('orderedList') }"
+      >
+        <svg-icon iconClass="ordered-list"></svg-icon>
+      </button>
+      <button
+        @click="editor.chain().focus().toggleCodeBlock().run()"
+        :class="{ 'is-active': editor.isActive('codeBlock') }"
+      >
+        <svg-icon iconClass="code"></svg-icon>
+      </button>
+      <button
+        @click="editor.chain().focus().toggleBlockquote().run()"
+        :class="{ 'is-active': editor.isActive('blockquote') }"
+      >
+        <svg-icon iconClass="quote"></svg-icon>
+      </button>
+      <button @click="editor.chain().focus().setHorizontalRule().run()">
+        <svg-icon iconClass="separator"></svg-icon>
+      </button>
+      <button @click="editor.chain().focus().setHardBreak().run()">
+        <svg-icon iconClass="text-wrap"></svg-icon>
+      </button>
+      <button
+        @click="editor.chain().focus().undo().run()"
+        :disabled="!editor.can().chain().focus().undo().run()"
+        id="undo"
+      >
+        <svg-icon iconClass="undo"></svg-icon>
+      </button>
+      <button
+        @click="editor.chain().focus().redo().run()"
+        :disabled="!editor.can().chain().focus().redo().run()"
+        id="redo"
+      >
+        <svg-icon iconClass="redo"></svg-icon>
+      </button>
+      <button
+        @click="editor.chain().focus().setColor('#958DF1').run()"
+        :class="{ 'is-active': editor.isActive('textStyle', { color: '#958DF1' }) }"
+      >
+        <svg-icon iconClass="font-color"></svg-icon>
+      </button>
+      <button @click="onImageUploadClick">
+        <svg-icon iconClass="image"></svg-icon>
+      </button>
+      <input
+        id="imageInput"
+        type="file"
+        accept="image/*"
+        style="display: none"
+        @change="onImageSelected"
+      />
+    </div>
   </div>
   <div
     :class="{
@@ -144,7 +144,7 @@
     <br />
     {{ editor.storage.characterCount.words() }} words
   </div>
-  <editor-content :editor="editor" />
+  <editor-content :editor="editor" style="padding-bottom: 20vh" />
   <div class="home" @click="$router.push('/')"></div>
 </template>
 
@@ -195,7 +195,7 @@ lowlight.register('css', css)
 lowlight.register('js', js)
 lowlight.register('ts', ts)
 
-const limit = 1000 // 字数限制
+const limit = 200000 // 字数限制
 
 const editor = new Editor({
   extensions: [
@@ -354,6 +354,9 @@ function onImageSelected(event: Event) {
   justify-content: center;
   align-items: center;
   background-color: #444 !important;
+  position: sticky !important;
+  top: 0;
+  z-index: 999;
 }
 
 .control-group {
