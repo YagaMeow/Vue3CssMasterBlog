@@ -36,9 +36,10 @@ function formatDate(date: string): string {
   max-width: 400px;
   min-width: 350px;
   height: 300px;
-  background-color: #fff;
+  background-color: rgba(0, 0, 0, 0.2);
   border-radius: 20px;
-  box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(5px);
+  animation: 1s rect;
 }
 
 .post-container .post-title {
@@ -55,5 +56,17 @@ function formatDate(date: string): string {
 .post-footer .post-footer .date {
   font-size: 0.8rem;
   margin-left: 20px;
+}
+
+@keyframes rect {
+  0% {
+    clip-path: inset(0 100% 0 0 round 5%);
+    transform: translateX(-5rem);
+    animation-timing-function: cubic-bezier(0.7, 0, 0.3, 1);
+  }
+  100% {
+    clip-path: inset(0 0 0 0 round 5%);
+    transform: translateX(0);
+  }
 }
 </style>
