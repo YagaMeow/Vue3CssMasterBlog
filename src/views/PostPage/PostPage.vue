@@ -203,7 +203,7 @@ const editor = new Editor({
     Text,
     Dropcursor,
     Color.configure({ types: [TextStyle.name, ListItem.name] }),
-    TextStyle.configure({ types: [ListItem.name] }),
+    TextStyle,
     Highlight,
     Typography,
     Placeholder.configure({
