@@ -1,3 +1,67 @@
+<template>
+  <div class="posts-container">
+    <div class="create" @click="handleCreate"></div>
+    <div class="bin" :class="dragData.isDragging === true ? 'active' : 'inactive'"></div>
+
+    <!-- 环形进度条 -->
+    <div
+      v-if="longPress.active"
+      class="progress-ring"
+      :style="{
+        left: `${longPress.startX}px`,
+        top: `${longPress.startY}px`,
+      }"
+    >
+      <svg width="50" height="50">
+        <circle
+          cx="25"
+          cy="25"
+          r="20"
+          stroke="#409eff"
+          stroke-width="3"
+          fill="transparent"
+          stroke-dasharray="125.6"
+          :stroke-dashoffset="125.6 - (125.6 * longPress.progress) / 100"
+          transform="rotate(-90 25 25)"
+        />
+      </svg>
+    </div>
+
+    <Post
+      v-for="(item, index) in postList"
+      :key="index"
+      :data="item"
+      :class="{
+        shaking: longPress.active && longPress.targetUri === item.uri,
+        dragging: dragData.activeUri === item.uri,
+      }"
+      draggable="true"
+      @dragstart="dragStart"
+      @dragend="dragEnd"
+      @drag="onDrag"
+      :uri="item.uri"
+    ></Post>
+    <!-- <Post
+      v-for="(item, index) in postList"
+      :key="index"
+      :data="item"
+      :class="{
+        shaking: longPress.active && longPress.targetUri === item.uri,
+        dragging: dragData.activeUri === item.uri,
+      }"
+      draggable="true"
+      @mousedown="startLongPress($event, item.uri)"
+      @touchstart="startLongPress($event, item.uri)"
+      @mouseup="cancelLongPress"
+      @touchend="cancelLongPress"
+      @mouseleave="cancelLongPress"
+      @dragstart="dragStart"
+      @dragend="dragEnd"
+      @drag="onDrag"
+      :uri="item.uri"
+    ></Post> -->
+  </div>
+</template>
 <script setup lang="ts">
 defineOptions({
   name: 'PostList',
@@ -177,72 +241,6 @@ onUnmounted(() => {
   }
 })
 </script>
-
-<template>
-  <div class="posts-container">
-    <div class="create" @click="handleCreate"></div>
-    <div class="bin" :class="dragData.isDragging === true ? 'active' : 'inactive'"></div>
-
-    <!-- 环形进度条 -->
-    <div
-      v-if="longPress.active"
-      class="progress-ring"
-      :style="{
-        left: `${longPress.startX}px`,
-        top: `${longPress.startY}px`,
-      }"
-    >
-      <svg width="50" height="50">
-        <circle
-          cx="25"
-          cy="25"
-          r="20"
-          stroke="#409eff"
-          stroke-width="3"
-          fill="transparent"
-          stroke-dasharray="125.6"
-          :stroke-dashoffset="125.6 - (125.6 * longPress.progress) / 100"
-          transform="rotate(-90 25 25)"
-        />
-      </svg>
-    </div>
-
-    <Post
-      v-for="(item, index) in postList"
-      :key="index"
-      :data="item"
-      :class="{
-        shaking: longPress.active && longPress.targetUri === item.uri,
-        dragging: dragData.activeUri === item.uri,
-      }"
-      draggable="true"
-      @dragstart="dragStart"
-      @dragend="dragEnd"
-      @drag="onDrag"
-      :uri="item.uri"
-    ></Post>
-    <!-- <Post
-      v-for="(item, index) in postList"
-      :key="index"
-      :data="item"
-      :class="{
-        shaking: longPress.active && longPress.targetUri === item.uri,
-        dragging: dragData.activeUri === item.uri,
-      }"
-      draggable="true"
-      @mousedown="startLongPress($event, item.uri)"
-      @touchstart="startLongPress($event, item.uri)"
-      @mouseup="cancelLongPress"
-      @touchend="cancelLongPress"
-      @mouseleave="cancelLongPress"
-      @dragstart="dragStart"
-      @dragend="dragEnd"
-      @drag="onDrag"
-      :uri="item.uri"
-    ></Post> -->
-  </div>
-</template>
-
 <style scoped>
 .create,
 .bin {
@@ -296,7 +294,7 @@ onUnmounted(() => {
   padding: 20px 100px;
   width: 100%;
   display: flex;
-  gap: 10px;
+  gap: 30px;
   flex-wrap: wrap;
 }
 
