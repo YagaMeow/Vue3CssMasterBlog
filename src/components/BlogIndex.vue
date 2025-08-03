@@ -3,6 +3,7 @@
     <BackGround></BackGround>>
     <Nav style="z-index: 999"></Nav>
     <Posts></Posts>
+    <TitleMenu></TitleMenu>
   </div>
 </template>
 <script setup lang="ts">
@@ -10,6 +11,7 @@ import Nav from './Nav/Nav.vue'
 import Posts from './Posts/PostList.vue'
 import BackGround from './background.vue'
 import Lenis from 'lenis'
+import TitleMenu from './TitleMenu.vue'
 const lenis = new Lenis({})
 function raf(time: number) {
   lenis.raf(time)
