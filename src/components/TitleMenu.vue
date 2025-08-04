@@ -1,6 +1,6 @@
 <template>
-  <div class="title_menu">
-    <div class="title_menu_button">
+  <div class="title_menu" ref="container" v-show="(titleMenu.if_visible as Ref).value">
+    <div class="title_menu_button" @click="appStore.menus_to_diagram()">
       <div class="live">live now</div>
       2025
     </div>
@@ -10,7 +10,61 @@
     <div class="title_menu_button">2021</div>
   </div>
 </template>
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useAppStore } from '@/pinia/index'
+import { onMounted, ref } from 'vue'
+import type { Ref } from 'vue'
+import gsap from 'gsap'
+const appStore = useAppStore()
+interface BaseTitleMenu {
+  animator: unknown
+  init: () => void
+}
+type TitleMenuType = BaseTitleMenu & {
+  [key: string]: unknown
+}
+const container = ref<HTMLElement | null>(null)
+
+const titleMenu: TitleMenuType = {
+  animator: null,
+  if_visible: ref(true),
+  init() {
+    titleMenu.animator = gsap.timeline().fromTo(
+      container.value,
+      {
+        opacity: 0,
+      },
+      {
+        opacity: 1,
+        duration: 1,
+        onComplete: () => {
+          console.log('complete')
+        },
+      },
+    )
+  },
+  hide(immediate: () => void, next: () => void) {
+    if ((titleMenu.animator as gsap.core.Timeline).isActive()) {
+      return
+    }
+    if (immediate) immediate()
+    titleMenu.animator = gsap.timeline().to(container.value, {
+      opacity: 0,
+      duration: 1,
+      ease: 'power3.out',
+      onComplete: () => {
+        ;(titleMenu.if_visible as Ref).value = false
+        if (next) next()
+      },
+    })
+  },
+}
+appStore.hide_menus = (titleMenu.hide as () => void).bind(titleMenu)
+onMounted(() => {
+  titleMenu.init()
+  console.log(container.value)
+})
+</script>
 <style lang="scss" scoped>
 .title_menu {
   --scale: 1;
@@ -29,7 +83,7 @@
     height: calc(var(--scale) * 8rem);
 
     margin: 3px 0;
-    transition: all ease-out 0.1s;
+    transition: height cubic-bezier(0, -0.5, 1, 1.46) 0.1s;
     background-color: #616161;
     border-radius: 10px;
     box-shadow: inset 1px 1px #fff;
@@ -47,12 +101,12 @@
 
     &:hover {
       height: calc(var(--scale) * 16rem);
-      transition: all ease-in 0.2s;
+      transition: height cubic-bezier(0, -0.5, 1, 1.46) 0.2s;
       background-color: rgba(0, 0, 0, 0.1);
       &:nth-child(1) {
         &::after {
           opacity: 100;
-          transition: all ease-in 0.5s;
+          transition: all ease-in-out 0.5s;
           animation: scroll 5s linear infinite;
         }
       }

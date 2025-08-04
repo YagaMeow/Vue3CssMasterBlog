@@ -2,37 +2,16 @@
   <div class="posts-container">
     <div class="create" @click="handleCreate"></div>
     <div class="bin" :class="dragData.isDragging === true ? 'active' : 'inactive'"></div>
-
-    <!-- 环形进度条 -->
-    <div
-      v-if="longPress.active"
-      class="progress-ring"
-      :style="{
-        left: `${longPress.startX}px`,
-        top: `${longPress.startY}px`,
+    <Post
+      :data="{
+        title: 'Test',
       }"
-    >
-      <svg width="50" height="50">
-        <circle
-          cx="25"
-          cy="25"
-          r="20"
-          stroke="#409eff"
-          stroke-width="3"
-          fill="transparent"
-          stroke-dasharray="125.6"
-          :stroke-dashoffset="125.6 - (125.6 * longPress.progress) / 100"
-          transform="rotate(-90 25 25)"
-        />
-      </svg>
-    </div>
-
+    ></Post>
     <Post
       v-for="(item, index) in postList"
       :key="index"
       :data="item"
       :class="{
-        shaking: longPress.active && longPress.targetUri === item.uri,
         dragging: dragData.activeUri === item.uri,
       }"
       draggable="true"
@@ -101,67 +80,10 @@ const dragData = ref({
   activeUri: '', // 当前激活的文章URI
 })
 
-// 长按计时器
-const longPress = ref({
-  timer: null as number | null,
-  progress: 0, // 进度百分比 (0-100)
-  active: false, // 是否正在长按
-  startX: 0,
-  startY: 0,
-  targetUri: '', // 当前长按的目标URI
-})
-
-// 开始长按检测
-function startLongPress(event: MouseEvent | TouchEvent, uri: string) {
-  // 防止默认行为
-  event.preventDefault()
-
-  // 清理可能存在的计时器
-  if (longPress.value.timer) {
-    clearInterval(longPress.value.timer)
-  }
-
-  // 更新长按状态
-  longPress.value.active = true
-  longPress.value.targetUri = uri
-  longPress.value.progress = 0
-
-  // 记录起始位置（用于定位进度条）
-  if (event instanceof MouseEvent) {
-    longPress.value.startX = event.clientX
-    longPress.value.startY = event.clientY
-  } else if (event.touches && event.touches[0]) {
-    longPress.value.startX = event.touches[0].clientX
-    longPress.value.startY = event.touches[0].clientY
-  }
-
-  // 启动进度计时器
-  longPress.value.timer = window.setInterval(() => {
-    longPress.value.progress += 5
-    if (longPress.value.progress >= 100) {
-      // 长按完成，开始拖拽
-      clearInterval(longPress.value.timer as number)
-      longPress.value.timer = null
-      startDrag(uri)
-    }
-  }, 50)
-}
-
-// 取消长按
-function cancelLongPress() {
-  if (longPress.value.timer) {
-    clearInterval(longPress.value.timer)
-    longPress.value.timer = null
-  }
-  longPress.value.active = false
-  longPress.value.progress = 0
-}
-
 // 开始拖拽
 function startDrag(uri: string) {
   dragData.value.isDragging = true
   dragData.value.activeUri = uri
-  longPress.value.active = false
 }
 
 // 初始化拖拽事件
@@ -235,11 +157,7 @@ function handleDelete(uri: string) {
 }
 
 // 清理计时器
-onUnmounted(() => {
-  if (longPress.value.timer) {
-    clearInterval(longPress.value.timer)
-  }
-})
+onUnmounted(() => {})
 </script>
 <style scoped>
 .create,

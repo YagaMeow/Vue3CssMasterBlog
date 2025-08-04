@@ -31,4 +31,16 @@ export const useAppStore = defineStore('app', () => {
       show_menus.value?.()
     })
   }
+  return {
+    hide_loading,
+    show_menus,
+    hide_menus,
+    show_diagram,
+    hide_diagram,
+    show_post,
+    hide_post,
+    first_show,
+    menus_to_diagram,
+    diagram_to_menus,
+  }
 })
