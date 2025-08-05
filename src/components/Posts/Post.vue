@@ -1,5 +1,5 @@
 <template>
-  <div class="post post-container" ref="p">
+  <div class="post post-container" ref="p" v-show="post.if_visible.value">
     <h2 class="post-title">
       <RouterLink :to="`/posts/${data.uri}`" class="post-link">
         <span class="title">{{ data.title }}</span>
@@ -12,7 +12,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import { range } from '@/utils/utils'
 
@@ -32,13 +32,20 @@ function formatDate(date: string): string {
 }
 
 const p = ref<HTMLElement | null>(null)
+const observer = new MutationObserver((mutations) => {
+  mutations.forEach((mutations) => {
+    if (mutations.attributeName === 'class') {
+      if (p.value?.classList.contains('glitch')) post.glitch()
+    }
+  })
+})
 
 const post = {
   post: null as HTMLElement | null,
   timer: null as number | null,
+  if_visible: ref(false),
   init: () => {
     post.post = p.value
-    post.glitch()
   },
   glitch: () => {
     setTimeout(
@@ -56,6 +63,8 @@ const post = {
           ;(post.post as HTMLElement).style.left = `${left}%`
           ;(post.post as HTMLElement).style.top = `${top}%`
         }, 30)
+        post.if_visible.value = true
+        ;(post.post as HTMLElement).style.opacity = '1'
         setTimeout(post.reset, 800)
       },
       range(0, 500),
@@ -63,23 +72,31 @@ const post = {
   },
   reset: () => {
     ;(post.post as HTMLElement).style.clipPath = ``
+    ;(post.post as HTMLElement).classList.remove('glitch')
     clearInterval(post.timer as number)
   },
 }
 
 onMounted(() => {
   post.init()
+  observer.observe(p.value as HTMLElement, {
+    attributes: true,
+    attributeFilter: ['class'],
+  })
+})
+
+onUnmounted(() => {
+  observer.disconnect()
 })
 </script>
 <style scoped>
 .post-container {
   display: flex;
   flex-direction: column;
-  max-width: 400px;
-  min-width: 350px;
-  height: 300px;
-  border-radius: 20px;
-  backdrop-filter: blur(5px);
+  width: 30rem;
+  height: 30rem;
+  border-radius: 1rem;
+  backdrop-filter: blur(1rem);
   background-color: #fff;
   /* animation: 1s rect; */
   &::after,
@@ -90,14 +107,14 @@ onMounted(() => {
     position: absolute;
     left: 0;
     top: 0;
-    border-radius: 20px;
+    border-radius: 1rem;
   }
-  &::after {
-    box-shadow: 10px 0 0 red;
+  &.giltch::after {
+    box-shadow: 1rem 0 0 red;
   }
 
-  &::before {
-    box-shadow: -10px 0 0 cyan;
+  &.glitch::before {
+    box-shadow: -1rem 0 0 cyan;
     background-color: rgba(0, 0, 0, 0.8);
     mix-blend-mode: lighten;
     z-index: 2;
@@ -105,9 +122,14 @@ onMounted(() => {
   display: none;
 }
 
-.post-container .post-title {
+span.title {
   display: flex;
+  font-size: 3rem;
   padding: 20px 20px;
+}
+
+span.date {
+  font-size: 2rem;
 }
 
 .post-footer {
@@ -117,7 +139,7 @@ onMounted(() => {
 }
 
 .post-footer .post-footer .date {
-  font-size: 0.8rem;
+  font-size: 2rem;
   margin-left: 20px;
 }
 </style>

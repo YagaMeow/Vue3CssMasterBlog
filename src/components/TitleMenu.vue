@@ -16,50 +16,52 @@ import { onMounted, ref } from 'vue'
 import type { Ref } from 'vue'
 import gsap from 'gsap'
 const appStore = useAppStore()
-interface BaseTitleMenu {
-  animator: unknown
-  init: () => void
-}
-type TitleMenuType = BaseTitleMenu & {
-  [key: string]: unknown
-}
 const container = ref<HTMLElement | null>(null)
 
-const titleMenu: TitleMenuType = {
-  animator: null,
+const titleMenu = {
+  animator: null as null | gsap.core.Timeline,
   if_visible: ref(true),
   init() {
-    titleMenu.animator = gsap.timeline().fromTo(
+    this.animator = gsap.timeline().fromTo(
       container.value,
       {
         opacity: 0,
       },
       {
         opacity: 1,
-        duration: 1,
+        duration: 0.5,
         onComplete: () => {
           console.log('complete')
         },
       },
     )
   },
+  show() {
+    if (this.animator?.isActive()) return
+    this.if_visible.value = true
+    this.animator = gsap.timeline().to(container.value, {
+      opacity: 1,
+      duration: 0.5,
+    })
+  },
   hide(immediate: () => void, next: () => void) {
-    if ((titleMenu.animator as gsap.core.Timeline).isActive()) {
+    if ((this.animator as gsap.core.Timeline).isActive()) {
       return
     }
     if (immediate) immediate()
-    titleMenu.animator = gsap.timeline().to(container.value, {
+    this.animator = gsap.timeline().to(container.value, {
       opacity: 0,
-      duration: 1,
+      duration: 0.5,
       ease: 'power3.out',
       onComplete: () => {
-        ;(titleMenu.if_visible as Ref).value = false
+        ;(this.if_visible as Ref).value = false
         if (next) next()
       },
     })
   },
 }
-appStore.hide_menus = (titleMenu.hide as () => void).bind(titleMenu)
+appStore.show_menus = titleMenu.show.bind(titleMenu)
+appStore.hide_menus = titleMenu.hide.bind(titleMenu)
 onMounted(() => {
   titleMenu.init()
   console.log(container.value)
@@ -73,35 +75,36 @@ onMounted(() => {
   top: 0;
   width: 100%;
   height: 100vh;
+  opacity: 0;
 
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   .title_menu_button {
-    width: calc(var(--scale) * 30rem);
-    height: calc(var(--scale) * 8rem);
+    width: calc(var(--scale) * 60rem);
+    height: calc(var(--scale) * 16rem);
 
     margin: 3px 0;
-    transition: height cubic-bezier(0, -0.5, 1, 1.46) 0.1s;
+    transition: height cubic-bezier(0, 0, 1, 1.46) 0.1s;
     background-color: #616161;
-    border-radius: 10px;
+    border-radius: 1rem;
     box-shadow: inset 1px 1px #fff;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 3rem;
+    font-size: 5rem;
     font-weight: bolder;
     color: #fff;
-    letter-spacing: 0.2rem;
+    letter-spacing: 0.5rem;
     user-select: none;
     cursor: pointer;
     flex-direction: column;
     position: relative;
 
     &:hover {
-      height: calc(var(--scale) * 16rem);
-      transition: height cubic-bezier(0, -0.5, 1, 1.46) 0.2s;
+      height: calc(var(--scale) * 32rem);
+      transition: height cubic-bezier(0, 0, 1, 1.46) 0.2s;
       background-color: rgba(0, 0, 0, 0.1);
       &:nth-child(1) {
         &::after {
@@ -112,7 +115,8 @@ onMounted(() => {
       }
     }
     .live {
-      font-size: 1rem;
+      font-size: 2rem;
+      letter-spacing: 0.2rem;
       position: absolute;
       top: 10%;
       padding-right: 5px;

@@ -84,8 +84,8 @@ onMounted(() => background.init())
 .bg {
   --scale: 1;
   .bg-ball {
-    width: 10rem;
-    height: 10rem;
+    width: 30rem;
+    height: 30rem;
     background-color: #000;
     position: absolute;
     border-radius: 50%;
@@ -93,7 +93,7 @@ onMounted(() => background.init())
     left: calc(100vw * var(--x));
     top: calc(100vh * var(--y));
     opacity: var(--o);
-    filter: blur(10px);
+    filter: blur(1rem);
   }
 }
 </style>

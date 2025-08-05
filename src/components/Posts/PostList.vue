@@ -1,12 +1,11 @@
 <template>
-  <div class="posts-container">
-    <div class="create" @click="handleCreate"></div>
-    <div class="bin" :class="dragData.isDragging === true ? 'active' : 'inactive'"></div>
-    <Post
-      :data="{
-        title: 'Test',
-      }"
-    ></Post>
+  <div class="posts-container" v-show="diagram.if_visible.value">
+    <div class="create" @click="handleCreate" style="display: none"></div>
+    <div
+      class="bin"
+      :class="dragData.isDragging === true ? 'active' : 'inactive'"
+      style="display: none"
+    ></div>
     <Post
       v-for="(item, index) in postList"
       :key="index"
@@ -20,55 +19,81 @@
       @drag="onDrag"
       :uri="item.uri"
     ></Post>
-    <!-- <Post
-      v-for="(item, index) in postList"
-      :key="index"
-      :data="item"
-      :class="{
-        shaking: longPress.active && longPress.targetUri === item.uri,
-        dragging: dragData.activeUri === item.uri,
-      }"
-      draggable="true"
-      @mousedown="startLongPress($event, item.uri)"
-      @touchstart="startLongPress($event, item.uri)"
-      @mouseup="cancelLongPress"
-      @touchend="cancelLongPress"
-      @mouseleave="cancelLongPress"
-      @dragstart="dragStart"
-      @dragend="dragEnd"
-      @drag="onDrag"
-      :uri="item.uri"
-    ></Post> -->
   </div>
 </template>
 <script setup lang="ts">
 defineOptions({
   name: 'PostList',
 })
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import Post from './Post.vue'
 import { ArticleAPI } from '@/api/api'
 import { ElNotification } from 'element-plus'
+import { useAppStore } from '@/pinia'
+import gsap from 'gsap'
 
 interface PostItem {
   uri: string
   [key: string]: string | number | boolean | undefined
 }
 
+const appStore = useAppStore()
+
 const postList = ref<PostItem[]>([])
 const router = useRouter()
+const diagram = {
+  if_visible: ref(false),
+  animator: null as gsap.core.Timeline | null,
+  container: null as HTMLElement | null,
+  posts: null as NodeListOf<HTMLElement> | null,
+  init: () => {
+    diagram.container = document.querySelector('.posts-container')
+    console.log(diagram.posts)
+  },
+  async show() {
+    if (this.animator?.isActive()) return
+    await ArticleAPI.getList({ page: 1, limit: 10 })
+      .then((response) => {
+        postList.value = response.data
+        console.log(postList.value)
+      })
+      .catch((error) => {
+        console.error('Failed to fetch posts:', error)
+      })
+    this.if_visible.value = true
+    this.posts = document.querySelectorAll('.post')
+    this.posts?.forEach((p) => {
+      p.classList.add('glitch')
+    })
+  },
+  hide: (immediate: () => void, next: () => void) => {
+    if (diagram.animator?.isActive()) {
+      return
+    }
+    if (immediate) immediate()
+    if (diagram.posts) {
+      diagram.animator = gsap.timeline().to(diagram.posts, {
+        opacity: 0,
+        duration: 0.5,
+        ease: 'power3.out',
+        onComplete: () => {
+          diagram.if_visible.value = false
+          if (next) next()
+        },
+      })
+    } else if (next) next()
+  },
+}
+
+appStore.show_diagram = diagram.show.bind(diagram)
+appStore.hide_diagram = diagram.hide.bind(diagram)
+
+onMounted(() => {
+  diagram.init()
+})
 
 // 获取文章
-ArticleAPI.getList({ page: 1, limit: 10 })
-  .then((response) => {
-    postList.value = response.data
-    console.log(postList.value)
-  })
-  .catch((error) => {
-    console.error('Failed to fetch posts:', error)
-  })
-
 const handleCreate = () => {
   router.push('/posts/new')
 }
@@ -106,10 +131,10 @@ function dragEnd(event: DragEvent) {
   const x = rect.left + rect.width
   const y = rect.top + rect.height
 
-  const bin = document.querySelector('.bin')
-  if (bin && x >= bin?.getBoundingClientRect().left && y >= bin?.getBoundingClientRect().top) {
-    handleDelete(target.getAttribute('uri') || '')
-  }
+  // const bin = document.querySelector('.bin')
+  // if (bin && x >= bin?.getBoundingClientRect().left && y >= bin?.getBoundingClientRect().top) {
+  //   handleDelete(target.getAttribute('uri') || '')
+  // }
   dragData.value.isDragging = false
   dragData.value.activeUri = ''
 }
@@ -155,9 +180,6 @@ function handleDelete(uri: string) {
     postList.value = postList.value.filter((item) => item.uri !== uri)
   })
 }
-
-// 清理计时器
-onUnmounted(() => {})
 </script>
 <style scoped>
 .create,
@@ -214,6 +236,9 @@ onUnmounted(() => {})
   display: flex;
   gap: 30px;
   flex-wrap: wrap;
+  .post {
+    position: absolute;
+  }
 }
 
 .create:hover,

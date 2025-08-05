@@ -3,38 +3,60 @@ import { ref } from 'vue'
 
 export const useAppStore = defineStore('app', () => {
   // 加载页面
-  const hide_loading = ref(null)
+  const hide_loading = ref<((im: () => void, nx: () => void) => void) | null>(null)
   // 标题主菜单
   const show_menus = ref<(() => void) | null>(null)
-  const hide_menus = ref<(() => void) | null>(null)
+  const hide_menus = ref<((im: () => void, nx: () => void) => void) | null>(null)
+  //导航栏
+  const show_nav = ref<(() => void) | null>(null)
+  const hide_nav = ref<((im: () => void, nx: () => void) => void) | null>(null)
   // 文章无限滑动
   const show_diagram = ref<(() => void) | null>(null)
-  const hide_diagram = ref(null)
+  const hide_diagram = ref<((im: () => void, nx: () => void) => void) | null>(null)
   // 文章页面
   const show_post = ref(null)
   const hide_post = ref(null)
 
   function first_show() {
-    ;(hide_loading.value as ((cb: () => void) => void) | null)?.(() => {
-      show_menus.value?.()
-    })
+    hide_loading.value?.(
+      () => {
+        show_menus.value?.()
+      },
+      () => {},
+    )
   }
 
   function menus_to_diagram() {
-    ;(hide_menus.value as ((cb: () => void) => void) | null)?.(() => {
-      show_diagram.value?.()
-    })
+    hide_menus.value?.(
+      () => {
+        show_nav.value?.()
+      },
+      () => {
+        show_diagram.value?.()
+      },
+    )
   }
 
   function diagram_to_menus() {
-    ;(hide_diagram.value as ((cb: () => void) => void) | null)?.(() => {
-      show_menus.value?.()
-    })
+    hide_diagram.value?.(
+      () => {
+        hide_nav.value?.(
+          () => {},
+          () => {},
+        )
+      },
+      () => {
+        console.log('show')
+        show_menus.value?.()
+      },
+    )
   }
   return {
     hide_loading,
     show_menus,
     hide_menus,
+    show_nav,
+    hide_nav,
     show_diagram,
     hide_diagram,
     show_post,

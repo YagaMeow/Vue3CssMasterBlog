@@ -1,6 +1,6 @@
 <template>
   <div class="index-container">
-    <BackGround></BackGround>>
+    <BackGround></BackGround>
     <Nav style="z-index: 999"></Nav>
     <Posts></Posts>
     <TitleMenu></TitleMenu>
@@ -19,7 +19,7 @@ function raf(time: number) {
 }
 requestAnimationFrame(raf)
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .index-container {
   /* background: linear-gradient(110deg, rgba(74, 47, 95, 0.5) 10%, #fff 50%),
     linear-gradient(
