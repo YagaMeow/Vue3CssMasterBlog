@@ -1,21 +1,44 @@
 <template>
   <div class="post post-container" ref="p" v-show="post.if_visible.value">
-    <h2 class="post-title">
-      <RouterLink :to="`/posts/${data.uri}`" class="post-link">
-        <span class="title">{{ data.title }}</span>
-      </RouterLink>
-    </h2>
-    <p class="abstract"></p>
-    <p class="post-footer">
-      <span class="date">{{ formatDate(data.created_at) }}</span>
-    </p>
+    <div class="post-info" ref="info">
+      <div class="myform col">
+        <div class="row">
+          <div class="text">Creator</div>
+          <div class="dot"></div>
+          <div class="text">John Doe</div>
+        </div>
+        <div class="row">
+          <div class="text">Create at</div>
+          <div class="dot"></div>
+          <div class="text">2025/08/05</div>
+        </div>
+      </div>
+      <MyButton>
+        <div id="share">share</div>
+      </MyButton>
+    </div>
+    <div class="post-content">
+      <h2 class="post-title">
+        <RouterLink :to="`/posts/${data.uri}`" class="post-link">
+          <span class="title">{{ data.title }}</span>
+        </RouterLink>
+      </h2>
+      <p class="abstract"></p>
+      <p class="post-footer">
+        <MyButton @click="post.switchInfo" class="icon" ref="i">i</MyButton>
+        <span class="date">{{ formatDate(data.created_at) }}</span>
+      </p>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import { range } from '@/utils/utils'
-
+import MyButton from '@/components/ui/btn.vue'
+import gsap from 'gsap'
+import { fa } from 'element-plus/es/locales.mjs'
+import type { ComponentPublicInstance } from 'vue'
 defineOptions({
   name: 'SinglePost',
 })
@@ -32,6 +55,9 @@ function formatDate(date: string): string {
 }
 
 const p = ref<HTMLElement | null>(null)
+const info = ref<HTMLElement | null>(null)
+
+const i = ref<ComponentPublicInstance | null>(null)
 const observer = new MutationObserver((mutations) => {
   mutations.forEach((mutations) => {
     if (mutations.attributeName === 'class') {
@@ -42,10 +68,16 @@ const observer = new MutationObserver((mutations) => {
 
 const post = {
   post: null as HTMLElement | null,
+  info: null as HTMLElement | null,
+  icon: null as HTMLElement | null,
   timer: null as number | null,
+
   if_visible: ref(false),
+  show_info: ref(false),
   init: () => {
     post.post = p.value
+    post.info = info.value
+    post.icon = i.value ? (i.value.$el as HTMLElement) : null
   },
   glitch: () => {
     setTimeout(
@@ -75,6 +107,31 @@ const post = {
     ;(post.post as HTMLElement).classList.remove('glitch')
     clearInterval(post.timer as number)
   },
+  switchInfo() {
+    if (post.show_info.value === false) {
+      post.show_info.value = true
+      ;(post.icon as HTMLElement).textContent = '×'
+      gsap.timeline().to(post.info, {
+        opacity: 1,
+        duration: 0.5,
+        ease: 'power3.out',
+        onComplete: () => {
+          post.icon?.classList.add('always-show')
+        },
+      })
+    } else {
+      post.show_info.value = false
+      ;(post.icon as HTMLElement).textContent = 'i'
+      gsap.timeline().to(post.info, {
+        opacity: 0,
+        duration: 0.5,
+        ease: 'power3.out',
+        onComplete: () => {
+          post.icon?.classList.remove('always-show')
+        },
+      })
+    }
+  },
 }
 
 onMounted(() => {
@@ -89,18 +146,121 @@ onUnmounted(() => {
   observer.disconnect()
 })
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .post-container {
+  &:hover {
+    z-index: 998;
+    filter: brightness(0.9);
+    .mybutton {
+      opacity: 1 !important;
+      transition: opacity ease-in-out 0.5s;
+    }
+  }
+  cursor: pointer;
+  user-select: none;
   display: flex;
-  flex-direction: column;
-  width: 30rem;
-  height: 30rem;
-  border-radius: 1rem;
+  width: 32rem;
+  height: 32rem;
+  border-radius: 2rem;
   backdrop-filter: blur(1rem);
-  background-color: #fff;
+  background-color: rgba($color: #000, $alpha: 0.8);
+  box-shadow: inset 0.1rem 0.1rem var(--white);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .post-info {
+    opacity: 0;
+    position: absolute;
+    top: 0.9rem;
+    left: 0.9rem;
+    width: 30.2rem;
+    height: 30.2rem;
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 1rem;
+    backdrop-filter: blur(1rem);
+    padding: 1rem;
+    .col {
+      display: flex;
+      flex-direction: column;
+    }
+    .row {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+      margin: 0 1rem;
+    }
+    .myform {
+      .text {
+        font-size: 1.5rem;
+        color: #fff;
+      }
+      .dot {
+        flex: 1 1;
+        border-bottom: dotted 0.2rem #fff;
+      }
+    }
+    margin-top: auto;
+    .mybutton {
+      margin: 1rem;
+      margin-top: auto;
+      margin-left: auto;
+      padding: 0 1rem;
+      transform: translateY(-0.5rem);
+
+      div {
+        display: flex;
+        gap: 0.5rem;
+        color: #fff;
+        font-size: 1.5rem;
+        &#share::after {
+          content: '↗';
+        }
+      }
+    }
+  }
+  .post-content {
+    width: 30rem;
+    height: 30rem;
+    border-radius: 1rem;
+    background-color: rgba($color: #d1d1d1, $alpha: 1);
+    color: #000;
+    display: flex;
+    flex-direction: column;
+    .post-footer {
+      padding: 2rem;
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .date {
+        margin-left: auto;
+        font-size: 2rem;
+      }
+      .mybutton {
+        &:hover {
+          filter: brightness(2);
+        }
+        &.always-show {
+          opacity: 1 !important;
+        }
+        width: 4rem;
+        height: 4rem;
+        color: #fff;
+        opacity: 0;
+        transition: opacity ease-in-out 0.5s;
+        font-size: 2rem;
+      }
+    }
+  }
+  /* outline: 1rem solid rgba(0, 0, 0, 0.4); */
   /* animation: 1s rect; */
   &::after,
   &::before {
+    pointer-events: none;
     content: '';
     width: 100%;
     height: 100%;
@@ -125,21 +285,6 @@ onUnmounted(() => {
 span.title {
   display: flex;
   font-size: 3rem;
-  padding: 20px 20px;
-}
-
-span.date {
-  font-size: 2rem;
-}
-
-.post-footer {
-  padding: 20px;
-  margin-top: auto;
-  margin-left: auto;
-}
-
-.post-footer .post-footer .date {
-  font-size: 2rem;
-  margin-left: 20px;
+  padding: 2rem 2rem;
 }
 </style>

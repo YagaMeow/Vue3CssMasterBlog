@@ -25,7 +25,7 @@
 defineOptions({
   name: 'PostList',
 })
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import Post from './Post.vue'
 import { ArticleAPI } from '@/api/api'
@@ -47,9 +47,34 @@ const diagram = {
   animator: null as gsap.core.Timeline | null,
   container: null as HTMLElement | null,
   posts: null as NodeListOf<HTMLElement> | null,
+  draggable: ref(false),
+  mouse_pos: ref([0, 0]),
+  offset_per: ref([0, 0]),
+  timer: null as null | number,
   init: () => {
     diagram.container = document.querySelector('.posts-container')
-    console.log(diagram.posts)
+    document.addEventListener('mousedown', () => {
+      if (diagram.if_visible.value) diagram.draggable.value = true
+    })
+    document.addEventListener('mouseup', () => {
+      diagram.draggable.value = false
+      diagram.reset()
+    })
+    document.addEventListener('mousemove', (e) => {
+      if (!diagram.draggable.value) return
+      if (diagram.mouse_pos.value[0] === 0 || diagram.mouse_pos.value[1] === 0) {
+        diagram.mouse_pos.value = [e.x, e.y]
+        return
+      }
+      console.log(diagram.timer)
+      if (diagram.timer) return
+      diagram.timer = setTimeout(() => {
+        diagram.timer = 0
+      }, 100)
+      if (diagram.mouse_pos.value[0] !== 0 || diagram.mouse_pos.value[1] !== 0)
+        diagram.move(e.x, e.y)
+      diagram.mouse_pos.value = [e.x, e.y]
+    })
   },
   async show() {
     if (this.animator?.isActive()) return
@@ -84,6 +109,23 @@ const diagram = {
       })
     } else if (next) next()
   },
+  move(x: number, y: number) {
+    const offet_x = (x - diagram.mouse_pos.value[0]) / document.body.offsetWidth
+    const offet_y = (y - diagram.mouse_pos.value[1]) / document.body.offsetHeight
+    diagram.offset_per.value[0] = offet_x * 100
+    diagram.offset_per.value[1] = offet_y * 100
+    // if (diagram.offset_per.value[0]) console.log(diagram.offset_per.value)
+    diagram.posts?.forEach((p) => {
+      gsap.to(p, {
+        left: parseFloat(p.style.left) + diagram.offset_per.value[0] * 2 + '%',
+        top: parseFloat(p.style.top) + diagram.offset_per.value[1] * 2 + '%',
+        duration: 0.5,
+      })
+    })
+  },
+  reset() {
+    this.mouse_pos.value = [0, 0]
+  },
 }
 
 appStore.show_diagram = diagram.show.bind(diagram)
@@ -91,6 +133,12 @@ appStore.hide_diagram = diagram.hide.bind(diagram)
 
 onMounted(() => {
   diagram.init()
+})
+
+onUnmounted(() => {
+  document.removeEventListener('mousedown', diagram.init)
+  document.removeEventListener('mouseup', diagram.init)
+  document.removeEventListener('mousemove', diagram.init)
 })
 
 // 获取文章
@@ -181,7 +229,15 @@ function handleDelete(uri: string) {
   })
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
+.posts-container {
+  --scale: 1;
+  cursor: grab;
+  &:active {
+    cursor: grabbing;
+  }
+}
+
 .create,
 .bin {
   width: 50px;

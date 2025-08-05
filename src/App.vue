@@ -1,5 +1,5 @@
 <template>
-  <Loading ref="loading" :check="check_loading"></Loading>
+  <!-- <Loading ref="loading" :check="check_loading"></Loading> -->
   <RouterView></RouterView>
 </template>
 <script setup lang="ts">
@@ -26,11 +26,11 @@ function check_loading() {
 }
 
 onMounted(() => {
-  const container = document.querySelector('.index-container')
-  router.beforeEach((to, from, next) => {
-    loading.value?._in(next)
-  })
-  check_loading()
+  // const container = document.querySelector('.index-container')
+  // router.beforeEach((to, from, next) => {
+  //   loading.value?._in(next)
+  // })
+  // check_loading()
 })
 </script>
 <style scoped></style>

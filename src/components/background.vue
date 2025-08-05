@@ -82,6 +82,8 @@ onMounted(() => background.init())
 </script>
 <style lang="scss" scoped>
 .bg {
+  user-select: none;
+  pointer-events: none;
   --scale: 1;
   .bg-ball {
     width: 30rem;

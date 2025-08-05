@@ -14,11 +14,16 @@ defineOptions({
   cursor: pointer;
   user-select: none;
   height: calc(var(--scale) * 4rem);
-  border-radius: 0.5rem;
-  box-shadow: inset 1px 1px var(--white);
-  background-color: var(--grey);
+  border-radius: 1rem;
+  box-shadow: inset 0.1rem 0.1rem var(--white);
+  background-color: rgba($color: #000, $alpha: 0.4);
+  // opacity: 0.7;
+  backdrop-filter: blur(1rem);
   display: flex;
   justify-content: center;
   align-items: center;
+  &:hover {
+    filter: brightness(2);
+  }
 }
 </style>
