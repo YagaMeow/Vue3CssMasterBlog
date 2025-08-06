@@ -24,6 +24,7 @@ import gsap from 'gsap'
 import { useAppStore } from '@/pinia'
 import { formatDate } from '@/utils/utils'
 import PostPage from '@/views/PostPage/PostPage.vue'
+import Lenis from 'lenis'
 const appStore = useAppStore()
 
 const posttap = {
@@ -32,6 +33,8 @@ const posttap = {
   container: null as null | HTMLElement,
   content: null as null | HTMLElement,
   mask: null as null | HTMLElement,
+  lenis: null as null | Lenis,
+  rafId: 0,
   init() {
     this.container = document.querySelector('.tab-container')
     this.mask = document.querySelector('.mask-container .mask')
@@ -39,6 +42,14 @@ const posttap = {
     console.log(this.container, this.mask)
   },
   show() {
+    this.lenis = new Lenis({
+      wrapper: this.content as HTMLElement,
+    })
+    function raf(time: number) {
+      posttap.lenis?.raf(time)
+      posttap.rafId = requestAnimationFrame(raf)
+    }
+    this.rafId = requestAnimationFrame(raf)
     this.if_visible.value = true
     this.animator = gsap
       .timeline()
@@ -61,10 +72,13 @@ const posttap = {
         },
         '<',
       )
-    this.content?.addEventListener('wheel', () => console.log('123'))
   },
   hide() {
     if (this.animator?.isActive()) return
+    cancelAnimationFrame(this.rafId)
+    this.rafId = 0
+    this.lenis?.destroy()
+    this.lenis = null
     this.animator = gsap
       .timeline()
       .to(this.container, {

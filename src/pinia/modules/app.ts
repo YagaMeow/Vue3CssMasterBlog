@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import type Lenis from 'lenis'
 
 export const useAppStore = defineStore('app', () => {
   // 加载页面
@@ -20,6 +21,8 @@ export const useAppStore = defineStore('app', () => {
   // 文章页面
   const show_post = ref<(() => void) | null>(null)
   const hide_post = ref<((im: () => void, nx: () => void) => void) | null>(null)
+
+  const lenis = ref<Lenis>
 
   const post_data = ref({
     title: '',
@@ -64,6 +67,7 @@ export const useAppStore = defineStore('app', () => {
   }
 
   return {
+    lenis,
     hide_loading,
     show_menus,
     hide_menus,

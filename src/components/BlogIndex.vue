@@ -14,12 +14,15 @@ import Posts from './Posts/PostList.vue'
 import BackGround from './background.vue'
 import Lenis from 'lenis'
 import TitleMenu from './TitleMenu.vue'
-const lenis = new Lenis({})
-function raf(time: number) {
-  lenis.raf(time)
-  requestAnimationFrame(raf)
-}
-requestAnimationFrame(raf)
+import { useAppStore } from '@/pinia'
+// const appStore = useAppStore()
+// const lenis = new Lenis({})
+// appStore.lenis = lenis
+// function raf(time: number) {
+//   lenis.raf(time)
+//   requestAnimationFrame(raf)
+// }
+// requestAnimationFrame(raf)
 </script>
 <style lang="scss" scoped>
 .index-container {

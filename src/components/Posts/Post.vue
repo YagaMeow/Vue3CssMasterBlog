@@ -155,6 +155,7 @@ const post = {
     }
     // console.log(appStore.post_data.title)
     appStore.show_tab?.()
+    // appStore.lenis.stop()
   },
 }
 
