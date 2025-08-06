@@ -24,7 +24,6 @@ defineOptions({
   name: 'NavBar',
 })
 import { computed, onMounted, ref } from 'vue'
-import NavItem from './NavItem.vue'
 import { useUserStore, useAppStore } from '@/pinia'
 import router from '@/router'
 import MyButton from '@/components/ui/btn.vue'

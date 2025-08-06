@@ -1,151 +1,141 @@
 <!-- src/components/ArticleEditor.vue -->
 
 <template>
-  <div v-if="editor" class="container">
-    <div class="control-group" display="flex">
-      <div class="title">
-        <h1>{{ _data.title || '' }}</h1>
-      </div>
-    </div>
-    <div class="back-button-container">
-      <div class="back-button" @click="$router.back()">
-        <img class="back-icon" src="@/assets/svg/back.svg" alt="" />返回
-      </div>
-    </div>
-
-    <drag-handle :editor="editor">
-      <div class="custom-drag-handle" />
-    </drag-handle>
-  </div>
-  <div class="tools control-group" v-if="editable">
-    <div class="button-group">
-      <!-- <button @click="editor.setEditable(false)">ban</button> -->
-      <button
-        @click="editor.chain().focus().toggleBold().run()"
-        :disabled="!editor.can().chain().focus().toggleBold().run()"
-        :class="{ 'is-active': editor.isActive('bold') }"
-      >
-        <svg-icon iconClass="bold"></svg-icon>
-      </button>
-      <button
-        @click="editor.chain().focus().toggleItalic().run()"
-        :disabled="!editor.can().chain().focus().toggleItalic().run()"
-        :class="{ 'is-active': editor.isActive('italic') }"
-      >
-        <svg-icon iconClass="italic"></svg-icon>
-      </button>
-      <button
-        @click="editor.chain().focus().toggleStrike().run()"
-        :disabled="!editor.can().chain().focus().toggleStrike().run()"
-        :class="{ 'is-active': editor.isActive('strike') }"
-      >
-        <svg-icon iconClass="strikethrough"></svg-icon>
-      </button>
-      <button
-        @click="editor.chain().focus().toggleCode().run()"
-        :disabled="!editor.can().chain().focus().toggleCode().run()"
-        :class="{ 'is-active': editor.isActive('code') }"
-      >
-        <svg-icon iconClass="code"></svg-icon>
-      </button>
-      <!-- <button @click="editor.chain().focus().unsetAllMarks().run()">Clear marks</button>
+  <div class="editor-container">
+    <!-- <div v-if="editor" class="container">
+      <drag-handle :editor="editor">
+        <div class="custom-drag-handle" />
+      </drag-handle>
+    </div> -->
+    <div class="tools control-group _null" v-if="editable">
+      <div class="button-group">
+        <!-- <button @click="editor.setEditable(false)">ban</button> -->
+        <button
+          @click="editor.chain().focus().toggleBold().run()"
+          :disabled="!editor.can().chain().focus().toggleBold().run()"
+          :class="{ 'is-active': editor.isActive('bold') }"
+        >
+          <svg-icon iconClass="bold"></svg-icon>
+        </button>
+        <button
+          @click="editor.chain().focus().toggleItalic().run()"
+          :disabled="!editor.can().chain().focus().toggleItalic().run()"
+          :class="{ 'is-active': editor.isActive('italic') }"
+        >
+          <svg-icon iconClass="italic"></svg-icon>
+        </button>
+        <button
+          @click="editor.chain().focus().toggleStrike().run()"
+          :disabled="!editor.can().chain().focus().toggleStrike().run()"
+          :class="{ 'is-active': editor.isActive('strike') }"
+        >
+          <svg-icon iconClass="strikethrough"></svg-icon>
+        </button>
+        <button
+          @click="editor.chain().focus().toggleCode().run()"
+          :disabled="!editor.can().chain().focus().toggleCode().run()"
+          :class="{ 'is-active': editor.isActive('code') }"
+        >
+          <svg-icon iconClass="code"></svg-icon>
+        </button>
+        <!-- <button @click="editor.chain().focus().unsetAllMarks().run()">Clear marks</button>
         <button @click="editor.chain().focus().clearNodes().run()">Clear nodes</button> -->
-      <button
-        @click="editor.chain().focus().setParagraph().run()"
-        :class="{ 'is-active': editor.isActive('paragraph') }"
-      >
-        <svg-icon iconClass="paragraph"></svg-icon>
-      </button>
-      <button
-        @click="editor.chain().focus().toggleBulletList().run()"
-        :class="{ 'is-active': editor.isActive('bulletList') }"
-        id="bullet-list"
-      >
-        <svg-icon iconClass="unordered-list"></svg-icon>
-      </button>
-      <button
-        @click="editor.chain().focus().toggleOrderedList().run()"
-        :class="{ 'is-active': editor.isActive('orderedList') }"
-      >
-        <svg-icon iconClass="ordered-list"></svg-icon>
-      </button>
-      <button
-        @click="editor.chain().focus().toggleCodeBlock().run()"
-        :class="{ 'is-active': editor.isActive('codeBlock') }"
-      >
-        <svg-icon iconClass="code"></svg-icon>
-      </button>
-      <button
-        @click="editor.chain().focus().toggleBlockquote().run()"
-        :class="{ 'is-active': editor.isActive('blockquote') }"
-      >
-        <svg-icon iconClass="quote"></svg-icon>
-      </button>
-      <button @click="editor.chain().focus().setHorizontalRule().run()">
-        <svg-icon iconClass="separator"></svg-icon>
-      </button>
-      <button @click="editor.chain().focus().setHardBreak().run()">
-        <svg-icon iconClass="text-wrap"></svg-icon>
-      </button>
-      <button
-        @click="editor.chain().focus().undo().run()"
-        :disabled="!editor.can().chain().focus().undo().run()"
-        id="undo"
-      >
-        <svg-icon iconClass="undo"></svg-icon>
-      </button>
-      <button
-        @click="editor.chain().focus().redo().run()"
-        :disabled="!editor.can().chain().focus().redo().run()"
-        id="redo"
-      >
-        <svg-icon iconClass="redo"></svg-icon>
-      </button>
-      <button
-        @click="editor.chain().focus().setColor('#958DF1').run()"
-        :class="{ 'is-active': editor.isActive('textStyle', { color: '#958DF1' }) }"
-      >
-        <svg-icon iconClass="font-color"></svg-icon>
-      </button>
-      <button @click="onImageUploadClick">
-        <svg-icon iconClass="image"></svg-icon>
-      </button>
-      <input
-        id="imageInput"
-        type="file"
-        accept="image/*"
-        style="display: none"
-        @change="onImageSelected"
-      />
+        <button
+          @click="editor.chain().focus().setParagraph().run()"
+          :class="{ 'is-active': editor.isActive('paragraph') }"
+        >
+          <svg-icon iconClass="paragraph"></svg-icon>
+        </button>
+        <button
+          @click="editor.chain().focus().toggleBulletList().run()"
+          :class="{ 'is-active': editor.isActive('bulletList') }"
+          id="bullet-list"
+        >
+          <svg-icon iconClass="unordered-list"></svg-icon>
+        </button>
+        <button
+          @click="editor.chain().focus().toggleOrderedList().run()"
+          :class="{ 'is-active': editor.isActive('orderedList') }"
+        >
+          <svg-icon iconClass="ordered-list"></svg-icon>
+        </button>
+        <button
+          @click="editor.chain().focus().toggleCodeBlock().run()"
+          :class="{ 'is-active': editor.isActive('codeBlock') }"
+        >
+          <svg-icon iconClass="code"></svg-icon>
+        </button>
+        <button
+          @click="editor.chain().focus().toggleBlockquote().run()"
+          :class="{ 'is-active': editor.isActive('blockquote') }"
+        >
+          <svg-icon iconClass="quote"></svg-icon>
+        </button>
+        <button @click="editor.chain().focus().setHorizontalRule().run()">
+          <svg-icon iconClass="separator"></svg-icon>
+        </button>
+        <button @click="editor.chain().focus().setHardBreak().run()">
+          <svg-icon iconClass="text-wrap"></svg-icon>
+        </button>
+        <button
+          @click="editor.chain().focus().undo().run()"
+          :disabled="!editor.can().chain().focus().undo().run()"
+          id="undo"
+        >
+          <svg-icon iconClass="undo"></svg-icon>
+        </button>
+        <button
+          @click="editor.chain().focus().redo().run()"
+          :disabled="!editor.can().chain().focus().redo().run()"
+          id="redo"
+        >
+          <svg-icon iconClass="redo"></svg-icon>
+        </button>
+        <button
+          @click="editor.chain().focus().setColor('#958DF1').run()"
+          :class="{ 'is-active': editor.isActive('textStyle', { color: '#958DF1' }) }"
+        >
+          <svg-icon iconClass="font-color"></svg-icon>
+        </button>
+        <button @click="onImageUploadClick">
+          <svg-icon iconClass="image"></svg-icon>
+        </button>
+        <input
+          id="imageInput"
+          type="file"
+          accept="image/*"
+          style="display: none"
+          @change="onImageSelected"
+        />
+      </div>
     </div>
-  </div>
-  <div
-    :class="{
-      'character-count': true,
-      'character-count--warning': editor.storage.characterCount.characters() === limit,
-    }"
-  >
-    <svg height="20" width="20" viewBox="0 0 20 20">
-      <circle r="10" cx="10" cy="10" fill="#c1e3f7" />
-      <circle
-        r="5"
-        cx="10"
-        cy="10"
-        fill="transparent"
-        stroke="#68c3f7"
-        stroke-width="10"
-        :stroke-dasharray="`calc(${percentage} * 31.4 / 100) 31.4`"
-        transform="rotate(-90) translate(-20)"
-      />
-      <circle r="6" cx="10" cy="10" fill="rgb(232, 231, 231)" />
-    </svg>
+    <div
+      :class="{
+        'character-count': true,
+        'character-count--warning': editor.storage.characterCount.characters() === limit,
+      }"
+    >
+      <svg height="20" width="20" viewBox="0 0 20 20">
+        <circle r="10" cx="10" cy="10" fill="#c1e3f7" />
+        <circle
+          r="5"
+          cx="10"
+          cy="10"
+          fill="transparent"
+          stroke="#68c3f7"
+          stroke-width="10"
+          :stroke-dasharray="`calc(${percentage} * 31.4 / 100) 31.4`"
+          transform="rotate(-90) translate(-20)"
+        />
+        <circle r="6" cx="10" cy="10" fill="rgb(232, 231, 231)" />
+      </svg>
 
-    {{ editor.storage.characterCount.characters() }} / {{ limit }} characters
-    <br />
-    {{ editor.storage.characterCount.words() }} words
+      {{ editor.storage.characterCount.characters() }} / {{ limit }} characters
+      <br />
+      {{ editor.storage.characterCount.words() }} words
+    </div>
+    <editor-content :editor="editor" class="editor-text" />
   </div>
-  <editor-content :editor="editor" style="padding-bottom: 20vh" />
-  <div class="home" @click="$router.push('/')"></div>
 </template>
 
 <script lang="ts" setup>
@@ -158,7 +148,7 @@ import Typography from '@tiptap/extension-typography'
 import Placeholder from '@tiptap/extension-placeholder'
 import StarterKit from '@tiptap/starter-kit'
 import { Editor, EditorContent } from '@tiptap/vue-3'
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, onUpdated, onBeforeUpdate } from 'vue'
 import { DragHandle } from '@tiptap-pro/extension-drag-handle-vue-3'
 import NodeRange from '@tiptap-pro/extension-node-range'
 import '@/assets/editor.scss'
@@ -183,6 +173,33 @@ import CharacterCount from '@tiptap/extension-character-count'
 import 'katex/dist/katex.min.css'
 import { sv } from 'element-plus/es/locales.mjs'
 import { getAuth } from '@/api/user'
+import { useAppStore } from '@/pinia'
+
+const props = defineProps({
+  uri: {
+    type: String,
+    default: '',
+  },
+})
+
+const appStore = useAppStore()
+
+const myeditor = {
+  init() {},
+  async show() {
+    const res = await ArticleAPI.getByUri(props.uri)
+
+    _data.id = res.data.id
+    _data.title = res.data.title
+    _data.content = res.data.content
+
+    // window.addEventListener('keydown', saveHandler)
+    console.log(JSON.parse(_data.content))
+    editor.commands.setContent(JSON.parse(_data.content))
+  },
+  hide() {},
+}
+appStore.show_post = myeditor.show.bind(myeditor)
 
 const percentage = computed(() =>
   Math.round((100 / limit) * editor.storage.characterCount.characters()),
@@ -231,11 +248,6 @@ const editor = new Editor({
   ],
 })
 
-interface Paragraph {
-  id: string
-  content: string
-}
-
 interface Article {
   id: number
   title: string
@@ -249,7 +261,7 @@ const _data: Article = {
   id: 0,
   title: '',
   content: '',
-  uri: Array.isArray(route.params.uri) ? route.params.uri[0] : route.params.uri,
+  uri: props.uri ? props.uri : '',
 }
 
 const saveHandler = (e: KeyboardEvent) => {
@@ -274,40 +286,7 @@ const saveHandler = (e: KeyboardEvent) => {
 }
 
 const editable = ref(true)
-
-onMounted(async () => {
-  const auth = await getAuth().catch((err) => {
-    ElNotification({
-      title: '访客模式',
-      message: '请先登录后再编辑文章',
-      type: 'info',
-      duration: 2000,
-    })
-    editable.value = false
-    editor.setEditable(false)
-    return
-  })
-
-  const res = await ArticleAPI.getByUri(_data.uri)
-
-  _data.id = res.data.id
-  _data.title = res.data.title
-  _data.content = res.data.content
-
-  window.addEventListener('keydown', saveHandler)
-  console.log(JSON.parse(_data.content))
-  editor.commands.setContent(JSON.parse(_data.content))
-})
-
-onUnmounted(() => {
-  window.removeEventListener('keydown', saveHandler)
-  // editor.destroy()
-})
-
-const props = defineProps({
-  content: String, // 原始文章内容（JSON 或 HTML）
-  articleId: Number,
-})
+editor.setEditable(false)
 
 function onImageUploadClick() {
   const imageInput = document.querySelector<HTMLInputElement>('#imageInput')
@@ -330,6 +309,17 @@ function onImageSelected(event: Event) {
 }
 </script>
 <style lang="scss" scoped>
+.editor-container {
+  padding: 0.5rem 0;
+  .editor-text {
+    color: #fff;
+  }
+  .character-count {
+    color: #fff;
+    font-size: 2rem;
+  }
+}
+
 .character-count {
   position: absolute;
   left: calc(50% + 350px);
@@ -433,13 +423,9 @@ function onImageSelected(event: Event) {
   cursor: pointer;
 }
 </style>
-<style lang="scss">
+<!-- <style lang="scss">
 .tiptap {
-  max-width: 700px;
-  margin: 0 auto;
-}
-
-.tiptap {
+  margin: 0;
   :first-child {
     margin-top: 0;
   }
@@ -447,12 +433,12 @@ function onImageSelected(event: Event) {
   /* List styles */
   ul,
   ol {
-    padding: 0 1rem;
-    margin: 1.25rem 1rem 1.25rem 0.4rem;
+    padding: 0 2rem;
+    margin: 2.5rem 2rem 2.5rem 0.8rem;
 
     li p {
-      margin-top: 0.25em;
-      margin-bottom: 0.25em;
+      margin-top: 0.5em;
+      margin-bottom: 0.5em;
     }
   }
 
@@ -464,32 +450,36 @@ function onImageSelected(event: Event) {
   h5,
   h6 {
     line-height: 1.1;
-    margin-top: 2.5rem;
+    margin-top: 5rem;
     text-wrap: pretty;
   }
 
   h1,
   h2 {
-    margin-top: 3.5rem;
-    margin-bottom: 1.5rem;
+    margin-top: 7rem;
+    margin-bottom: 3rem;
   }
 
   h1 {
-    font-size: 2rem;
+    font-size: 4rem;
   }
 
   h2 {
-    font-size: 1.7rem;
+    font-size: 3.4rem;
   }
 
   h3 {
-    font-size: 1.4rem;
+    font-size: 2.8rem;
   }
 
   h4,
   h5,
   h6 {
-    font-size: 1.2rem;
+    font-size: 2.4rem;
+  }
+
+  p {
+    font-size: 1.8rem;
   }
 
   /* Code and preformatted text styles */
@@ -533,42 +523,4 @@ function onImageSelected(event: Event) {
     content: attr(data-placeholder) !important;
   }
 }
-
-.home {
-  width: 50px;
-  height: 50px;
-  bottom: 20px;
-  left: 20px;
-  background-color: #fafafa;
-  position: fixed;
-  border-radius: 20%;
-  box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-  background-image: url('@/assets/svg/home.svg');
-  background-size: 50%;
-  background-repeat: no-repeat;
-  background-position: center;
-
-  &:hover {
-    animation: shake 0.5s ease-in-out;
-  }
-}
-
-@keyframes shake {
-  0% {
-    transform: rotate(0deg);
-  }
-  25% {
-    transform: rotate(-10deg);
-  }
-  50% {
-    transform: rotate(10deg);
-  }
-  75% {
-    transform: rotate(-5deg);
-  }
-  100% {
-    transform: rotate(0deg);
-  }
-}
-</style>
+</style> -->

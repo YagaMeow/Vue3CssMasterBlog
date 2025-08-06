@@ -1,12 +1,14 @@
 <template>
   <div class="index-container">
     <BackGround></BackGround>
-    <Nav style="z-index: 999"></Nav>
+    <Nav></Nav>
     <Posts></Posts>
     <TitleMenu></TitleMenu>
+    <PostTab></PostTab>
   </div>
 </template>
 <script setup lang="ts">
+import PostTab from './PostTab.vue'
 import Nav from './Nav/Nav.vue'
 import Posts from './Posts/PostList.vue'
 import BackGround from './background.vue'

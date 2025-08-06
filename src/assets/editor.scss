@@ -1,14 +1,24 @@
 @use "./variables.scss";
 @use "./_keyframe-animations.scss";
-@use "./paragraph-node.scss";
-@use "./a1.scss";
-@use "./a2.scss";
+// @use "./paragraph-node.scss";
+// @use "./a1.scss";
+// @use "./a2.scss";
 // @use "./a3.scss";
 
 ::selection {
     background-color: #70CFF850;
   }
 .ProseMirror {
+
+    margin: 0 1rem !important;
+    display: flex;
+    flex-direction: column;
+    p {
+      font-size: 1.8rem;
+    }
+    span {
+      font-size: 1.5rem;
+    }
     padding: 1rem 1rem 1rem 0;
   
     * {

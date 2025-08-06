@@ -86,7 +86,7 @@ onMounted(() => {
     height: calc(var(--scale) * 16rem);
 
     margin: 3px 0;
-    transition: height cubic-bezier(0, 0, 1, 1.46) 0.1s;
+    transition: height cubic-bezier(0, 0, 0.8, 1.2) 0.1s;
     background-color: #616161;
     border-radius: 1rem;
     box-shadow: inset 1px 1px #fff;
@@ -104,7 +104,7 @@ onMounted(() => {
 
     &:hover {
       height: calc(var(--scale) * 32rem);
-      transition: height cubic-bezier(0, 0, 1, 1.46) 0.2s;
+      transition: height cubic-bezier(0, 0, 0.8, 1.2) 0.2s;
       background-color: rgba(0, 0, 0, 0.1);
       &:nth-child(1) {
         &::after {

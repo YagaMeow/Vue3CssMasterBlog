@@ -13,9 +13,20 @@ export const useAppStore = defineStore('app', () => {
   // 文章无限滑动
   const show_diagram = ref<(() => void) | null>(null)
   const hide_diagram = ref<((im: () => void, nx: () => void) => void) | null>(null)
+
+  // 文章标签页
+  const show_tab = ref<(() => void) | null>(null)
+  const hide_tab = ref<(() => void) | null>(null)
   // 文章页面
-  const show_post = ref(null)
-  const hide_post = ref(null)
+  const show_post = ref<(() => void) | null>(null)
+  const hide_post = ref<((im: () => void, nx: () => void) => void) | null>(null)
+
+  const post_data = ref({
+    title: '',
+    uri: '',
+    id: 0,
+    created_at: '',
+  })
 
   function first_show() {
     hide_loading.value?.(
@@ -51,6 +62,7 @@ export const useAppStore = defineStore('app', () => {
       },
     )
   }
+
   return {
     hide_loading,
     show_menus,
@@ -61,6 +73,9 @@ export const useAppStore = defineStore('app', () => {
     hide_diagram,
     show_post,
     hide_post,
+    show_tab,
+    hide_tab,
+    post_data,
     first_show,
     menus_to_diagram,
     diagram_to_menus,

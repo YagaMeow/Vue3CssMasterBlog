@@ -1,5 +1,5 @@
 <template>
-  <div class="bg">
+  <div class="bg _fullscreen">
     <div class="bg-ball" style="--x: 0; --y: 0; --s: 2; --o: 0.9"></div>
     <div class="bg-ball" style="--x: 0.8; --y: 0.1; --s: 1; --o: 0.8"></div>
     <div class="bg-ball" style="--x: 0.3; --y: 0.3; --s: 0.8; --o: 0.2"></div>
@@ -84,6 +84,7 @@ onMounted(() => background.init())
 .bg {
   user-select: none;
   pointer-events: none;
+  overflow: hidden;
   --scale: 1;
   .bg-ball {
     width: 30rem;

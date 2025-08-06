@@ -1,5 +1,5 @@
 <template>
-  <div class="posts-container" v-show="diagram.if_visible.value">
+  <div class="posts-container _fullscreen" v-show="diagram.if_visible.value" @dragover="dragOver">
     <div class="create" @click="handleCreate" style="display: none"></div>
     <div
       class="bin"
@@ -32,6 +32,7 @@ import { ArticleAPI } from '@/api/api'
 import { ElNotification } from 'element-plus'
 import { useAppStore } from '@/pinia'
 import gsap from 'gsap'
+import { fa } from 'element-plus/es/locales.mjs'
 
 interface PostItem {
   uri: string
@@ -66,7 +67,6 @@ const diagram = {
         diagram.mouse_pos.value = [e.x, e.y]
         return
       }
-      console.log(diagram.timer)
       if (diagram.timer) return
       diagram.timer = setTimeout(() => {
         diagram.timer = 0
@@ -153,14 +153,14 @@ const dragData = ref({
   activeUri: '', // 当前激活的文章URI
 })
 
-// 开始拖拽
-function startDrag(uri: string) {
-  dragData.value.isDragging = true
-  dragData.value.activeUri = uri
-}
-
+const transparentImg = new Image()
+transparentImg.src =
+  'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
 // 初始化拖拽事件
 function dragStart(event: DragEvent) {
+  diagram.draggable.value = false
+  diagram.reset()
+  event.dataTransfer?.setDragImage(transparentImg, 0, 0)
   const target = event.target as HTMLElement
   if (target.classList.contains('post-container')) {
     event.dataTransfer?.setData('text/plain', target.dataset.id || '')
@@ -213,6 +213,13 @@ function onDrag(event: DragEvent) {
         draggingElement.style.transform = `translate(${offsetX}px, ${offsetY}px)`
       }
     }
+  }
+}
+
+function dragOver(e: DragEvent) {
+  e.preventDefault()
+  if (e.dataTransfer) {
+    e.dataTransfer.dropEffect = 'move'
   }
 }
 
@@ -286,7 +293,7 @@ function handleDelete(uri: string) {
 }
 
 .posts-container {
-  margin-top: 50px;
+  overflow: hidden;
   padding: 20px 100px;
   width: 100%;
   display: flex;

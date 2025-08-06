@@ -1,6 +1,17 @@
 <template>
   <div class="post post-container" ref="p" v-show="post.if_visible.value">
-    <div class="post-info" ref="info">
+    <div
+      class="post-info"
+      ref="info"
+      @dragover="
+        (e: DragEvent) => {
+          e.preventDefault()
+          if (e.dataTransfer) {
+            e.dataTransfer.dropEffect = 'move'
+          }
+        }
+      "
+    >
       <div class="myform col">
         <div class="row">
           <div class="text">Creator</div>
@@ -17,11 +28,13 @@
         <div id="share">share</div>
       </MyButton>
     </div>
-    <div class="post-content">
+    <div class="post-content" @click="post.show_details">
       <h2 class="post-title">
-        <RouterLink :to="`/posts/${data.uri}`" class="post-link">
+        <!-- <RouterLink :to="`/posts/${data.uri}`" class="post-link"> -->
+        <div class="post-link">
           <span class="title">{{ data.title }}</span>
-        </RouterLink>
+        </div>
+        <!-- </RouterLink> -->
       </h2>
       <p class="abstract"></p>
       <p class="post-footer">
@@ -39,20 +52,19 @@ import MyButton from '@/components/ui/btn.vue'
 import gsap from 'gsap'
 import { fa } from 'element-plus/es/locales.mjs'
 import type { ComponentPublicInstance } from 'vue'
+import { useAppStore } from '@/pinia'
+import { formatDate } from '@/utils/utils'
 defineOptions({
   name: 'SinglePost',
 })
 
+const appStore = useAppStore()
 const props = defineProps({
   data: {
     type: Object,
     default: () => ({}),
   },
 })
-function formatDate(date: string): string {
-  const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' }
-  return new Date(date).toLocaleDateString(undefined, options)
-}
 
 const p = ref<HTMLElement | null>(null)
 const info = ref<HTMLElement | null>(null)
@@ -110,10 +122,11 @@ const post = {
   switchInfo() {
     if (post.show_info.value === false) {
       post.show_info.value = true
+      ;(post.info as HTMLElement).style.pointerEvents = 'auto'
       ;(post.icon as HTMLElement).textContent = '×'
       gsap.timeline().to(post.info, {
         opacity: 1,
-        duration: 0.5,
+        duration: 0.2,
         ease: 'power3.out',
         onComplete: () => {
           post.icon?.classList.add('always-show')
@@ -121,16 +134,27 @@ const post = {
       })
     } else {
       post.show_info.value = false
+      ;(post.info as HTMLElement).style.pointerEvents = 'none'
       ;(post.icon as HTMLElement).textContent = 'i'
       gsap.timeline().to(post.info, {
         opacity: 0,
-        duration: 0.5,
+        duration: 0.2,
         ease: 'power3.out',
         onComplete: () => {
           post.icon?.classList.remove('always-show')
         },
       })
     }
+  },
+  show_details() {
+    appStore.post_data = props.data as {
+      title: string
+      uri: string
+      id: number
+      created_at: string
+    }
+    // console.log(appStore.post_data.title)
+    appStore.show_tab?.()
   },
 }
 
@@ -169,6 +193,7 @@ onUnmounted(() => {
   justify-content: center;
   align-items: center;
   .post-info {
+    pointer-events: none;
     opacity: 0;
     position: absolute;
     top: 0.9rem;
@@ -218,6 +243,11 @@ onUnmounted(() => {
         font-size: 1.5rem;
         &#share::after {
           content: '↗';
+          transition: ease-in-out 0.1s;
+        }
+        &#share:hover::after {
+          transform: translate(0.2rem, -0.2rem);
+          transition: ease-in-out 0.1s;
         }
       }
     }
