@@ -1,6 +1,6 @@
+import type { Article } from '@/utils/utils'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type Lenis from 'lenis'
 
 export const useAppStore = defineStore('app', () => {
   // 加载页面
@@ -11,25 +11,29 @@ export const useAppStore = defineStore('app', () => {
   //导航栏
   const show_nav = ref<(() => void) | null>(null)
   const hide_nav = ref<((im: () => void, nx: () => void) => void) | null>(null)
-  // 文章无限滑动
+  // 无限滑动视图
   const show_diagram = ref<(() => void) | null>(null)
   const hide_diagram = ref<((im: () => void, nx: () => void) => void) | null>(null)
+  // 瀑布流视图
+  // 列表视图
+  const show_list = ref<(() => void) | null>(null)
+  const hide_list = ref<((im: () => void, nx: () => void) => void) | null>(null)
 
   // 文章标签页
   const show_tab = ref<(() => void) | null>(null)
   const hide_tab = ref<(() => void) | null>(null)
   // 文章页面
   const show_post = ref<(() => void) | null>(null)
-  const hide_post = ref<((im: () => void, nx: () => void) => void) | null>(null)
+  const hide_post = ref<(() => void) | null>(null)
 
-  const lenis = ref<Lenis>
-
-  const post_data = ref({
+  const post_data = ref<Article>({
     title: '',
     uri: '',
     id: 0,
     created_at: '',
   })
+
+  const layout_type = ref(0)
 
   function first_show() {
     hide_loading.value?.(
@@ -40,34 +44,85 @@ export const useAppStore = defineStore('app', () => {
     )
   }
 
-  function menus_to_diagram() {
-    hide_menus.value?.(
+  function menus_to_posts() {
+    switch (layout_type.value) {
+      case 0: {
+        hide_menus.value?.(
+          () => {
+            show_nav.value?.()
+          },
+          () => {
+            show_diagram.value?.()
+          },
+        )
+        break
+      }
+      case 2: {
+        hide_menus.value?.(
+          () => {
+            show_nav.value?.()
+          },
+          () => {
+            show_list.value?.()
+          },
+        )
+        break
+      }
+    }
+  }
+
+  function posts_to_menus() {
+    switch (layout_type.value) {
+      case 0: {
+        hide_diagram.value?.(
+          () => {
+            hide_nav.value?.(
+              () => {},
+              () => {},
+            )
+          },
+          () => {
+            show_menus.value?.()
+          },
+        )
+        break
+      }
+      case 2: {
+        hide_list.value?.(
+          () => {
+            hide_nav.value?.(
+              () => {},
+              () => {},
+            )
+          },
+          () => {
+            show_menus.value?.()
+          },
+        )
+        break
+      }
+    }
+  }
+
+  function diagram_to_list() {
+    hide_diagram.value?.(
+      () => {},
       () => {
-        show_nav.value?.()
+        show_list.value?.()
       },
+    )
+  }
+
+  function list_to_diagram() {
+    hide_list.value?.(
+      () => {},
       () => {
         show_diagram.value?.()
       },
     )
   }
 
-  function diagram_to_menus() {
-    hide_diagram.value?.(
-      () => {
-        hide_nav.value?.(
-          () => {},
-          () => {},
-        )
-      },
-      () => {
-        console.log('show')
-        show_menus.value?.()
-      },
-    )
-  }
-
   return {
-    lenis,
     hide_loading,
     show_menus,
     hide_menus,
@@ -80,8 +135,13 @@ export const useAppStore = defineStore('app', () => {
     show_tab,
     hide_tab,
     post_data,
+    show_list,
+    hide_list,
+    layout_type,
     first_show,
-    menus_to_diagram,
-    diagram_to_menus,
+    menus_to_posts,
+    posts_to_menus,
+    diagram_to_list,
+    list_to_diagram,
   }
 })

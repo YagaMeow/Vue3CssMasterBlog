@@ -1,7 +1,7 @@
 <template>
   <div class="nav-container">
     <MyButton id="discover">
-      <div class="button-content" @click="appStore.diagram_to_menus">discover</div>
+      <div class="button-content" @click="appStore.posts_to_menus">discover</div>
     </MyButton>
     <MyButton id="collect"><div class="button-content">collect</div></MyButton>
     <MyButton id="sound"> <div class="button-content">s</div> </MyButton>
@@ -29,6 +29,7 @@ import router from '@/router'
 import MyButton from '@/components/ui/btn.vue'
 import gsap from 'gsap'
 import SvgIcon from '../SvgIcon.vue'
+import { el } from 'element-plus/es/locales.mjs'
 
 const userStore = useUserStore()
 const appStore = useAppStore()
@@ -36,6 +37,7 @@ let CheckLogin = userStore.isLoggedIn
 
 const nav = {
   if_visible: ref(false),
+  layout_type: 0,
   container: null as null | HTMLElement,
   footer: null as null | HTMLElement,
   slider: null as null | HTMLElement,
@@ -108,11 +110,22 @@ const nav = {
       )
   },
   switch(type: number) {
+    const change = type !== nav.layout_type
     gsap.timeline().to(nav.slider, {
       '--type': type,
       duration: 0.2,
       ease: 'power3.out',
     })
+    if (type === 0) {
+      if (nav.layout_type === 2) appStore.list_to_diagram()
+    } else if (type === 1 && nav.layout_type === 0) {
+    } else if (type === 2) {
+      if (nav.layout_type === 0) appStore.diagram_to_list()
+      else {
+      }
+    }
+    nav.layout_type = type
+    appStore.layout_type = type
   },
 }
 appStore.show_nav = nav.show.bind(nav)

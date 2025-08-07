@@ -7,6 +7,7 @@
         <div class="custom-drag-handle" />
       </drag-handle>
     </div> -->
+    <div class="loading" v-show="myeditor.is_loading.value">Loading...</div>
     <div class="tools control-group _null" v-if="editable">
       <div class="button-group">
         <!-- <button @click="editor.setEditable(false)">ban</button> -->
@@ -185,6 +186,7 @@ const props = defineProps({
 const appStore = useAppStore()
 
 const myeditor = {
+  is_loading: ref(true),
   init() {},
   async show() {
     const res = await ArticleAPI.getByUri(props.uri)
@@ -196,10 +198,16 @@ const myeditor = {
     // window.addEventListener('keydown', saveHandler)
     console.log(JSON.parse(_data.content))
     editor.commands.setContent(JSON.parse(_data.content))
+    this.is_loading.value = false
   },
-  hide() {},
+  reset() {
+    console.log('reset')
+    editor.commands.clearContent()
+    this.is_loading.value = true
+  },
 }
 appStore.show_post = myeditor.show.bind(myeditor)
+appStore.hide_post = myeditor.reset.bind(myeditor)
 
 const percentage = computed(() =>
   Math.round((100 / limit) * editor.storage.characterCount.characters()),
@@ -310,13 +318,25 @@ function onImageSelected(event: Event) {
 </script>
 <style lang="scss" scoped>
 .editor-container {
-  padding: 0.5rem 0;
+  padding: 0;
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
   .editor-text {
     color: #fff;
   }
   .character-count {
     color: #fff;
     font-size: 2rem;
+  }
+  .loading {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    color: #fff;
   }
 }
 

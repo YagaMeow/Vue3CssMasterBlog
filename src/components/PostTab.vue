@@ -10,9 +10,7 @@
         <MyButton class="close_btn" @click="appStore.hide_tab">×</MyButton>
       </div>
       <div class="tab-content">
-        <div style="background: red; width: 100%; height: 100rem"></div>
-
-        <!-- <PostPage :uri="appStore.post_data.uri"></PostPage> -->
+        <PostPage :uri="appStore.post_data.uri"></PostPage>
       </div>
     </div>
   </div>
@@ -42,14 +40,7 @@ const posttap = {
     console.log(this.container, this.mask)
   },
   show() {
-    this.lenis = new Lenis({
-      wrapper: this.content as HTMLElement,
-    })
-    function raf(time: number) {
-      posttap.lenis?.raf(time)
-      posttap.rafId = requestAnimationFrame(raf)
-    }
-    this.rafId = requestAnimationFrame(raf)
+    console.log(this.lenis)
     this.if_visible.value = true
     this.animator = gsap
       .timeline()
@@ -75,10 +66,7 @@ const posttap = {
   },
   hide() {
     if (this.animator?.isActive()) return
-    cancelAnimationFrame(this.rafId)
-    this.rafId = 0
-    this.lenis?.destroy()
-    this.lenis = null
+
     this.animator = gsap
       .timeline()
       .to(this.container, {
@@ -96,10 +84,28 @@ const posttap = {
           ease: 'power3.out',
           onComplete: () => {
             this.if_visible.value = false
+            console.log(appStore.hide_post)
+            appStore.hide_post?.()
           },
         },
         '<',
       )
+  },
+  initLenis() {
+    this.lenis = new Lenis({
+      wrapper: this.content as HTMLElement,
+    })
+    function raf(time: number) {
+      posttap.lenis?.raf(time)
+      posttap.rafId = requestAnimationFrame(raf)
+    }
+    this.rafId = requestAnimationFrame(raf)
+  },
+  removeLenis() {
+    cancelAnimationFrame(this.rafId)
+    this.rafId = 0
+    this.lenis?.destroy()
+    this.lenis = null
   },
 }
 

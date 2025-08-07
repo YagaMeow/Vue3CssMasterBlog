@@ -38,7 +38,7 @@
       </h2>
       <p class="abstract"></p>
       <p class="post-footer">
-        <MyButton @click="post.switchInfo" class="icon" ref="i">i</MyButton>
+        <MyButton @click.stop="post.switchInfo" class="icon" ref="i">i</MyButton>
         <span class="date">{{ formatDate(data.created_at) }}</span>
       </p>
     </div>
@@ -92,6 +92,7 @@ const post = {
     post.icon = i.value ? (i.value.$el as HTMLElement) : null
   },
   glitch: () => {
+    console.log(props.data.title, 'add glitch')
     setTimeout(
       () => {
         post.timer = setInterval(() => {
@@ -115,6 +116,7 @@ const post = {
     )
   },
   reset: () => {
+    console.log(props.data.title, 'remove glitch')
     ;(post.post as HTMLElement).style.clipPath = ``
     ;(post.post as HTMLElement).classList.remove('glitch')
     clearInterval(post.timer as number)

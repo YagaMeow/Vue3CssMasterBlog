@@ -3,6 +3,7 @@
     <BackGround></BackGround>
     <Nav></Nav>
     <Posts></Posts>
+    <PostList></PostList>
     <TitleMenu></TitleMenu>
     <PostTab></PostTab>
   </div>
@@ -10,10 +11,11 @@
 <script setup lang="ts">
 import PostTab from './PostTab.vue'
 import Nav from './Nav/Nav.vue'
-import Posts from './Posts/PostList.vue'
+import Posts from './Posts/PostDiagram.vue'
 import BackGround from './background.vue'
 import Lenis from 'lenis'
 import TitleMenu from './TitleMenu.vue'
+import PostList from './Posts/PostList.vue'
 import { useAppStore } from '@/pinia'
 // const appStore = useAppStore()
 // const lenis = new Lenis({})

@@ -1,6 +1,6 @@
 <template>
   <div class="title_menu" ref="container" v-show="(titleMenu.if_visible as Ref).value">
-    <div class="title_menu_button" @click="appStore.menus_to_diagram()">
+    <div class="title_menu_button" @click="appStore.menus_to_posts()">
       <div class="live">live now</div>
       2025
     </div>

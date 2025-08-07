@@ -34,9 +34,9 @@ body {
   overflow: hidden;
 }
 
-/* ::-webkit-scrollbar {
+::-webkit-scrollbar {
   display: none;
-} */
+}
 
 ._fullscreen {
   position: absolute;
