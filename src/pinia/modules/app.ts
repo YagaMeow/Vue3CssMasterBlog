@@ -15,6 +15,8 @@ export const useAppStore = defineStore('app', () => {
   const show_diagram = ref<(() => void) | null>(null)
   const hide_diagram = ref<((im: () => void, nx: () => void) => void) | null>(null)
   // 瀑布流视图
+  const show_masonry = ref<(() => void) | null>(null)
+  const hide_masonry = ref<((im: () => void, nx: () => void) => void) | null>(null)
   // 列表视图
   const show_list = ref<(() => void) | null>(null)
   const hide_list = ref<((im: () => void, nx: () => void) => void) | null>(null)
@@ -57,6 +59,17 @@ export const useAppStore = defineStore('app', () => {
         )
         break
       }
+      case 1: {
+        hide_menus.value?.(
+          () => {
+            show_nav.value?.()
+          },
+          () => {
+            show_masonry.value?.()
+          },
+        )
+        break
+      }
       case 2: {
         hide_menus.value?.(
           () => {
@@ -75,6 +88,20 @@ export const useAppStore = defineStore('app', () => {
     switch (layout_type.value) {
       case 0: {
         hide_diagram.value?.(
+          () => {
+            hide_nav.value?.(
+              () => {},
+              () => {},
+            )
+          },
+          () => {
+            show_menus.value?.()
+          },
+        )
+        break
+      }
+      case 1: {
+        hide_masonry.value?.(
           () => {
             hide_nav.value?.(
               () => {},
@@ -113,11 +140,47 @@ export const useAppStore = defineStore('app', () => {
     )
   }
 
+  function diagram_to_masonry() {
+    hide_diagram.value?.(
+      () => {},
+      () => {
+        show_masonry.value?.()
+      },
+    )
+  }
+
   function list_to_diagram() {
     hide_list.value?.(
       () => {},
       () => {
         show_diagram.value?.()
+      },
+    )
+  }
+
+  function list_to_masonry() {
+    hide_list.value?.(
+      () => {},
+      () => {
+        show_masonry.value?.()
+      },
+    )
+  }
+
+  function masonry_to_diagram() {
+    hide_masonry.value?.(
+      () => {},
+      () => {
+        show_diagram.value?.()
+      },
+    )
+  }
+
+  function masonry_to_list() {
+    hide_masonry.value?.(
+      () => {},
+      () => {
+        show_list.value?.()
       },
     )
   }
@@ -138,10 +201,16 @@ export const useAppStore = defineStore('app', () => {
     show_list,
     hide_list,
     layout_type,
+    hide_masonry,
+    show_masonry,
     first_show,
     menus_to_posts,
     posts_to_menus,
     diagram_to_list,
+    diagram_to_masonry,
     list_to_diagram,
+    list_to_masonry,
+    masonry_to_diagram,
+    masonry_to_list,
   }
 })

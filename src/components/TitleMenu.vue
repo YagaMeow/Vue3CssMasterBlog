@@ -17,11 +17,13 @@ import type { Ref } from 'vue'
 import gsap from 'gsap'
 const appStore = useAppStore()
 const container = ref<HTMLElement | null>(null)
+const buttons = ref<NodeListOf<HTMLElement> | null>(null)
 
 const titleMenu = {
   animator: null as null | gsap.core.Timeline,
   if_visible: ref(true),
   init() {
+    buttons.value = document.querySelectorAll('.title_menu_button')
     this.animator = gsap.timeline().fromTo(
       container.value,
       {
@@ -39,25 +41,39 @@ const titleMenu = {
   show() {
     if (this.animator?.isActive()) return
     this.if_visible.value = true
-    this.animator = gsap.timeline().to(container.value, {
-      opacity: 1,
-      duration: 0.5,
-    })
+    this.animator = gsap
+      .timeline()
+      .to(container.value, {
+        opacity: 1,
+        duration: 0,
+      })
+      .to(buttons.value, {
+        opacity: 1,
+        duration: 0.5,
+        stagger: 0.05,
+        ease: 'power3.out',
+      })
   },
   hide(immediate: () => void, next: () => void) {
     if ((this.animator as gsap.core.Timeline).isActive()) {
       return
     }
     if (immediate) immediate()
-    this.animator = gsap.timeline().to(container.value, {
-      opacity: 0,
-      duration: 0.5,
-      ease: 'power3.out',
-      onComplete: () => {
-        ;(this.if_visible as Ref).value = false
-        if (next) next()
-      },
-    })
+    this.animator = gsap
+      .timeline()
+      .to(container.value, {
+        opacity: 0,
+        duration: 0.5,
+        ease: 'power3.out',
+        onComplete: () => {
+          ;(this.if_visible as Ref).value = false
+          if (next) next()
+        },
+      })
+      .to(buttons.value, {
+        opacity: 0,
+        duration: 0,
+      })
   },
 }
 appStore.show_menus = titleMenu.show.bind(titleMenu)

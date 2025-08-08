@@ -21,7 +21,7 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
   (response) => {
-    console.log(response)
+    // console.log(response)
     const useStore = useUserStore()
     if (response.data.code === 200) {
       return response.data

@@ -7,20 +7,22 @@
       <div>Creator</div>
       <div>ID</div>
     </div>
-    <div
-      class="post-list-item"
-      @click="postlist.show_details(item)"
-      v-for="(item, index) in postlist.postList.value"
-      :key="index"
-    >
-      <div class="title">
-        <div class="avatar"></div>
-        <span>{{ (item as Article).title }}</span>
+    <div class="post-list-item-container">
+      <div
+        class="post-list-item"
+        @click="postlist.show_details(item)"
+        v-for="(item, index) in postlist.postList.value"
+        :key="index"
+      >
+        <div class="title">
+          <div class="avatar"></div>
+          <span>{{ (item as Article).title }}</span>
+        </div>
+        <div class="type">none</div>
+        <div class="created">{{ (item as Article).created_at }}</div>
+        <div class="creator">John Doe</div>
+        <div class="id">{{ (item as Article).id }}</div>
       </div>
-      <div class="type">none</div>
-      <div class="created">{{ (item as Article).created_at }}</div>
-      <div class="creator">John Doe</div>
-      <div class="id">{{ (item as Article).id }}</div>
     </div>
   </div>
 </template>
@@ -36,7 +38,7 @@ const appStore = useAppStore()
 
 const postlist = {
   if_visible: ref(false),
-  postList: ref([]),
+  postList: ref<Article[]>([]),
   container: null as HTMLElement | null,
   posts: null as NodeListOf<HTMLElement> | null,
   animator: null as null | gsap.core.Timeline,
@@ -47,6 +49,14 @@ const postlist = {
     await ArticleAPI.getList({ page: 1, limit: 10 })
       .then((response) => {
         this.postList.value = response.data
+        for (let i = 0; i < 10; ++i) {
+          this.postList.value.push({
+            title: 'place holder',
+            uri: 'Xxx' + i,
+            id: i,
+            created_at: 'today',
+          })
+        }
       })
       .catch((error) => {
         console.error('Failed to fetch posts:', error)
@@ -57,15 +67,19 @@ const postlist = {
       .timeline()
       .to(this.container, {
         opacity: 1,
-        duration: 0.2,
+        duration: 0.3,
         ease: 'power3.in',
       })
-      .to(this.posts, {
-        opacity: 1,
-        duration: 0.4,
-        ease: 'power3.in',
-        stagger: 0.1,
-      })
+      .to(
+        this.posts,
+        {
+          opacity: 1,
+          duration: 0.2,
+          ease: 'power3.in',
+          stagger: 0.08,
+        },
+        '<',
+      )
   },
   hide(immediate: () => void, next: () => void) {
     if (this.animator?.isActive()) this.animator.kill()
@@ -113,14 +127,24 @@ onMounted(() => {
   border-radius: 2rem;
   box-shadow: inset 0rem 0.1rem #fff;
   opacity: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 
   .post-list-head,
   .post-list-item {
     display: grid;
-    grid-template-columns: minmax(0, 8fr) repeat(4, minmax(0, 4fr));
+    grid-template-columns: minmax(0, 8fr) minmax(0, 2fr) minmax(0, 8fr) minmax(0, 4fr) minmax(
+        0,
+        2fr
+      );
     grid-gap: 1rem;
   }
+  .post-list-item-container {
+    overflow: auto;
+  }
   .post-list-head {
+    flex-shrink: 0;
     padding: 1rem;
     height: 6rem;
     width: 100%;

@@ -84,15 +84,19 @@ const post = {
   icon: null as HTMLElement | null,
   timer: null as number | null,
 
-  if_visible: ref(false),
+  if_visible: ref(true),
   show_info: ref(false),
   init: () => {
+    const top = Math.random() * 100
+    const left = Math.random() * 100
+
     post.post = p.value
     post.info = info.value
     post.icon = i.value ? (i.value.$el as HTMLElement) : null
+    ;(post.post as HTMLElement).style.left = `${left}%`
+    ;(post.post as HTMLElement).style.top = `${top}%`
   },
   glitch: () => {
-    console.log(props.data.title, 'add glitch')
     setTimeout(
       () => {
         post.timer = setInterval(() => {
@@ -102,13 +106,12 @@ const post = {
           const y = Math.random() * 100
           const w = Math.random() * 50 + 50
           const h = Math.random() * 10 + 40
-          ;(post.post as HTMLElement).style.display = 'flex'
           ;(post.post as HTMLElement).style.clipPath =
             `polygon(${x}% ${y}%, ${x + w}% ${y}%,${x + w}% ${y + h}%,${x}% ${y + h}%)`
           ;(post.post as HTMLElement).style.left = `${left}%`
           ;(post.post as HTMLElement).style.top = `${top}%`
         }, 30)
-        post.if_visible.value = true
+        // post.if_visible.value = true
         ;(post.post as HTMLElement).style.opacity = '1'
         setTimeout(post.reset, 800)
       },
@@ -116,7 +119,6 @@ const post = {
     )
   },
   reset: () => {
-    console.log(props.data.title, 'remove glitch')
     ;(post.post as HTMLElement).style.clipPath = ``
     ;(post.post as HTMLElement).classList.remove('glitch')
     clearInterval(post.timer as number)
@@ -175,6 +177,8 @@ onUnmounted(() => {
 </script>
 <style lang="scss" scoped>
 .post-container {
+  opacity: 0;
+  scale: 0.8;
   &:hover {
     z-index: 998;
     filter: brightness(0.9);
@@ -194,7 +198,6 @@ onUnmounted(() => {
   box-shadow: inset 0.1rem 0.1rem var(--white);
   display: flex;
   justify-content: center;
-  align-items: center;
   .post-info {
     pointer-events: none;
     opacity: 0;
@@ -256,8 +259,8 @@ onUnmounted(() => {
     }
   }
   .post-content {
-    width: 30rem;
-    height: 30rem;
+    margin: 1rem;
+    flex-grow: 1;
     border-radius: 1rem;
     background-color: rgba($color: #d1d1d1, $alpha: 1);
     color: #000;
@@ -312,7 +315,6 @@ onUnmounted(() => {
     mix-blend-mode: lighten;
     z-index: 2;
   }
-  display: none;
 }
 
 span.title {

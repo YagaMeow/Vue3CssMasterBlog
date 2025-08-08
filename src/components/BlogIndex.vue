@@ -4,6 +4,7 @@
     <Nav></Nav>
     <Posts></Posts>
     <PostList></PostList>
+    <MasonryPost></MasonryPost>
     <TitleMenu></TitleMenu>
     <PostTab></PostTab>
   </div>
@@ -16,6 +17,7 @@ import BackGround from './background.vue'
 import Lenis from 'lenis'
 import TitleMenu from './TitleMenu.vue'
 import PostList from './Posts/PostList.vue'
+import MasonryPost from './Posts/MasonryPost.vue'
 import { useAppStore } from '@/pinia'
 // const appStore = useAppStore()
 // const lenis = new Lenis({})

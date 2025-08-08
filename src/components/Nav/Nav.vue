@@ -29,7 +29,19 @@ import router from '@/router'
 import MyButton from '@/components/ui/btn.vue'
 import gsap from 'gsap'
 import SvgIcon from '../SvgIcon.vue'
-import { el } from 'element-plus/es/locales.mjs'
+import CustomBounce from 'gsap/CustomBounce'
+function elasticEase(progress: number) {
+  // 设置弹性参数
+  const amplitude = 1 // 振幅，控制过冲的幅度
+  const period = 1 // 周期，控制弹跳的次数（周期越小，次数越多）
+  if (progress === 0 || progress === 1) return progress
+  const s = (period / (2 * Math.PI)) * Math.asin(1 / amplitude)
+  return (
+    amplitude * Math.pow(2, -10 * progress) * Math.sin(((progress - s) * (2 * Math.PI)) / period) +
+    1
+  )
+}
+gsap.registerEase('myEase', elasticEase)
 
 const userStore = useUserStore()
 const appStore = useAppStore()
@@ -114,15 +126,17 @@ const nav = {
     gsap.timeline().to(nav.slider, {
       '--type': type,
       duration: 0.2,
-      ease: 'power3.out',
+      ease: 'myEase',
     })
     if (type === 0) {
+      if (nav.layout_type === 1) appStore.masonry_to_diagram()
       if (nav.layout_type === 2) appStore.list_to_diagram()
-    } else if (type === 1 && nav.layout_type === 0) {
+    } else if (type === 1) {
+      if (nav.layout_type === 0) appStore.diagram_to_masonry()
+      if (nav.layout_type === 2) appStore.list_to_masonry()
     } else if (type === 2) {
       if (nav.layout_type === 0) appStore.diagram_to_list()
-      else {
-      }
+      if (nav.layout_type === 1) appStore.masonry_to_list()
     }
     nav.layout_type = type
     appStore.layout_type = type

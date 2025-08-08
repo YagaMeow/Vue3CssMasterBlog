@@ -18,6 +18,7 @@
       @dragend="dragEnd"
       @drag="onDrag"
       :uri="item.uri"
+      class="diagram-post"
     ></Post>
   </div>
 </template>
@@ -87,20 +88,27 @@ const diagram = {
         console.error('Failed to fetch posts:', error)
       })
     this.if_visible.value = true
-    this.posts = document.querySelectorAll('.post')
-    this.posts?.forEach((p) => {
-      p.classList.add('glitch')
+    this.posts = document.querySelectorAll('.diagram-post')
+    this.animator = gsap.timeline().to(this.posts, {
+      opacity: 1,
+      scale: 1,
+      duration: 0.2,
+      stagger: 0.1,
+      ease: 'power3.out',
     })
+    // this.posts?.forEach((p) => {
+    //   p.classList.add('glitch')
+    // })
   },
   hide: (immediate: () => void, next: () => void) => {
     if (diagram.animator?.isActive()) {
-      return
+      diagram.animator.kill()
     }
     if (immediate) immediate()
     if (diagram.posts) {
       diagram.animator = gsap.timeline().to(diagram.posts, {
         opacity: 0,
-        duration: 0.5,
+        duration: 0.2,
         ease: 'power3.out',
         onComplete: () => {
           diagram.if_visible.value = false
