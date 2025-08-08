@@ -76,7 +76,7 @@ const postlist = {
           opacity: 1,
           duration: 0.2,
           ease: 'power3.in',
-          stagger: 0.08,
+          stagger: 0.04,
         },
         '<',
       )

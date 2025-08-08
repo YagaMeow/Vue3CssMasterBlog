@@ -1,6 +1,15 @@
 import type { Article } from '@/utils/utils'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { Howl } from 'howler'
+
+import a_enter from '@/assets/audio/enter.mp3'
+import a_leave from '@/assets/audio/leave.mp3'
+import a_list from '@/assets/audio/list.mp3'
+import a_discover from '@/assets/audio/discover.mp3'
+import a_switch from '@/assets/audio/switch.mp3'
+import a_showtab from '@/assets/audio/showtab.mp3'
+import a_closetab from '@/assets/audio/closetab.mp3'
 
 export const useAppStore = defineStore('app', () => {
   // 加载页面
@@ -28,6 +37,37 @@ export const useAppStore = defineStore('app', () => {
   const show_post = ref<(() => void) | null>(null)
   const hide_post = ref<(() => void) | null>(null)
 
+  const audio_controller = {
+    entermenubutton: new Howl({
+      src: [a_enter],
+      preload: true,
+    }),
+    leavemenubutton: new Howl({
+      src: [a_leave],
+      preload: true,
+    }),
+    switchmenubutton: new Howl({
+      src: [a_switch],
+      preload: true,
+    }),
+    toorfrompost: new Howl({
+      src: [a_discover],
+      preload: true,
+    }),
+    switchlayout: new Howl({
+      src: [a_list],
+      preload: true,
+    }),
+    showposttab: new Howl({
+      src: [a_showtab],
+      preload: true,
+    }),
+    hideposttab: new Howl({
+      src: [a_closetab],
+      preload: true,
+    }),
+  }
+
   const post_data = ref<Article>({
     title: '',
     uri: '',
@@ -52,6 +92,7 @@ export const useAppStore = defineStore('app', () => {
         hide_menus.value?.(
           () => {
             show_nav.value?.()
+            audio_controller.toorfrompost.play()
           },
           () => {
             show_diagram.value?.()
@@ -63,6 +104,7 @@ export const useAppStore = defineStore('app', () => {
         hide_menus.value?.(
           () => {
             show_nav.value?.()
+            audio_controller.toorfrompost.play()
           },
           () => {
             show_masonry.value?.()
@@ -74,6 +116,7 @@ export const useAppStore = defineStore('app', () => {
         hide_menus.value?.(
           () => {
             show_nav.value?.()
+            audio_controller.toorfrompost.play()
           },
           () => {
             show_list.value?.()
@@ -93,6 +136,7 @@ export const useAppStore = defineStore('app', () => {
               () => {},
               () => {},
             )
+            audio_controller.toorfrompost.play()
           },
           () => {
             show_menus.value?.()
@@ -107,6 +151,7 @@ export const useAppStore = defineStore('app', () => {
               () => {},
               () => {},
             )
+            audio_controller.toorfrompost.play()
           },
           () => {
             show_menus.value?.()
@@ -121,6 +166,7 @@ export const useAppStore = defineStore('app', () => {
               () => {},
               () => {},
             )
+            audio_controller.toorfrompost.play()
           },
           () => {
             show_menus.value?.()
@@ -212,5 +258,6 @@ export const useAppStore = defineStore('app', () => {
     list_to_masonry,
     masonry_to_diagram,
     masonry_to_list,
+    audio_controller,
   }
 })

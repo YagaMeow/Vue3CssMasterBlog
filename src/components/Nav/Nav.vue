@@ -68,14 +68,14 @@ const nav = {
       .timeline()
       .to(nav.discover, {
         y: '0',
-        duration: 0.5,
+        duration: 0.2,
         ease: 'power3.out',
       })
       .to(
         nav.collect,
         {
           y: '0',
-          duration: 0.5,
+          duration: 0.2,
           ease: 'power3.out',
         },
         '<',
@@ -84,7 +84,7 @@ const nav = {
         nav.footer,
         {
           y: 0,
-          duration: 0.5,
+          duration: 0.2,
           ease: 'power3.out',
         },
         '<',
@@ -99,15 +99,15 @@ const nav = {
       .timeline()
       .to(nav.discover, {
         y: '-6rem',
-        duration: 0.5,
-        ease: 'power3.out',
+        duration: 0.2,
+        ease: 'power3.in',
       })
       .to(
         nav.collect,
         {
           y: '-6rem',
-          duration: 0.5,
-          ease: 'power3.out',
+          duration: 0.2,
+          ease: 'power3.in',
         },
         '<',
       )
@@ -115,8 +115,8 @@ const nav = {
         nav.footer,
         {
           y: '6rem',
-          duration: 0.5,
-          ease: 'power3.out',
+          duration: 0.2,
+          ease: 'power3.in',
         },
         '<',
       )
@@ -140,6 +140,7 @@ const nav = {
     }
     nav.layout_type = type
     appStore.layout_type = type
+    appStore.audio_controller.switchlayout.play()
   },
 }
 appStore.show_nav = nav.show.bind(nav)

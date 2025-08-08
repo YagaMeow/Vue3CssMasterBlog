@@ -51,6 +51,7 @@ const diagram = {
   posts: null as NodeListOf<HTMLElement> | null,
   draggable: ref(false),
   mouse_pos: ref([0, 0]),
+  moving: [] as gsap.core.Tween[],
   offset_per: ref([0, 0]),
   timer: null as null | number,
   init: () => {
@@ -71,7 +72,7 @@ const diagram = {
       if (diagram.timer) return
       diagram.timer = setTimeout(() => {
         diagram.timer = 0
-      }, 100)
+      }, 10)
       if (diagram.mouse_pos.value[0] !== 0 || diagram.mouse_pos.value[1] !== 0)
         diagram.move(e.x, e.y)
       diagram.mouse_pos.value = [e.x, e.y]
@@ -123,11 +124,23 @@ const diagram = {
     diagram.offset_per.value[0] = offet_x * 100
     diagram.offset_per.value[1] = offet_y * 100
     // if (diagram.offset_per.value[0]) console.log(diagram.offset_per.value)
-    diagram.posts?.forEach((p) => {
-      gsap.to(p, {
-        left: parseFloat(p.style.left) + diagram.offset_per.value[0] * 2 + '%',
-        top: parseFloat(p.style.top) + diagram.offset_per.value[1] * 2 + '%',
-        duration: 0.5,
+
+    diagram.posts?.forEach((p, idx) => {
+      let new_left = parseFloat(p.style.left) + diagram.offset_per.value[0] * 5
+      let new_top = parseFloat(p.style.top) + diagram.offset_per.value[1] * 5
+      let _duration = 0
+      const width = 250
+      if (new_left < 50 - width / 2) new_left += width
+      else if (new_left > width / 2 + 50) new_left -= width
+      else if (new_top < 50 - width / 2) new_top += width
+      else if (new_top > width / 2 + 50) new_top -= width
+      else _duration = 0.5
+      if (this.moving[idx] != undefined && this.moving[idx].isActive()) this.moving[idx].kill()
+      this.moving[idx] = gsap.to(p, {
+        left: new_left + '%',
+        top: new_top + '%',
+        duration: _duration,
+        ease: 'power4.out',
       })
     })
   },

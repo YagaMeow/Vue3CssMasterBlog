@@ -63,6 +63,7 @@ const posttap = {
         },
         '<',
       )
+    appStore.audio_controller.showposttab.play()
   },
   hide() {
     if (this.animator?.isActive()) return
@@ -90,6 +91,7 @@ const posttap = {
         },
         '<',
       )
+    appStore.audio_controller.hideposttab.play()
   },
   initLenis() {
     this.lenis = new Lenis({

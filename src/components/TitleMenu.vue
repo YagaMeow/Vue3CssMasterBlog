@@ -1,13 +1,22 @@
 <template>
-  <div class="title_menu" ref="container" v-show="(titleMenu.if_visible as Ref).value">
-    <div class="title_menu_button" @click="appStore.menus_to_posts()">
+  <div
+    class="title_menu"
+    ref="container"
+    v-show="(titleMenu.if_visible as Ref).value"
+    @mouseenter="appStore.audio_controller.entermenubutton.play()"
+  >
+    <div
+      @mouseleave="titleMenu.mouseout"
+      class="title_menu_button"
+      @click="appStore.menus_to_posts()"
+    >
       <div class="live">live now</div>
       2025
     </div>
-    <div class="title_menu_button">2024</div>
-    <div class="title_menu_button">2023</div>
-    <div class="title_menu_button">2022</div>
-    <div class="title_menu_button">2021</div>
+    <div @mouseleave="titleMenu.mouseout" class="title_menu_button">2024</div>
+    <div @mouseleave="titleMenu.mouseout" class="title_menu_button">2023</div>
+    <div @mouseleave="titleMenu.mouseout" class="title_menu_button">2022</div>
+    <div @mouseleave="titleMenu.mouseout" class="title_menu_button">2021</div>
   </div>
 </template>
 <script setup lang="ts">
@@ -18,6 +27,7 @@ import gsap from 'gsap'
 const appStore = useAppStore()
 const container = ref<HTMLElement | null>(null)
 const buttons = ref<NodeListOf<HTMLElement> | null>(null)
+let no_audio = false
 
 const titleMenu = {
   animator: null as null | gsap.core.Timeline,
@@ -49,22 +59,27 @@ const titleMenu = {
       })
       .to(buttons.value, {
         opacity: 1,
-        duration: 0.5,
+        duration: 0.2,
         stagger: 0.05,
         ease: 'power3.out',
+        onComplete: () => {
+          no_audio = false
+        },
       })
   },
   hide(immediate: () => void, next: () => void) {
     if ((this.animator as gsap.core.Timeline).isActive()) {
+      this.animator?.kill()
       return
     }
+    no_audio = true
     if (immediate) immediate()
     this.animator = gsap
       .timeline()
       .to(container.value, {
         opacity: 0,
-        duration: 0.5,
-        ease: 'power3.out',
+        duration: 0.2,
+        ease: 'power3.in',
         onComplete: () => {
           ;(this.if_visible as Ref).value = false
           if (next) next()
@@ -74,6 +89,9 @@ const titleMenu = {
         opacity: 0,
         duration: 0,
       })
+  },
+  mouseout() {
+    if (!no_audio) appStore.audio_controller.leavemenubutton.play()
   },
 }
 appStore.show_menus = titleMenu.show.bind(titleMenu)
@@ -87,9 +105,9 @@ onMounted(() => {
 .title_menu {
   --scale: 1;
   position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   height: 100vh;
   opacity: 0;
 

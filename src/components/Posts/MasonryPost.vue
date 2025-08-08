@@ -20,7 +20,6 @@ import type { Article } from '@/utils/utils'
 import Post from './Post.vue'
 import { range } from '@/utils/utils'
 import { useAppStore } from '@/pinia'
-import { fa } from 'element-plus/es/locales.mjs'
 const appStore = useAppStore()
 const cols = ref(5)
 
@@ -95,8 +94,9 @@ const masonry = {
             y: 0,
             opacity: 1,
             scale: 1,
-            duration: 0.2,
+            duration: 0.3,
             ease: 'power3.out',
+            delay: range(0, 0.2),
           })
       })
     })

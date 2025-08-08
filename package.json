@@ -48,6 +48,7 @@
     "axios": "^1.7.9",
     "element-plus": "^2.9.3",
     "gsap": "^3.13.0",
+    "howler": "^2.2.4",
     "lenis": "^1.2.3",
     "lowlight": "^3.3.0",
     "mockjs": "^1.1.0",
@@ -62,6 +63,7 @@
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",
+    "@types/howler": "^2.2.12",
     "@types/jsdom": "^21.1.7",
     "@types/node": "^22.10.2",
     "@vitejs/plugin-vue": "^5.2.1",
