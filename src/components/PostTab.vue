@@ -10,7 +10,8 @@
         <MyButton class="close_btn" @click="appStore.hide_tab">×</MyButton>
       </div>
       <div class="tab-content">
-        <PostPage :uri="appStore.post_data.uri"></PostPage>
+        <PostPage v-if="!appStore.edit_mode" :uri="appStore.post_data.uri"></PostPage>
+        <CreatePage v-else></CreatePage>
       </div>
     </div>
   </div>
@@ -22,6 +23,7 @@ import gsap from 'gsap'
 import { useAppStore } from '@/pinia'
 import { formatDate } from '@/utils/utils'
 import PostPage from '@/views/PostPage/PostPage.vue'
+import CreatePage from '@/views/PostPage/CreatePost.vue'
 import Lenis from 'lenis'
 const appStore = useAppStore()
 

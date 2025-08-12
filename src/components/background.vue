@@ -46,18 +46,17 @@ const background: Background = {
     document.addEventListener('touchend', (e) => {
       background.reset()
     })
-    console.log(innerWidth, innerHeight)
   },
   move: (x: number, y: number) => {
     if (background.mouse_x === 0 && background.mouse_y === 0) {
       background.mouse_x = x
       background.mouse_y = y
     }
-    background.distance_x += ((x - background.mouse_x) / innerWidth) * 80
-    background.distance_y += ((y - background.mouse_y) / innerHeight) * 80
+    background.distance_x += ((x - background.mouse_x) / document.body.offsetWidth) * 10
+    background.distance_y += ((y - background.mouse_y) / document.body.offsetHeight) * 10
     gsap.to(background.balls, {
-      x: `${background.distance_x}px`,
-      y: `${background.distance_y}px`,
+      x: `${background.distance_x}%`,
+      y: `${background.distance_y}%`,
       duration: 3,
       ease: 'power3.out',
     })

@@ -75,6 +75,8 @@ export const useAppStore = defineStore('app', () => {
     created_at: '',
   })
 
+  const edit_mode = ref(false)
+
   const layout_type = ref(0)
 
   function first_show() {
@@ -232,6 +234,7 @@ export const useAppStore = defineStore('app', () => {
   }
 
   return {
+    edit_mode,
     hide_loading,
     show_menus,
     hide_menus,

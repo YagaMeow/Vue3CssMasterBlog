@@ -119,11 +119,11 @@ onMounted(() => {
     width: calc(var(--scale) * 60rem);
     height: calc(var(--scale) * 16rem);
 
-    margin: 3px 0;
+    margin: .3rem 0;
     transition: height cubic-bezier(0, 0, 0.8, 1.2) 0.1s;
     background-color: #616161;
     border-radius: 1rem;
-    box-shadow: inset 1px 1px #fff;
+    box-shadow: inset .1rem .1rem #fff;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -156,7 +156,7 @@ onMounted(() => {
       padding-right: 5px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 0.5rem;
       &::after {
         content: '';
         background-color: rgb(39, 213, 39);

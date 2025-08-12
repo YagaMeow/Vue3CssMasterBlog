@@ -3,7 +3,7 @@
     <MyButton id="discover">
       <div class="button-content" @click="appStore.posts_to_menus">discover</div>
     </MyButton>
-    <MyButton id="collect"><div class="button-content">collect</div></MyButton>
+    <MyButton id="collect" ><div class="button-content" @click="nav.handleCollect">collect</div></MyButton>
     <MyButton id="sound"> <div class="button-content">s</div> </MyButton>
     <MyButton id="info"><div class="button-content">i</div></MyButton>
   </div>
@@ -142,6 +142,10 @@ const nav = {
     appStore.layout_type = type
     appStore.audio_controller.switchlayout.play()
   },
+  handleCollect() {
+    appStore.edit_mode = true
+    appStore.show_tab?.()
+  }
 }
 appStore.show_nav = nav.show.bind(nav)
 appStore.hide_nav = nav.hide.bind(nav)
