@@ -4,9 +4,13 @@
     <div class="tab-container">
       <div class="tab-title">
         <div class="tab-title-info">
-          <div class="title">{{ appStore.post_data.title }}</div>
-          <div class="info">{{ formatDate(appStore.post_data.created_at) }}</div>
+          <div class="title" v-if="!appStore.edit_mode">{{ appStore.post_data.title }}</div>
+          <div class="tab-title-input"  v-else>
+            <input v-model="_title" type="text" placeholder="Please enter title...">
+          </div>
+          <div class="info" v-if="!appStore.edit_mode">{{ formatDate(appStore.post_data.created_at) }}</div>
         </div>
+        <MyButton v-if="appStore.edit_mode" class="confirm_btn" @click="posttap.handleCreate">√</MyButton>
         <MyButton class="close_btn" @click="appStore.hide_tab">×</MyButton>
       </div>
       <div class="tab-content">
@@ -25,7 +29,12 @@ import { formatDate } from '@/utils/utils'
 import PostPage from '@/views/PostPage/PostPage.vue'
 import CreatePage from '@/views/PostPage/CreatePost.vue'
 import Lenis from 'lenis'
+import { ArticleAPI } from '@/api/api'
+import { Editor } from '@tiptap/vue-3'
 const appStore = useAppStore()
+
+const _title = ref("")
+const uri = ref("")
 
 const posttap = {
   if_visible: ref(false),
@@ -111,6 +120,13 @@ const posttap = {
     this.lenis?.destroy()
     this.lenis = null
   },
+  handleCreate() {
+    ArticleAPI.create({
+      title: _title.value,
+      content: '',
+      uri: _title.value
+    })
+  }
 }
 
 function handleHide() {
@@ -155,18 +171,43 @@ onMounted(() => {
       flex: 0;
       padding: 1rem;
       align-items: center;
+      .confirm_btn {
+        margin-left: auto;
+      }
+
       .close_btn {
+        margin-left: 1rem;
+      }
+      .close_btn,
+      .confirm_btn {
         width: 4rem;
         height: 4rem;
         font-size: 2rem;
         color: var(--white);
-        margin-left: auto;
+        
       }
 
       .tab-title-info {
         display: flex;
         flex-direction: column;
+        .tab-title-input {
+          border-bottom: 1px solid #eee;
+          input {
+            font-size: 2rem;
+            color: #fff;
+            width: 100%;
+            height: 3rem;
+            background-color: transparent;
+            outline: none;
+            border: none;
+            // &:focus{
+            //   outline: 1px solid white;
+            // }
+          }
+        }
+        
       }
+
       .title,
       .info {
         color: #fff;
