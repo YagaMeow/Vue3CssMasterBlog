@@ -7,9 +7,11 @@
     <MasonryPost></MasonryPost>
     <TitleMenu></TitleMenu>
     <PostTab></PostTab>
+    <Login></Login>
   </div>
 </template>
 <script setup lang="ts">
+import Login from './Login.vue'
 import PostTab from './PostTab.vue'
 import Nav from './Nav/Nav.vue'
 import Posts from './Posts/PostDiagram.vue'

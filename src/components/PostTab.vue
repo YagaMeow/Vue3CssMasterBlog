@@ -8,13 +8,13 @@
           <div class="tab-title-input"  v-else>
             <input v-model="_title" type="text" placeholder="Please enter title...">
           </div>
-          <div class="info" v-if="!appStore.edit_mode">{{ formatDate(appStore.post_data.created_at) }}</div>
+          <div class="info" v-if="!appStore.edit_mode">{{ formatDate(appStore.post_data.created_at.toString()) }}</div>
         </div>
         <MyButton v-if="appStore.edit_mode" class="confirm_btn" @click="posttap.handleCreate">√</MyButton>
-        <MyButton class="close_btn" @click="appStore.hide_tab">×</MyButton>
+        <MyButton class="close_btn" :style="{'margin-left': appStore.edit_mode?'1rem':'auto'}" @click="appStore.hide_tab">×</MyButton>
       </div>
       <div class="tab-content">
-        <PostPage v-if="!appStore.edit_mode" :uri="appStore.post_data.uri"></PostPage>
+        <PostPage v-if="!appStore.edit_mode" :uri="appStore.post_data.uri.toString()"></PostPage>
         <CreatePage v-else></CreatePage>
       </div>
     </div>
@@ -123,7 +123,7 @@ const posttap = {
   handleCreate() {
     ArticleAPI.create({
       title: _title.value,
-      content: '',
+      content: JSON.stringify({}),
       uri: _title.value
     })
   }

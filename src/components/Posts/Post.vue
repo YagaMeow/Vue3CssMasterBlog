@@ -158,6 +158,7 @@ const post = {
       created_at: string
     }
     // console.log(appStore.post_data.title)
+    appStore.edit_mode = false
     appStore.show_tab?.()
     // appStore.lenis.stop()
   },

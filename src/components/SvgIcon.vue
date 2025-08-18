@@ -23,8 +23,11 @@ const svgClass = computed(() => {
   </svg>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .svg-icon {
   fill: currentColor;
+  path {
+    fill: inherit;
+  }
 }
 </style>

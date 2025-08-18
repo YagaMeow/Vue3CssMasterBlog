@@ -4,8 +4,12 @@
       <div class="button-content" @click="appStore.posts_to_menus">discover</div>
     </MyButton>
     <MyButton id="collect" ><div class="button-content" @click="nav.handleCollect">collect</div></MyButton>
-    <MyButton id="sound"> <div class="button-content">s</div> </MyButton>
+    <MyButton id="sound"> <div class="button-content">
+      <svg-icon iconClass="volumeHigh" ></svg-icon>
+    </div> </MyButton>
     <MyButton id="info"><div class="button-content">i</div></MyButton>
+    <MyButton id="login"
+    @click="appStore.show_login"><div class="button-content">L</div></MyButton>
   </div>
   <div class="nav-container footer">
     <MyButton id="type"><div class="button-content">type</div></MyButton>
@@ -29,18 +33,7 @@ import router from '@/router'
 import MyButton from '@/components/ui/btn.vue'
 import gsap from 'gsap'
 import SvgIcon from '../SvgIcon.vue'
-import CustomBounce from 'gsap/CustomBounce'
-function elasticEase(progress: number) {
-  // 设置弹性参数
-  const amplitude = 1 // 振幅，控制过冲的幅度
-  const period = 1 // 周期，控制弹跳的次数（周期越小，次数越多）
-  if (progress === 0 || progress === 1) return progress
-  const s = (period / (2 * Math.PI)) * Math.asin(1 / amplitude)
-  return (
-    amplitude * Math.pow(2, -10 * progress) * Math.sin(((progress - s) * (2 * Math.PI)) / period) +
-    1
-  )
-}
+import {elasticEase} from '@/utils/utils'
 gsap.registerEase('myEase', elasticEase)
 
 const userStore = useUserStore()

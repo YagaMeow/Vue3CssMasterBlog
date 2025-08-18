@@ -36,6 +36,9 @@ export const useAppStore = defineStore('app', () => {
   // 文章页面
   const show_post = ref<(() => void) | null>(null)
   const hide_post = ref<(() => void) | null>(null)
+  //登录页
+  const show_login = ref<(() => void) | null>(null)
+  const hide_login = ref<(() => void) | null>(null)
 
   const audio_controller = {
     entermenubutton: new Howl({
@@ -244,6 +247,8 @@ export const useAppStore = defineStore('app', () => {
     hide_diagram,
     show_post,
     hide_post,
+    show_login,
+    hide_login,
     show_tab,
     hide_tab,
     post_data,
