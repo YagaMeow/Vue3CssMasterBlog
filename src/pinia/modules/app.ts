@@ -2,6 +2,7 @@ import type { Article } from '@/utils/utils'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { Howl } from 'howler'
+import { Editor } from '@tiptap/vue-3'
 
 import a_enter from '@/assets/audio/enter.mp3'
 import a_leave from '@/assets/audio/leave.mp3'
@@ -79,6 +80,8 @@ export const useAppStore = defineStore('app', () => {
   })
 
   const edit_mode = ref(false)
+
+  const show_detail = ref(false)
 
   const layout_type = ref(0)
 
@@ -237,6 +240,7 @@ export const useAppStore = defineStore('app', () => {
   }
 
   return {
+    show_detail,
     edit_mode,
     hide_loading,
     show_menus,

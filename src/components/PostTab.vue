@@ -1,21 +1,30 @@
 <template>
   <div class="mask-container _fullscreen" v-show="posttap.if_visible.value">
-    <div class="mask _fullscreen" @click="handleHide"></div>
+    <div class="mask _fullscreen" @click="handleClose"></div>
     <div class="tab-container">
       <div class="tab-title">
         <div class="tab-title-info">
           <div class="title" v-if="!appStore.edit_mode">{{ appStore.post_data.title }}</div>
-          <div class="tab-title-input"  v-else>
-            <input v-model="_title" type="text" placeholder="Please enter title...">
+          <div v-else>
+            <div class="tab-title-input">
+              <input v-model="_title" type="text" placeholder="Please enter title...">
+            </div>
+            <div class="tab-uri-input">
+              <input v-model="_uri" type="text" placeholder="uri"></input>
+            </div>
           </div>
+
           <div class="info" v-if="!appStore.edit_mode">{{ formatDate(appStore.post_data.created_at.toString()) }}</div>
         </div>
-        <MyButton v-if="appStore.edit_mode" class="confirm_btn" @click="posttap.handleCreate">√</MyButton>
-        <MyButton class="close_btn" :style="{'margin-left': appStore.edit_mode?'1rem':'auto'}" @click="appStore.hide_tab">×</MyButton>
+        <MyButton v-if="appStore.edit_mode" class="confirm_btn" @click="handleHide">√</MyButton>
+        <MyButton v-else class="edit_btn" @click="posttap.handleEdit">
+          <svg-icon :iconClass="posttap.editable.value ? 'no-edit':'edit'">
+          </svg-icon>
+        </MyButton>
+        <MyButton class="close_btn" @click="handleClose">×</MyButton>
       </div>
       <div class="tab-content">
-        <PostPage v-if="!appStore.edit_mode" :uri="appStore.post_data.uri.toString()"></PostPage>
-        <CreatePage v-else></CreatePage>
+        <PostPage ref="ed" :uri="appStore.post_data.uri.toString()"></PostPage>
       </div>
     </div>
   </div>
@@ -31,10 +40,12 @@ import CreatePage from '@/views/PostPage/CreatePost.vue'
 import Lenis from 'lenis'
 import { ArticleAPI } from '@/api/api'
 import { Editor } from '@tiptap/vue-3'
+import SvgIcon from './SvgIcon.vue'
 const appStore = useAppStore()
 
 const _title = ref("")
-const uri = ref("")
+const _uri = ref("")
+const ed = ref()
 
 const posttap = {
   if_visible: ref(false),
@@ -43,6 +54,7 @@ const posttap = {
   content: null as null | HTMLElement,
   mask: null as null | HTMLElement,
   lenis: null as null | Lenis,
+  editable: ref(false),
   rafId: 0,
   init() {
     this.container = document.querySelector('.tab-container')
@@ -52,6 +64,11 @@ const posttap = {
   },
   show() {
     console.log(this.lenis)
+    appStore.show_detail = true
+    if (appStore.edit_mode) {
+      posttap.editable.value = true
+      ed.value.editor.setEditable(true)
+    }
     this.if_visible.value = true
     this.animator = gsap
       .timeline()
@@ -97,6 +114,7 @@ const posttap = {
           onComplete: () => {
             this.if_visible.value = false
             console.log(appStore.hide_post)
+            appStore.show_detail = false
             appStore.hide_post?.()
           },
         },
@@ -120,17 +138,54 @@ const posttap = {
     this.lenis?.destroy()
     this.lenis = null
   },
-  handleCreate() {
-    ArticleAPI.create({
+  async handleCreate() {
+    await ArticleAPI.create({
       title: _title.value,
-      content: JSON.stringify({}),
-      uri: _title.value
+      content: JSON.stringify(ed.value.editor.getJSON()),
+      uri: _uri.value
+    })
+  },
+  handleEdit() {
+    posttap.editable.value = !posttap.editable.value
+    ed.value.editor.setEditable(posttap.editable.value)
+  },
+  reset() {
+    console.log('reset editor')
+    appStore.post_data = {
+      title: '',
+      uri: '',
+      id: 0,
+      created_at: '',
+    }
+    posttap.editable.value = false
+    ed.value.editor.commands.clearContent()
+  }
+}
+
+async function handleClose() {
+  if (appStore.edit_mode) {
+    posttap.reset()
+    appStore.hide_tab?.()
+
+  } else {
+    await ArticleAPI.update({
+      title: appStore.post_data.title as string,
+      content: JSON.stringify(ed.value.editor.getJSON()),
+      uri: appStore.post_data.uri as string
+    }).then(() => {
+      posttap.reset()
+      appStore.hide_tab?.()
     })
   }
 }
 
-function handleHide() {
-  appStore.hide_tab?.()
+async function handleHide() {
+  if (appStore.edit_mode) {
+    posttap.handleCreate().then(() => {
+      posttap.reset()
+      appStore.hide_tab?.()
+    })
+  }
 }
 appStore.show_tab = posttap.show.bind(posttap)
 appStore.hide_tab = posttap.hide.bind(posttap)
@@ -143,15 +198,16 @@ onMounted(() => {
 .mask-container {
   z-index: 1000;
   --scale: 1;
-  user-select: none;
   display: flex;
   align-items: center;
   justify-content: center;
+
   .mask {
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(0rem);
     opacity: 0;
   }
+
   .tab-container {
     scale: 0.8;
     opacity: 0;
@@ -165,33 +221,61 @@ onMounted(() => {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+
     .tab-title {
       width: 100%;
       display: flex;
       flex: 0;
       padding: 1rem;
-      align-items: center;
-      .confirm_btn {
+      align-items: flex-start;
+
+      .confirm_btn,
+      .edit_btn {
         margin-left: auto;
+        color: #fff;
       }
 
       .close_btn {
         margin-left: 1rem;
       }
+
       .close_btn,
-      .confirm_btn {
+      .confirm_btn,
+      .edit_btn {
         width: 4rem;
         height: 4rem;
         font-size: 2rem;
         color: var(--white);
-        
+
       }
 
       .tab-title-info {
         display: flex;
         flex-direction: column;
-        .tab-title-input {
-          border-bottom: 1px solid #eee;
+
+        .tab-title-input,
+        .tab-uri-input {
+          margin-left: 2rem;
+          padding: 0.5rem 0;
+          position: relative;
+
+          &::after {
+            content: "";
+            width: 100%;
+            height: 0.1rem;
+            background-color: #fff;
+            display: block;
+            position: absolute;
+            bottom: 0;
+            transform: scaleX(0);
+            transform-origin: left;
+          }
+
+          &:focus-within::after {
+            transform: scaleX(1);
+            transition: transform 0.2s ease-out;
+          }
+
           input {
             font-size: 2rem;
             color: #fff;
@@ -205,22 +289,26 @@ onMounted(() => {
             // }
           }
         }
-        
+
       }
 
       .title,
       .info {
+        margin-left: 2rem;
+        padding: 0.5rem 0;
         color: #fff;
       }
 
       .title {
         font-size: 2rem;
       }
+
       .info {
         font-size: 1.8rem;
         color: #ccc;
       }
     }
+
     .tab-content {
       cursor: pointer;
       position: relative;

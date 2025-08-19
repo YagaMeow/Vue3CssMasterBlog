@@ -1,17 +1,13 @@
 <template>
   <div class="post post-container" ref="p" v-show="post.if_visible.value">
-    <div
-      class="post-info"
-      ref="info"
-      @dragover="
-        (e: DragEvent) => {
-          e.preventDefault()
-          if (e.dataTransfer) {
-            e.dataTransfer.dropEffect = 'move'
-          }
+    <div class="post-info" ref="info" @dragover="
+      (e: DragEvent) => {
+        e.preventDefault()
+        if (e.dataTransfer) {
+          e.dataTransfer.dropEffect = 'move'
         }
-      "
-    >
+      }
+    ">
       <div class="myform col">
         <div class="row">
           <div class="text">Creator</div>
@@ -39,6 +35,9 @@
       <p class="abstract"></p>
       <p class="post-footer">
         <MyButton @click.stop="post.switchInfo" class="icon" ref="i">i</MyButton>
+        <MyButton style="margin-left: 1rem;" @click.stop="handleDelete(data.uri)">
+          <svg-icon iconClass="bin"></svg-icon>
+        </MyButton>
         <span class="date">{{ formatDate(data.created_at) }}</span>
       </p>
     </div>
@@ -54,6 +53,7 @@ import { fa } from 'element-plus/es/locales.mjs'
 import type { ComponentPublicInstance } from 'vue'
 import { useAppStore } from '@/pinia'
 import { formatDate } from '@/utils/utils'
+import { ArticleAPI } from '@/api/api'
 defineOptions({
   name: 'SinglePost',
 })
@@ -93,8 +93,8 @@ const post = {
     post.post = p.value
     post.info = info.value
     post.icon = i.value ? (i.value.$el as HTMLElement) : null
-    ;(post.post as HTMLElement).style.left = `${left}%`
-    ;(post.post as HTMLElement).style.top = `${top}%`
+      ; (post.post as HTMLElement).style.left = `${left}%`
+      ; (post.post as HTMLElement).style.top = `${top}%`
   },
   glitch: () => {
     setTimeout(
@@ -106,28 +106,28 @@ const post = {
           const y = Math.random() * 100
           const w = Math.random() * 50 + 50
           const h = Math.random() * 10 + 40
-          ;(post.post as HTMLElement).style.clipPath =
-            `polygon(${x}% ${y}%, ${x + w}% ${y}%,${x + w}% ${y + h}%,${x}% ${y + h}%)`
-          ;(post.post as HTMLElement).style.left = `${left}%`
-          ;(post.post as HTMLElement).style.top = `${top}%`
+            ; (post.post as HTMLElement).style.clipPath =
+              `polygon(${x}% ${y}%, ${x + w}% ${y}%,${x + w}% ${y + h}%,${x}% ${y + h}%)`
+            ; (post.post as HTMLElement).style.left = `${left}%`
+            ; (post.post as HTMLElement).style.top = `${top}%`
         }, 30)
-        // post.if_visible.value = true
-        ;(post.post as HTMLElement).style.opacity = '1'
+          // post.if_visible.value = true
+          ; (post.post as HTMLElement).style.opacity = '1'
         setTimeout(post.reset, 800)
       },
       range(0, 500),
     )
   },
   reset: () => {
-    ;(post.post as HTMLElement).style.clipPath = ``
-    ;(post.post as HTMLElement).classList.remove('glitch')
+    ; (post.post as HTMLElement).style.clipPath = ``
+      ; (post.post as HTMLElement).classList.remove('glitch')
     clearInterval(post.timer as number)
   },
   switchInfo() {
     if (post.show_info.value === false) {
       post.show_info.value = true
-      ;(post.info as HTMLElement).style.pointerEvents = 'auto'
-      ;(post.icon as HTMLElement).textContent = '×'
+        ; (post.info as HTMLElement).style.pointerEvents = 'auto'
+        ; (post.icon as HTMLElement).textContent = '×'
       gsap.timeline().to(post.info, {
         opacity: 1,
         duration: 0.2,
@@ -138,8 +138,8 @@ const post = {
       })
     } else {
       post.show_info.value = false
-      ;(post.info as HTMLElement).style.pointerEvents = 'none'
-      ;(post.icon as HTMLElement).textContent = 'i'
+        ; (post.info as HTMLElement).style.pointerEvents = 'none'
+        ; (post.icon as HTMLElement).textContent = 'i'
       gsap.timeline().to(post.info, {
         opacity: 0,
         duration: 0.2,
@@ -149,6 +149,13 @@ const post = {
         },
       })
     }
+  },
+  hide() {
+    gsap.timeline().to(post,{
+      scale: 0,
+      duration: 0.2,
+      ease: "power3.out"
+    })
   },
   show_details() {
     appStore.post_data = props.data as {
@@ -162,6 +169,11 @@ const post = {
     appStore.show_tab?.()
     // appStore.lenis.stop()
   },
+}
+
+async function handleDelete(uri: string) {
+  await ArticleAPI.delete(uri)
+  post.if_visible.value = false
 }
 
 onMounted(() => {
@@ -180,14 +192,17 @@ onUnmounted(() => {
 .post-container {
   opacity: 0;
   scale: 0.8;
+
   &:hover {
     z-index: 998;
     filter: brightness(0.9);
+
     .mybutton {
       opacity: 1 !important;
       transition: opacity ease-in-out 0.5s;
     }
   }
+
   cursor: pointer;
   user-select: none;
   display: flex;
@@ -199,6 +214,7 @@ onUnmounted(() => {
   box-shadow: inset 0.1rem 0.1rem var(--white);
   display: flex;
   justify-content: center;
+
   .post-info {
     pointer-events: none;
     opacity: 0;
@@ -213,10 +229,12 @@ onUnmounted(() => {
     border-radius: 1rem;
     backdrop-filter: blur(1rem);
     padding: 1rem;
+
     .col {
       display: flex;
       flex-direction: column;
     }
+
     .row {
       display: flex;
       flex-wrap: nowrap;
@@ -225,17 +243,21 @@ onUnmounted(() => {
       justify-content: center;
       margin: 0 1rem;
     }
+
     .myform {
       .text {
         font-size: 1.5rem;
         color: #fff;
       }
+
       .dot {
         flex: 1 1;
         border-bottom: dotted 0.2rem #fff;
       }
     }
+
     margin-top: auto;
+
     .mybutton {
       margin: 1rem;
       margin-top: auto;
@@ -248,10 +270,12 @@ onUnmounted(() => {
         gap: 0.5rem;
         color: #fff;
         font-size: 1.5rem;
+
         &#share::after {
           content: '↗';
           transition: ease-in-out 0.1s;
         }
+
         &#share:hover::after {
           transform: translate(0.2rem, -0.2rem);
           transition: ease-in-out 0.1s;
@@ -259,6 +283,7 @@ onUnmounted(() => {
       }
     }
   }
+
   .post-content {
     margin: 1rem;
     flex-grow: 1;
@@ -267,23 +292,28 @@ onUnmounted(() => {
     color: #000;
     display: flex;
     flex-direction: column;
+
     .post-footer {
       padding: 2rem;
       margin-top: auto;
       display: flex;
       align-items: center;
       justify-content: center;
+
       .date {
         margin-left: auto;
         font-size: 2rem;
       }
+
       .mybutton {
         &:hover {
           filter: brightness(2);
         }
+
         &.always-show {
           opacity: 1 !important;
         }
+
         width: 4rem;
         height: 4rem;
         color: #fff;
@@ -293,6 +323,7 @@ onUnmounted(() => {
       }
     }
   }
+
   /* outline: 1rem solid rgba(0, 0, 0, 0.4); */
   /* animation: 1s rect; */
   &::after,
@@ -306,6 +337,7 @@ onUnmounted(() => {
     top: 0;
     border-radius: 1rem;
   }
+
   &.giltch::after {
     box-shadow: 1rem 0 0 red;
   }

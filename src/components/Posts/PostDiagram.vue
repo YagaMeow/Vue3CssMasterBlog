@@ -64,7 +64,7 @@ const diagram = {
       diagram.reset()
     })
     document.addEventListener('mousemove', (e) => {
-      if (!diagram.draggable.value) return
+      if (!diagram.draggable.value || appStore.show_detail) return
       if (diagram.mouse_pos.value[0] === 0 || diagram.mouse_pos.value[1] === 0) {
         diagram.mouse_pos.value = [e.x, e.y]
         return

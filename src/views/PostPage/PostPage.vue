@@ -11,65 +11,46 @@
     <div class="tools control-group _null" v-if="editable">
       <div class="button-group">
         <!-- <button @click="editor.setEditable(false)">ban</button> -->
-        <button
-          @click="editor.chain().focus().toggleBold().run()"
+        <button @click="editor.chain().focus().toggleBold().run()"
           :disabled="!editor.can().chain().focus().toggleBold().run()"
-          :class="{ 'is-active': editor.isActive('bold') }"
-        >
+          :class="{ 'is-active': editor.isActive('bold') }">
           <svg-icon iconClass="bold"></svg-icon>
         </button>
-        <button
-          @click="editor.chain().focus().toggleItalic().run()"
+        <button @click="editor.chain().focus().toggleItalic().run()"
           :disabled="!editor.can().chain().focus().toggleItalic().run()"
-          :class="{ 'is-active': editor.isActive('italic') }"
-        >
+          :class="{ 'is-active': editor.isActive('italic') }">
           <svg-icon iconClass="italic"></svg-icon>
         </button>
-        <button
-          @click="editor.chain().focus().toggleStrike().run()"
+        <button @click="editor.chain().focus().toggleStrike().run()"
           :disabled="!editor.can().chain().focus().toggleStrike().run()"
-          :class="{ 'is-active': editor.isActive('strike') }"
-        >
+          :class="{ 'is-active': editor.isActive('strike') }">
           <svg-icon iconClass="strikethrough"></svg-icon>
         </button>
-        <button
-          @click="editor.chain().focus().toggleCode().run()"
+        <button @click="editor.chain().focus().toggleCode().run()"
           :disabled="!editor.can().chain().focus().toggleCode().run()"
-          :class="{ 'is-active': editor.isActive('code') }"
-        >
+          :class="{ 'is-active': editor.isActive('code') }">
           <svg-icon iconClass="code"></svg-icon>
         </button>
         <!-- <button @click="editor.chain().focus().unsetAllMarks().run()">Clear marks</button>
         <button @click="editor.chain().focus().clearNodes().run()">Clear nodes</button> -->
-        <button
-          @click="editor.chain().focus().setParagraph().run()"
-          :class="{ 'is-active': editor.isActive('paragraph') }"
-        >
+        <button @click="editor.chain().focus().setParagraph().run()"
+          :class="{ 'is-active': editor.isActive('paragraph') }">
           <svg-icon iconClass="paragraph"></svg-icon>
         </button>
-        <button
-          @click="editor.chain().focus().toggleBulletList().run()"
-          :class="{ 'is-active': editor.isActive('bulletList') }"
-          id="bullet-list"
-        >
+        <button @click="editor.chain().focus().toggleBulletList().run()"
+          :class="{ 'is-active': editor.isActive('bulletList') }" id="bullet-list">
           <svg-icon iconClass="unordered-list"></svg-icon>
         </button>
-        <button
-          @click="editor.chain().focus().toggleOrderedList().run()"
-          :class="{ 'is-active': editor.isActive('orderedList') }"
-        >
+        <button @click="editor.chain().focus().toggleOrderedList().run()"
+          :class="{ 'is-active': editor.isActive('orderedList') }">
           <svg-icon iconClass="ordered-list"></svg-icon>
         </button>
-        <button
-          @click="editor.chain().focus().toggleCodeBlock().run()"
-          :class="{ 'is-active': editor.isActive('codeBlock') }"
-        >
+        <button @click="editor.chain().focus().toggleCodeBlock().run()"
+          :class="{ 'is-active': editor.isActive('codeBlock') }">
           <svg-icon iconClass="code"></svg-icon>
         </button>
-        <button
-          @click="editor.chain().focus().toggleBlockquote().run()"
-          :class="{ 'is-active': editor.isActive('blockquote') }"
-        >
+        <button @click="editor.chain().focus().toggleBlockquote().run()"
+          :class="{ 'is-active': editor.isActive('blockquote') }">
           <svg-icon iconClass="quote"></svg-icon>
         </button>
         <button @click="editor.chain().focus().setHorizontalRule().run()">
@@ -78,56 +59,32 @@
         <button @click="editor.chain().focus().setHardBreak().run()">
           <svg-icon iconClass="text-wrap"></svg-icon>
         </button>
-        <button
-          @click="editor.chain().focus().undo().run()"
-          :disabled="!editor.can().chain().focus().undo().run()"
-          id="undo"
-        >
+        <button @click="editor.chain().focus().undo().run()" :disabled="!editor.can().chain().focus().undo().run()"
+          id="undo">
           <svg-icon iconClass="undo"></svg-icon>
         </button>
-        <button
-          @click="editor.chain().focus().redo().run()"
-          :disabled="!editor.can().chain().focus().redo().run()"
-          id="redo"
-        >
+        <button @click="editor.chain().focus().redo().run()" :disabled="!editor.can().chain().focus().redo().run()"
+          id="redo">
           <svg-icon iconClass="redo"></svg-icon>
         </button>
-        <button
-          @click="editor.chain().focus().setColor('#958DF1').run()"
-          :class="{ 'is-active': editor.isActive('textStyle', { color: '#958DF1' }) }"
-        >
+        <button @click="editor.chain().focus().setColor('#958DF1').run()"
+          :class="{ 'is-active': editor.isActive('textStyle', { color: '#958DF1' }) }">
           <svg-icon iconClass="font-color"></svg-icon>
         </button>
         <button @click="onImageUploadClick">
           <svg-icon iconClass="image"></svg-icon>
         </button>
-        <input
-          id="imageInput"
-          type="file"
-          accept="image/*"
-          style="display: none"
-          @change="onImageSelected"
-        />
+        <input id="imageInput" type="file" accept="image/*" style="display: none" @change="onImageSelected" />
       </div>
     </div>
-    <div
-      :class="{
-        'character-count': true,
-        'character-count--warning': editor.storage.characterCount.characters() === limit,
-      }"
-    >
+    <div :class="{
+      'character-count': true,
+      'character-count--warning': editor.storage.characterCount.characters() === limit,
+    }">
       <svg height="20" width="20" viewBox="0 0 20 20">
         <circle r="10" cx="10" cy="10" fill="#c1e3f7" />
-        <circle
-          r="5"
-          cx="10"
-          cy="10"
-          fill="transparent"
-          stroke="#68c3f7"
-          stroke-width="10"
-          :stroke-dasharray="`calc(${percentage} * 31.4 / 100) 31.4`"
-          transform="rotate(-90) translate(-20)"
-        />
+        <circle r="5" cx="10" cy="10" fill="transparent" stroke="#68c3f7" stroke-width="10"
+          :stroke-dasharray="`calc(${percentage} * 31.4 / 100) 31.4`" transform="rotate(-90) translate(-20)" />
         <circle r="6" cx="10" cy="10" fill="rgb(232, 231, 231)" />
       </svg>
 
@@ -187,8 +144,9 @@ const appStore = useAppStore()
 
 const myeditor = {
   is_loading: ref(true),
-  init() {},
+  init() { },
   async show() {
+    if (appStore.edit_mode) this.is_loading.value = false
     const res = await ArticleAPI.getByUri(props.uri)
 
     _data.id = res.data.id
@@ -315,6 +273,10 @@ function onImageSelected(event: Event) {
     reader.readAsDataURL(file)
   }
 }
+
+defineExpose({
+  editor
+})
 </script>
 <style lang="scss" scoped>
 .editor-container {
@@ -323,13 +285,22 @@ function onImageSelected(event: Event) {
   height: 100%;
   width: 100%;
   overflow: auto;
+
   .editor-text {
+    margin: 0.5rem 1rem;
     color: #fff;
+    :deep(p.is-empty::before) {
+      content: attr(data-placeholder) !important;
+      color: #aaa;
+      position: absolute;
+    }
   }
+
   .character-count {
     color: #fff;
     font-size: 2rem;
   }
+
   .loading {
     position: absolute;
     left: 50%;
@@ -359,6 +330,7 @@ function onImageSelected(event: Event) {
     color: var(--red);
   }
 }
+
 .tools {
   display: flex;
   justify-content: center;

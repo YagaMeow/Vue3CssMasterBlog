@@ -190,6 +190,7 @@ const myeditor = {
   is_loading: ref(true),
   init() {},
   async show() {
+    if(appStore.edit_mode)return
     const res = await ArticleAPI.getByUri(props.uri)
 
     _data.id = res.data.id
