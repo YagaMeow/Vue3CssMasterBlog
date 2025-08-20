@@ -40,6 +40,8 @@ export const useAppStore = defineStore('app', () => {
   //登录页
   const show_login = ref<(() => void) | null>(null)
   const hide_login = ref<(() => void) | null>(null)
+  //提示栏
+  const notify = ref<((text :string) => void) | null>(null)
 
   const audio_controller = {
     entermenubutton: new Howl({
@@ -90,7 +92,7 @@ export const useAppStore = defineStore('app', () => {
       () => {
         show_menus.value?.()
       },
-      () => {},
+      () => { },
     )
   }
 
@@ -141,8 +143,8 @@ export const useAppStore = defineStore('app', () => {
         hide_diagram.value?.(
           () => {
             hide_nav.value?.(
-              () => {},
-              () => {},
+              () => { },
+              () => { },
             )
             audio_controller.toorfrompost.play()
           },
@@ -156,8 +158,8 @@ export const useAppStore = defineStore('app', () => {
         hide_masonry.value?.(
           () => {
             hide_nav.value?.(
-              () => {},
-              () => {},
+              () => { },
+              () => { },
             )
             audio_controller.toorfrompost.play()
           },
@@ -171,8 +173,8 @@ export const useAppStore = defineStore('app', () => {
         hide_list.value?.(
           () => {
             hide_nav.value?.(
-              () => {},
-              () => {},
+              () => { },
+              () => { },
             )
             audio_controller.toorfrompost.play()
           },
@@ -187,7 +189,7 @@ export const useAppStore = defineStore('app', () => {
 
   function diagram_to_list() {
     hide_diagram.value?.(
-      () => {},
+      () => { },
       () => {
         show_list.value?.()
       },
@@ -196,7 +198,7 @@ export const useAppStore = defineStore('app', () => {
 
   function diagram_to_masonry() {
     hide_diagram.value?.(
-      () => {},
+      () => { },
       () => {
         show_masonry.value?.()
       },
@@ -205,7 +207,7 @@ export const useAppStore = defineStore('app', () => {
 
   function list_to_diagram() {
     hide_list.value?.(
-      () => {},
+      () => { },
       () => {
         show_diagram.value?.()
       },
@@ -214,7 +216,7 @@ export const useAppStore = defineStore('app', () => {
 
   function list_to_masonry() {
     hide_list.value?.(
-      () => {},
+      () => { },
       () => {
         show_masonry.value?.()
       },
@@ -223,7 +225,7 @@ export const useAppStore = defineStore('app', () => {
 
   function masonry_to_diagram() {
     hide_masonry.value?.(
-      () => {},
+      () => { },
       () => {
         show_diagram.value?.()
       },
@@ -232,7 +234,7 @@ export const useAppStore = defineStore('app', () => {
 
   function masonry_to_list() {
     hide_masonry.value?.(
-      () => {},
+      () => { },
       () => {
         show_list.value?.()
       },
@@ -240,6 +242,7 @@ export const useAppStore = defineStore('app', () => {
   }
 
   return {
+    notify,
     show_detail,
     edit_mode,
     hide_loading,

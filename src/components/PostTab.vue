@@ -2,6 +2,75 @@
   <div class="mask-container _fullscreen" v-show="posttap.if_visible.value">
     <div class="mask _fullscreen" @click="handleClose"></div>
     <div class="tab-container">
+      <div class="tools control-group">
+        <div class="button-group" v-if="ed">
+          <!-- <button @click="editor.setEditable(false)">ban</button> -->
+          <button @click="ed.editor.chain().focus().toggleBold().run()"
+            :disabled="!ed.editor.can().chain().focus().toggleBold().run()"
+            :class="{ 'is-active': ed.editor.isActive('bold') }">
+            <svg-icon iconClass="bold"></svg-icon>
+          </button>
+          <button @click="ed.editor.chain().focus().toggleItalic().run()"
+            :disabled="!ed.editor.can().chain().focus().toggleItalic().run()"
+            :class="{ 'is-active': ed.editor.isActive('italic') }">
+            <svg-icon iconClass="italic"></svg-icon>
+          </button>
+          <button @click="ed.editor.chain().focus().toggleStrike().run()"
+            :disabled="!ed.editor.can().chain().focus().toggleStrike().run()"
+            :class="{ 'is-active': ed.editor.isActive('strike') }">
+            <svg-icon iconClass="strikethrough"></svg-icon>
+          </button>
+          <button @click="ed.editor.chain().focus().toggleCode().run()"
+            :disabled="!ed.editor.can().chain().focus().toggleCode().run()"
+            :class="{ 'is-active': ed.editor.isActive('code') }">
+            <svg-icon iconClass="code"></svg-icon>
+          </button>
+          <!-- <button @click="editor.chain().focus().unsetAllMarks().run()">Clear marks</button>
+        <button @click="editor.chain().focus().clearNodes().run()">Clear nodes</button> -->
+          <button @click="ed.editor.chain().focus().setParagraph().run()"
+            :class="{ 'is-active': ed.editor.isActive('paragraph') }">
+            <svg-icon iconClass="paragraph"></svg-icon>
+          </button>
+          <button @click="ed.editor.chain().focus().toggleBulletList().run()"
+            :class="{ 'is-active': ed.editor.isActive('bulletList') }" id="bullet-list">
+            <svg-icon iconClass="unordered-list"></svg-icon>
+          </button>
+          <button @click="ed.editor.chain().focus().toggleOrderedList().run()"
+            :class="{ 'is-active': ed.editor.isActive('orderedList') }">
+            <svg-icon iconClass="ordered-list"></svg-icon>
+          </button>
+          <button @click="ed.editor.chain().focus().toggleCodeBlock().run()"
+            :class="{ 'is-active': ed.editor.isActive('codeBlock') }">
+            <svg-icon iconClass="code"></svg-icon>
+          </button>
+          <button @click="ed.editor.chain().focus().toggleBlockquote().run()"
+            :class="{ 'is-active': ed.editor.isActive('blockquote') }">
+            <svg-icon iconClass="quote"></svg-icon>
+          </button>
+          <button @click="ed.editor.chain().focus().setHorizontalRule().run()">
+            <svg-icon iconClass="separator"></svg-icon>
+          </button>
+          <button @click="ed.editor.chain().focus().setHardBreak().run()">
+            <svg-icon iconClass="text-wrap"></svg-icon>
+          </button>
+          <button @click="ed.editor.chain().focus().undo().run()"
+            :disabled="!ed.editor.can().chain().focus().undo().run()" id="undo">
+            <svg-icon iconClass="undo"></svg-icon>
+          </button>
+          <button @click="ed.editor.chain().focus().redo().run()"
+            :disabled="!ed.editor.can().chain().focus().redo().run()" id="redo">
+            <svg-icon iconClass="redo"></svg-icon>
+          </button>
+          <button @click="ed.editor.chain().focus().setColor('#958DF1').run()"
+            :class="{ 'is-active': ed.editor.isActive('textStyle', { color: '#958DF1' }) }">
+            <svg-icon iconClass="font-color"></svg-icon>
+          </button>
+          <button @click="">
+            <svg-icon iconClass="image"></svg-icon>
+          </button>
+          <input id="imageInput" type="file" accept="image/*" style="display: none" @change="" />
+        </div>
+      </div>
       <div class="tab-title">
         <div class="tab-title-info">
           <div class="title" v-if="!appStore.edit_mode">{{ appStore.post_data.title }}</div>
@@ -18,7 +87,7 @@
         </div>
         <MyButton v-if="appStore.edit_mode" class="confirm_btn" @click="handleHide">√</MyButton>
         <MyButton v-else class="edit_btn" @click="posttap.handleEdit">
-          <svg-icon :iconClass="posttap.editable.value ? 'no-edit':'edit'">
+          <svg-icon :iconClass="posttap.editable.value ? 'no-edit' : 'edit'">
           </svg-icon>
         </MyButton>
         <MyButton class="close_btn" @click="handleClose">×</MyButton>
@@ -55,6 +124,7 @@ const posttap = {
   mask: null as null | HTMLElement,
   lenis: null as null | Lenis,
   editable: ref(false),
+  buttons: null as null | NodeListOf<HTMLElement>,
   rafId: 0,
   init() {
     this.container = document.querySelector('.tab-container')
@@ -63,6 +133,7 @@ const posttap = {
     console.log(this.container, this.mask)
   },
   show() {
+    this.buttons = document.querySelectorAll(".button-group button")
     console.log(this.lenis)
     appStore.show_detail = true
     if (appStore.edit_mode) {
@@ -148,6 +219,24 @@ const posttap = {
   handleEdit() {
     posttap.editable.value = !posttap.editable.value
     ed.value.editor.setEditable(posttap.editable.value)
+    if(posttap.animator?.isActive())posttap.animator.kill()
+
+    if (posttap.editable.value) {
+      posttap.animator = gsap.timeline().to(posttap.buttons, {
+        scale: 1,
+        duration: .1,
+        stagger: .05,
+        ease: "power3.out"
+      })
+    }
+    else {
+      posttap.animator = gsap.timeline().to(posttap.buttons,{
+        scale: 0,
+        duration: .1,
+        stagger: .05,
+        ease: "powe3.in"
+      })
+    }
   },
   reset() {
     console.log('reset editor')
@@ -157,6 +246,8 @@ const posttap = {
       id: 0,
       created_at: '',
     }
+    _title.value = ""
+    _uri.value = ""
     posttap.editable.value = false
     ed.value.editor.commands.clearContent()
   }
@@ -319,6 +410,31 @@ onMounted(() => {
       border-radius: 0.8rem;
       margin-top: auto;
       overflow: auto;
+    }
+
+    .tools {
+      position: absolute;
+      left: -5rem;
+
+      .button-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        button {
+          width: 4rem;
+          height: 4rem;
+          margin-top: 0.5rem;
+          border-radius: 20%;
+          cursor: pointer;
+          scale: 0;
+
+          // box-shadow: inset -.1rem -.1rem #000;
+          &.is-active {
+            background-color: #e37fdc;
+          }
+        }
+      }
     }
   }
 }

@@ -57,18 +57,18 @@ const masonry = {
     await ArticleAPI.getList({ page: 1, limit: 10 })
       .then((response) => {
         this.postList.value = response.data
-        for (let i = 0; i < 20; ++i) {
-          this.postList.value.push({
-            title: 'place holder',
-            uri: 'Xxx' + i,
-            id: i,
-            created_at: 'today',
-          })
-        }
+        // for (let i = 0; i < 20; ++i) {
+        //   this.postList.value.push({
+        //     title: 'place holder',
+        //     uri: 'Xxx' + i,
+        //     id: i,
+        //     created_at: 'today',
+        //   })
+        // }
         this.postList.value.forEach((p, idx) => {
-          const cid = idx
-          p.id = idx
-          p.title = p.title + idx.toString()
+          // const cid = idx
+          // p.id = idx
+          // p.title = p.title + idx.toString()
           const randomheight = range(30, 50)
           this.height.set(p.id, randomheight)
         })

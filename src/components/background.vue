@@ -52,8 +52,8 @@ const background: Background = {
       background.mouse_x = x
       background.mouse_y = y
     }
-    background.distance_x += ((x - background.mouse_x) / document.body.offsetWidth) * 10
-    background.distance_y += ((y - background.mouse_y) / document.body.offsetHeight) * 10
+    background.distance_x += ((x - background.mouse_x) / document.body.offsetWidth) * -20
+    background.distance_y += ((y - background.mouse_y) / document.body.offsetHeight) * -20
     gsap.to(background.balls, {
       x: `${background.distance_x}%`,
       y: `${background.distance_y}%`,

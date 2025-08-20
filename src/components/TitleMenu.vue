@@ -1,15 +1,7 @@
 <template>
-  <div
-    class="title_menu"
-    ref="container"
-    v-show="(titleMenu.if_visible as Ref).value"
-    @mouseenter="appStore.audio_controller.entermenubutton.play()"
-  >
-    <div
-      @mouseleave="titleMenu.mouseout"
-      class="title_menu_button"
-      @click="appStore.menus_to_posts()"
-    >
+  <div class="title_menu" ref="container" v-show="(titleMenu.if_visible as Ref).value"
+    @mouseenter="appStore.audio_controller.entermenubutton.play()">
+    <div @mouseleave="titleMenu.mouseout" class="title_menu_button" @click="appStore.menus_to_posts()">
       <div class="live">live now</div>
       2025
     </div>
@@ -81,7 +73,7 @@ const titleMenu = {
         duration: 0.2,
         ease: 'power3.in',
         onComplete: () => {
-          ;(this.if_visible as Ref).value = false
+          ; (this.if_visible as Ref).value = false
           if (next) next()
         },
       })
@@ -115,9 +107,11 @@ onMounted(() => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
   .title_menu_button {
     width: calc(var(--scale) * 60rem);
     height: calc(var(--scale) * 16rem);
+    overflow: hidden;
 
     margin: .3rem 0;
     transition: height cubic-bezier(0, 0, 0.8, 1.2) 0.1s;
@@ -140,14 +134,16 @@ onMounted(() => {
       height: calc(var(--scale) * 32rem);
       transition: height cubic-bezier(0, 0, 0.8, 1.2) 0.2s;
       background-color: rgba(0, 0, 0, 0.1);
+
       &:nth-child(1) {
         &::after {
           opacity: 100;
           transition: all ease-in-out 0.5s;
-          animation: scroll 5s linear infinite;
+          animation: scroll 50s linear infinite;
         }
       }
     }
+
     .live {
       font-size: 2rem;
       letter-spacing: 0.2rem;
@@ -157,6 +153,7 @@ onMounted(() => {
       display: flex;
       align-items: center;
       gap: 0.5rem;
+
       &::after {
         content: '';
         background-color: rgb(39, 213, 39);
@@ -170,11 +167,12 @@ onMounted(() => {
 
     &:nth-child(1) {
       &::after {
-        content: 'test·';
+        content: "If by life you were deceived·Don't be dismal, don't be wild·In the day of grief, be mild·Merry days will come, believe·Heart is living in tomorrow·Present is dejected here·In a moment, passes sorrow·That which passes will be dear.";
         position: absolute;
-        font-size: 1rem;
+        font-size: 2rem;
         bottom: 10%;
         opacity: 0;
+        text-wrap:nowrap;
       }
     }
   }
@@ -184,6 +182,7 @@ onMounted(() => {
   0% {
     transform: translateX(0);
   }
+
   100% {
     transform: translateX(-100%);
   }
@@ -193,9 +192,11 @@ onMounted(() => {
   0% {
     opacity: 0;
   }
+
   50% {
     opacity: 100%;
   }
+
   100% {
     opacity: 0;
   }

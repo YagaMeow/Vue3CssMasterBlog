@@ -8,9 +8,11 @@
     <TitleMenu></TitleMenu>
     <PostTab></PostTab>
     <Login></Login>
+    <MyNotify></MyNotify>
   </div>
 </template>
 <script setup lang="ts">
+import MyNotify from './ui/notofication.vue'
 import Login from './Login.vue'
 import PostTab from './PostTab.vue'
 import Nav from './Nav/Nav.vue'

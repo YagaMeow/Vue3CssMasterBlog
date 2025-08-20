@@ -12,12 +12,14 @@
         <div class="row">
           <div class="text">Creator</div>
           <div class="dot"></div>
-          <div class="text">John Doe</div>
+          <div class="text">Loujz</div>
         </div>
         <div class="row">
           <div class="text">Create at</div>
           <div class="dot"></div>
-          <div class="text">2025/08/05</div>
+          <div class="text">{{new Date(data.created_at).toLocaleDateString('zh-CN',{
+
+          })}} </div>
         </div>
       </div>
       <MyButton>
@@ -45,11 +47,9 @@
 </template>
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, watch } from 'vue'
-import { RouterLink } from 'vue-router'
 import { range } from '@/utils/utils'
 import MyButton from '@/components/ui/btn.vue'
 import gsap from 'gsap'
-import { fa } from 'element-plus/es/locales.mjs'
 import type { ComponentPublicInstance } from 'vue'
 import { useAppStore } from '@/pinia'
 import { formatDate } from '@/utils/utils'
@@ -151,10 +151,11 @@ const post = {
     }
   },
   hide() {
-    gsap.timeline().to(post,{
-      scale: 0,
-      duration: 0.2,
-      ease: "power3.out"
+    gsap.timeline().to(this.post, {
+      scale: 0.8,
+      opacity: 0,
+      duration: .2,
+      ease: "power1.out"
     })
   },
   show_details() {
@@ -173,7 +174,7 @@ const post = {
 
 async function handleDelete(uri: string) {
   await ArticleAPI.delete(uri)
-  post.if_visible.value = false
+  post.hide()
 }
 
 onMounted(() => {
