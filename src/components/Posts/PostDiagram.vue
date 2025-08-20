@@ -126,8 +126,8 @@ const diagram = {
     // if (diagram.offset_per.value[0]) console.log(diagram.offset_per.value)
 
     diagram.posts?.forEach((p, idx) => {
-      let new_left = parseFloat(p.style.left) + diagram.offset_per.value[0] * 5
-      let new_top = parseFloat(p.style.top) + diagram.offset_per.value[1] * 5
+      let new_left = parseFloat(p.style.left) + diagram.offset_per.value[0] * 10
+      let new_top = parseFloat(p.style.top) + diagram.offset_per.value[1] * 10
       let _duration = 0
       const width = 250
       if (new_left < 50 - width / 2) new_left += width

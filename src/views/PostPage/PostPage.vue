@@ -23,6 +23,7 @@
       <br />
       {{ editor.storage.characterCount.words() }} words
     </div>
+
     <editor-content :editor="editor" class="editor-text" />
   </div>
 </template>
@@ -63,6 +64,7 @@ import 'katex/dist/katex.min.css'
 import { sv } from 'element-plus/es/locales.mjs'
 import { getAuth } from '@/api/user'
 import { useAppStore } from '@/pinia'
+import Contextmenu from '@/components/ui/contextmenu.vue'
 
 const props = defineProps({
   uri: {

@@ -11,6 +11,7 @@ interface Article {
   uri: string
 }
 
+
 export const ArticleAPI = {
   getList(params: ArticlesListParams) {
     return service({
@@ -59,4 +60,17 @@ export const ArticleAPI = {
       method: 'GET',
     })
   },
+  upload(file: string | Blob) {
+    const formData = new FormData()
+    formData.append('file', file)
+    return service({
+      url: '/api/upload',
+      method: 'POST',
+      data: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+    })
+
+  }
 }

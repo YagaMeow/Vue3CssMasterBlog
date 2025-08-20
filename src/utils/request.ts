@@ -10,6 +10,7 @@ service.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const userStore = useUserStore()
     const token = userStore.currentToken
+    if(!config.headers['Content-Type'])
     config.headers['Content-Type'] = 'application/json'
     config.headers['x-token'] = token
     return config

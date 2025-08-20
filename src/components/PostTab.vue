@@ -65,10 +65,10 @@
             :class="{ 'is-active': ed.editor.isActive('textStyle', { color: '#958DF1' }) }">
             <svg-icon iconClass="font-color"></svg-icon>
           </button>
-          <button @click="">
+          <button @click="onImageUploadClick">
             <svg-icon iconClass="image"></svg-icon>
           </button>
-          <input id="imageInput" type="file" accept="image/*" style="display: none" @change="" />
+          <input id="imageInput" type="file" accept="image/*" style="display: none" @change="onImageSelected" />
         </div>
       </div>
       <div class="tab-title">
@@ -93,12 +93,21 @@
         <MyButton class="close_btn" @click="handleClose">×</MyButton>
       </div>
       <div class="tab-content">
+        <ContextMenu :menu="[
+          { label: 'Large' },
+          { label: 'Middle' },
+          { label: 'Small' }
+        ]">
+
         <PostPage ref="ed" :uri="appStore.post_data.uri.toString()"></PostPage>
+        </ContextMenu>
+
       </div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
+import ContextMenu from '@/components/ui/contextmenu.vue'
 import MyButton from '@/components/ui/btn.vue'
 import { onMounted, ref } from 'vue'
 import gsap from 'gsap'
@@ -219,7 +228,7 @@ const posttap = {
   handleEdit() {
     posttap.editable.value = !posttap.editable.value
     ed.value.editor.setEditable(posttap.editable.value)
-    if(posttap.animator?.isActive())posttap.animator.kill()
+    if (posttap.animator?.isActive()) posttap.animator.kill()
 
     if (posttap.editable.value) {
       posttap.animator = gsap.timeline().to(posttap.buttons, {
@@ -230,7 +239,7 @@ const posttap = {
       })
     }
     else {
-      posttap.animator = gsap.timeline().to(posttap.buttons,{
+      posttap.animator = gsap.timeline().to(posttap.buttons, {
         scale: 0,
         duration: .1,
         stagger: .05,
@@ -249,6 +258,12 @@ const posttap = {
     _title.value = ""
     _uri.value = ""
     posttap.editable.value = false
+    posttap.animator = gsap.timeline().to(posttap.buttons, {
+      scale: 0,
+      duration: 0,
+      ease: "powe3.in"
+    })
+    ed.value.editor.setEditable(false)
     ed.value.editor.commands.clearContent()
   }
 }
@@ -276,6 +291,23 @@ async function handleHide() {
       posttap.reset()
       appStore.hide_tab?.()
     })
+  }
+}
+
+function onImageUploadClick() {
+  const imageInput = document.querySelector<HTMLInputElement>('#imageInput')
+  if (imageInput) {
+    imageInput.click()
+  }
+}
+
+async function onImageSelected(event: Event) {
+  const target = event.target as HTMLInputElement
+  if (target.files && target.files.length > 0) {
+    const file = target.files[0]
+    const url = (await ArticleAPI.upload(file)).data.url
+    const newurl = import.meta.env.VITE_BASE_API + "/api" + url
+    ed.value.editor.chain().focus().setImage({ src: newurl }).run()
   }
 }
 appStore.show_tab = posttap.show.bind(posttap)
@@ -428,10 +460,12 @@ onMounted(() => {
           border-radius: 20%;
           cursor: pointer;
           scale: 0;
+          background-color: #eee;
 
           // box-shadow: inset -.1rem -.1rem #000;
           &.is-active {
-            background-color: #e37fdc;
+            background-color: #71066a;
+            color: #ccc;
           }
         }
       }
