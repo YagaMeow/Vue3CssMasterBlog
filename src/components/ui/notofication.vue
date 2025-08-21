@@ -22,13 +22,19 @@ const notify = {
             this.container, {
                 y: '3rem',
                 duration: 0.2,
-                ease: "power4.out",
+                ease: "power1.out",
             }
         ).to(this.container,{
-            rotate: '5deg',
+            rotate: '-2deg',
+            duration: 0
+        }).to(this.container,{
+            rotate: '2deg',
             yoyo: true,
-            repeat: 3,
-            duration: 0.05
+            repeat: 5,
+            duration: 0.03
+        }).to(this.container,{
+            rotate: 0,
+            duration: 0
         }).add(() => {
             this.hide()
         },"+=0.3")
@@ -65,6 +71,7 @@ onMounted(() => {
 </script>
 <style lang="scss" scoped>
 .notify-container {
+    z-index: 1000;
     width: 30rem;
     height: 7rem;
     background-color: #000;

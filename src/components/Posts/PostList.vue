@@ -15,7 +15,7 @@
         :key="index"
       >
         <div class="title">
-          <div class="avatar"></div>
+          <div class="avatar _null"></div>
           <span>{{ (item as Article).title }}</span>
         </div>
         <div class="type">none</div>

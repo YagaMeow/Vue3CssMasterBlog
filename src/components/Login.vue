@@ -84,6 +84,8 @@ const login = {
         await userStore.LoginIn({
             username: this.username.value,
             password: this.password.value
+        }).then(() => {
+            login.hide()
         })
     }
 }

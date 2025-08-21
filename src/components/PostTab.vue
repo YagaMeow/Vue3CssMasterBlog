@@ -98,7 +98,7 @@
           { label: 'Middle' },
           { label: 'Small' }
         ]">
-
+    
         <PostPage ref="ed" :uri="appStore.post_data.uri.toString()"></PostPage>
         </ContextMenu>
 
@@ -281,6 +281,9 @@ async function handleClose() {
     }).then(() => {
       posttap.reset()
       appStore.hide_tab?.()
+    }).catch((e) => {
+      if(appStore.notify)
+        appStore.notify(e.message)
     })
   }
 }

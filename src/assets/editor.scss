@@ -6,80 +6,148 @@
 // @use "./a3.scss";
 
 ::selection {
-    background-color: #70CFF850;
-  }
+  background-color: #70CFF850;
+}
+
 .ProseMirror {
 
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    p {
-      font-size: 1.8rem;
-    }
-    span {
-      font-size: 1.5rem;
-    }
-  
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+
+  * {
+    margin: 0.3em;
+    font-size: 1.8rem;
+  }
+
+  >* {
+    margin-left: 1rem;
+  }
+
+
+  h1 {
+    font-size: 3rem;
+  }
+
+  h2 {
+    font-size: 2.5rem;
+  }
+
+  h3 {
     * {
-      margin: 0.3em;
-      margin-left: 1rem;
-    }
-  
-    // > * {
-    //   margin-left: 1rem !important;
-    // }
-  
-    .ProseMirror-widget * {
-      margin-top: auto
-    }
-  
-    ul,
-    ol {
-      padding: 0 1rem;
-    }
-  }
-  
-  .ProseMirror-noderangeselection {
-    *::selection {
-      background: transparent;
-    }
-  
-    * {
-      caret-color: transparent;
-    }
-  }
-  
-  .ProseMirror-selectednode,
-  .ProseMirror-selectednoderange {
-    position: relative;
-  
-    &::before {
-      position: absolute;
-      pointer-events: none;
-      z-index: -1;
-      content: '';
-      top: -0.25rem;
-      left: -0.25rem;
-      right: -0.25rem;
-      bottom: -0.25rem;
-      background-color: #70CFF850;
-      border-radius: 0.2rem;
-    }
-  }
-  
-  .custom-drag-handle {
-    &::after {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 1rem;
-      height: 1.25rem;
-      content: '⠿';
-      font-weight: 700;
-      cursor: grab;
-      background:#0D0D0D10;
-      color: #0D0D0D50;
-      border-radius: 0.25rem;
+      font-size: 2rem;
     }
   }
 
+  ul {
+    li {
+      &::marker {
+        font-size: 2rem;
+      }
+
+      * {
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
+  }
+  ol {
+    li {
+      &::marker {
+        font-size: 2rem;
+        font-weight: bold;
+      }
+    }
+  }
+
+  code {
+    margin: 0 0.2rem;
+    background-color: #ccc;
+    color: #000;
+    border-radius: 0.2rem;
+    font-size: 1.8rem;
+    padding: 0.1rem;
+  }
+
+  pre {
+    background-color: #000;
+    padding: 1rem;
+    border-radius: 1rem;
+    border: 1px solid #fff;
+
+    code {
+      * {
+        word-break: break-all;
+      }
+
+      .hljs-attr {
+        color: rgb(0, 186, 96);
+      }
+
+      .hljs-string {
+        color: #ffc800;
+
+      }
+
+      background-color: transparent;
+      color: #fff;
+    }
+  }
+
+  // > * {
+  //   margin-left: 1rem !important;
+  // }
+
+  .ProseMirror-widget * {
+    margin-top: auto
+  }
+
+  ul,
+  ol {
+    padding: 0 1rem;
+  }
+}
+
+.ProseMirror-noderangeselection {
+  *::selection {
+    background: transparent;
+  }
+
+  * {
+    caret-color: transparent;
+  }
+}
+
+.ProseMirror-selectednode,
+.ProseMirror-selectednoderange {
+  position: relative;
+
+  &::before {
+    position: absolute;
+    pointer-events: none;
+    z-index: -1;
+    content: '';
+    top: -0.25rem;
+    left: -0.25rem;
+    right: -0.25rem;
+    bottom: -0.25rem;
+    background-color: #70CFF850;
+    border-radius: 0.2rem;
+  }
+}
+
+.custom-drag-handle {
+  &::after {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    height: 1.25rem;
+    content: '⠿';
+    font-weight: 700;
+    cursor: grab;
+    background: #0D0D0D10;
+    color: #0D0D0D50;
+    border-radius: 0.25rem;
+  }
+}
