@@ -57,7 +57,7 @@ const masonry = {
     await ArticleAPI.getList({ page: 1, limit: 10 })
       .then((response) => {
         this.postList.value = response.data
-        // for (let i = 0; i < 20; ++i) {
+        // for (let i = 0; i < 30; ++i) {
         //   this.postList.value.push({
         //     title: 'place holder',
         //     uri: 'Xxx' + i,

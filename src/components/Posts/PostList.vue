@@ -19,7 +19,7 @@
           <span>{{ (item as Article).title }}</span>
         </div>
         <div class="type">none</div>
-        <div class="created">{{ (item as Article).created_at }}</div>
+        <div class="created">{{ formatDate((item as Article).created_at.toString()) }}</div>
         <div class="creator">John Doe</div>
         <div class="id">{{ (item as Article).id }}</div>
       </div>
@@ -33,6 +33,7 @@ import { ArticleAPI } from '@/api/api'
 import type { Article } from '@/utils/utils'
 import gsap from 'gsap'
 import { useAppStore } from '@/pinia'
+import { formatDate } from '@/utils/utils'
 
 const appStore = useAppStore()
 

@@ -1,19 +1,58 @@
 <template>
-  <div class="nav-container">
+  <div class="nav-container" v-show="nav.if_visible.value">
     <MyButton id="discover">
       <div class="button-content" @click="appStore.posts_to_menus">discover</div>
     </MyButton>
-    <MyButton id="collect" ><div class="button-content" @click="nav.handleCollect">collect</div></MyButton>
-    <MyButton id="sound"> <div class="button-content">
-      <svg-icon iconClass="volumeHigh" ></svg-icon>
-    </div> </MyButton>
-    <MyButton id="info"><div class="button-content">i</div></MyButton>
-    <MyButton id="login"
-    @click="appStore.show_login"><div class="button-content">L</div></MyButton>
+    <MyButton id="collect">
+      <div class="button-content" @click="nav.handleCollect">collect</div>
+    </MyButton>
+    <MyButton id="sound">
+      <div class="button-content">
+        <svg-icon iconClass="volumeHigh"></svg-icon>
+      </div>
+    </MyButton>
+    <MyButton id="info">
+      <div class="button-content">i</div>
+    </MyButton>
+    <MyButton id="login" @click="appStore.show_login">
+      <div class="button-content">L</div>
+    </MyButton>
   </div>
-  <div class="nav-container footer">
-    <MyButton id="type"><div class="button-content">type</div></MyButton>
-    <MyButton id="date"><div class="button-content">date</div></MyButton>
+  <div class="nav-container footer" v-show="nav.if_visible.value">
+    <div id="type" style="">
+      <div class="type-list">
+        <div class="type-list-items">
+          <label class="type-list-item" for="">
+            <div>test</div>
+            <input type="checkbox">
+          </label>
+        </div>
+      </div>
+      <div class="button-content">
+        <span>type</span>
+        <div class="plus">
+          <div class="row"></div>
+          <div class="col"></div>
+        </div>
+      </div>
+    </div>
+    <div id="date">
+      <div class="date-list">
+        <div class="date-list-items">
+          <label class="date-list-item" for="">
+            <div>test</div>
+            <input type="checkbox">
+          </label>
+        </div>
+      </div>
+      <div class="button-content">
+        <span>date</span>
+        <div class="plus">
+          <div class="row"></div>
+          <div class="col"></div>
+        </div>
+      </div>
+    </div>
     <MyButton id="layout" class="group">
       <div class="button-content">
         <svg-icon iconClass="layout1" @click="nav.switch(0)"></svg-icon>
@@ -27,14 +66,15 @@
 defineOptions({
   name: 'NavBar',
 })
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useUserStore, useAppStore } from '@/pinia'
 import router from '@/router'
 import MyButton from '@/components/ui/btn.vue'
 import gsap from 'gsap'
 import SvgIcon from '../SvgIcon.vue'
-import {elasticEase} from '@/utils/utils'
+import { elasticEase, elasticEase2 } from '@/utils/utils'
 gsap.registerEase('myEase', elasticEase)
+gsap.registerEase('myEase2', elasticEase2)
 
 const userStore = useUserStore()
 const appStore = useAppStore()
@@ -49,14 +89,27 @@ const nav = {
   animator: null as gsap.core.Timeline | null,
   discover: null as HTMLElement | null,
   collect: null as HTMLElement | null,
+  type: null as HTMLElement | null,
+  type_list: null as HTMLElement | null,
+  type_after: null as HTMLElement | null,
+  date: null as HTMLElement | null,
+  date_list: null as HTMLElement | null,
+  date_after: null as HTMLElement | null,
   init: () => {
     nav.container = document.querySelector('.nav-container')
     nav.discover = document.querySelector('#discover')
     nav.collect = document.querySelector('#collect')
     nav.footer = document.querySelector('.footer')
     nav.slider = document.querySelector('#layout .button-content')
+    nav.type = document.querySelector('#type .button-content')
+    nav.type_list = document.querySelector('#type .type-list')
+    nav.type_after = document.querySelector('#type .button-content .plus')
+    nav.date = document.querySelector('#date .button-content')
+    nav.date_list = document.querySelector('#date .date-list')
+    nav.date_after = document.querySelector('#date .button-content .plus')
   },
   show: () => {
+    nav.if_visible.value = true
     nav.animator = gsap
       .timeline()
       .to(nav.discover, {
@@ -110,6 +163,9 @@ const nav = {
           y: '6rem',
           duration: 0.2,
           ease: 'power3.in',
+          onComplete: () => {
+            nav.if_visible.value = false
+          }
         },
         '<',
       )
@@ -133,11 +189,76 @@ const nav = {
     }
     nav.layout_type = type
     appStore.layout_type = type
+    appStore.audio_controller.stopAll()
     appStore.audio_controller.switchlayout.play()
   },
   handleCollect() {
     appStore.edit_mode = true
     appStore.show_tab?.()
+  },
+  handleTypeFilter() {
+    if (nav.type?.classList.contains('expand')) {
+      nav.type.classList.remove('expand')
+      gsap.timeline().to(nav.type_list, {
+        height: 0,
+        duration: .2,
+        ease: "power1.out"
+      }).to(nav.type_after, {
+        rotate: -90,
+        duration: .2,
+        ease: "myEase2"
+      }, "<").to(nav.type_after?.querySelector('.row') as Element, {
+        opacity: 1,
+        duration: .2
+      }, "<")
+    }
+    else {
+      nav.type?.classList.add("expand")
+      gsap.timeline().to(nav.type_list, {
+        height: 'auto',
+        duration: .2,
+        ease: "power1.out"
+      }).to(nav.type_after, {
+        rotate: 90,
+        duration: .2,
+        ease: "myEase2"
+      }, "<").to(nav.type_after?.querySelector('.row') as Element, {
+        opacity: 0,
+        duration: .2
+      }, "<")
+    }
+  },
+  handleDateFilter() {
+    if (nav.date?.classList.contains('expand')) {
+      nav.date.classList.remove('expand')
+      gsap.timeline().to(nav.date_list, {
+        height: 0,
+        duration: .2,
+        ease: "power1.out"
+      }).to(nav.date_after, {
+        rotate: -90,
+        duration: .2,
+        ease: "myEase2"
+      }, "<").to(nav.date_after?.querySelector('.row') as Element, {
+        opacity: 1,
+        duration: .2
+      }, "<")
+    }
+    else {
+      nav.date?.classList.add("expand")
+      gsap.timeline().to(nav.date_list, {
+        height: 'auto',
+        duration: .2,
+        ease: "power1.out"
+      }).to(nav.date_after, {
+        rotate: 90,
+        duration: .2,
+        ease: "myEase2"
+      }, "<").to(nav.date_after?.querySelector('.row') as Element, {
+        opacity: 0,
+        duration: .2
+      }, "<")
+    }
   }
 }
 appStore.show_nav = nav.show.bind(nav)
@@ -158,6 +279,15 @@ async function handleLogout() {
 
 onMounted(() => {
   nav.init()
+  console.log(nav.type)
+  nav.type?.addEventListener("click", nav.handleTypeFilter)
+  nav.date?.addEventListener("click",nav.handleDateFilter)
+})
+
+onUnmounted(() => {
+  nav.type?.removeEventListener("click", nav.handleTypeFilter)
+  nav.date?.removeEventListener("click",nav.handleDateFilter)
+
 })
 </script>
 <style lang="scss" scoped>
@@ -170,6 +300,7 @@ onMounted(() => {
   display: flex;
   gap: 1rem;
   padding: 1rem 1rem;
+
   .mybutton {
     color: var(--white);
 
@@ -181,6 +312,7 @@ onMounted(() => {
     &#collect {
       transform: translateY(-6rem);
     }
+
     .button-content {
       min-width: 2rem;
       margin: 0 1rem;
@@ -194,63 +326,135 @@ onMounted(() => {
     &#discover {
       top: 2rem;
       left: 2rem;
+
       .button-content::before {
         content: '<';
         font-family: cursive;
         font-weight: bolder;
         font-size: 1.7rem;
         padding-left: 0.5rem;
-        transition: ease-in-out 0.2s;
+        transition: transform ease-in-out 0.2s;
       }
+
       &:hover {
         .button-content::before {
           transform: translateX(-0.3rem);
-          transition: ease-in-out 0.2s;
+          transition: transform ease-in-out 0.2s;
         }
       }
     }
+
     &#collect {
       left: 14rem;
       top: 2rem;
+
       .button-content::after {
         content: '↗';
         font-size: 2.3rem;
-        transition: ease-in-out 0.2s;
+        transition: transform ease-in-out 0.2s;
       }
+
       &:hover {
         .button-content::after {
           transform: translate(0.15rem, -0.15rem);
-          transition: ease-in-out 0.2s;
+          transition: transform ease-in-out 0.2s;
         }
       }
     }
   }
+
   &.footer {
+    align-items: end;
     bottom: 1rem;
     left: 1rem;
     transform: translateY(6rem);
+
     #type,
     #date {
-      &::after {
-        content: '+';
+      user-select: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: end;
+      background-color: rgba($color: #000, $alpha: 0.4);
+      backdrop-filter: blur(0.1rem);
+      border-radius: 1rem;
+      box-shadow: inset 0px 1px #fff,
+        inset 0px -1px #fff;
+
+      * {
         font-size: 2rem;
-        padding: 0 1rem;
+        color: #fff;
+      }
+
+      .button-content {
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+
+        .plus {
+          margin-left: auto;
+          position: relative;
+          width: 1rem;
+          height: 1rem;
+
+          .row {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 1.5rem;
+            height: 0.2rem;
+            background-color: #fff;
+          }
+
+          .col {
+            position: absolute;
+            width: 1.5rem;
+            height: 0.2rem;
+            background-color: #fff;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(90deg);
+            transform-origin: center;
+          }
+        }
+      }
+
+      .type-list,
+      .date-list {
+        height: 0;
+        overflow: hidden;
+      }
+
+      .date-list-item,
+      .type-list-item {
+        display: flex;
+        padding: 1rem;
+
+        input {
+          margin-left: auto;
+        }
       }
     }
+
     .button-content {
       min-width: 20rem;
       justify-content: space-between;
     }
+
     #layout {
       margin-left: auto;
       margin-right: 2rem;
       position: relative;
       filter: none;
+
       .button-content {
         --type: 0;
         min-width: 0;
         gap: 0.5rem;
         margin: 0 0.5rem;
+
         &::after {
           content: '';
           display: block;
@@ -263,6 +467,7 @@ onMounted(() => {
           mix-blend-mode: lighten;
         }
       }
+
       .svg-icon {
         width: 3rem;
         height: 3rem;
@@ -291,8 +496,7 @@ onMounted(() => {
   transform: translateY(-0.1em);
 }
 
-@media screen and (max-width: 1280px) {
-}
+@media screen and (max-width: 1280px) {}
 
 @media screen and (max-width: 1024px) {
   .nav-container .pc {

@@ -72,6 +72,15 @@ export const useAppStore = defineStore('app', () => {
       src: [a_closetab],
       preload: true,
     }),
+    stopAll: () => {
+      audio_controller.entermenubutton.stop()
+      audio_controller.hideposttab.stop()
+      audio_controller.leavemenubutton.stop()
+      audio_controller.showposttab.stop()
+      audio_controller.switchlayout.stop()
+      audio_controller.switchmenubutton.stop()
+      audio_controller.toorfrompost.stop()
+    }
   }
 
   const post_data = ref<Article>({

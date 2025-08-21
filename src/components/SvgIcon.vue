@@ -18,7 +18,7 @@ const svgClass = computed(() => {
 })
 </script>
 <template>
-  <svg :class="svgClass" aria-hidden="true" width="15" height="15" fill="currentColor">
+  <svg :class="svgClass" aria-hidden="true" width="2rem" height="2rem" fill="currentColor">
     <use :xlink:href="iconName" />
   </svg>
 </template>

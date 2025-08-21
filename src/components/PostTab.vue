@@ -98,8 +98,8 @@
           { label: 'Middle' },
           { label: 'Small' }
         ]">
-    
-        <PostPage ref="ed" :uri="appStore.post_data.uri.toString()"></PostPage>
+
+          <PostPage ref="ed" :uri="appStore.post_data.uri.toString()"></PostPage>
         </ContextMenu>
 
       </div>
@@ -148,6 +148,22 @@ const posttap = {
     if (appStore.edit_mode) {
       posttap.editable.value = true
       ed.value.editor.setEditable(true)
+      if (posttap.editable.value) {
+        posttap.animator = gsap.timeline().to(posttap.buttons, {
+          scale: 1,
+          duration: .1,
+          stagger: .05,
+          ease: "power3.out"
+        })
+      }
+      else {
+        posttap.animator = gsap.timeline().to(posttap.buttons, {
+          scale: 0,
+          duration: .1,
+          stagger: .05,
+          ease: "powe3.in"
+        })
+      }
     }
     this.if_visible.value = true
     this.animator = gsap
@@ -282,7 +298,7 @@ async function handleClose() {
       posttap.reset()
       appStore.hide_tab?.()
     }).catch((e) => {
-      if(appStore.notify)
+      if (appStore.notify)
         appStore.notify(e.message)
     })
   }
