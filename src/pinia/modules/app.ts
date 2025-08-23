@@ -96,6 +96,8 @@ export const useAppStore = defineStore('app', () => {
 
   const layout_type = ref(0)
 
+  const hajime = ref(true)
+
   function first_show() {
     hide_loading.value?.(
       () => {
@@ -251,6 +253,7 @@ export const useAppStore = defineStore('app', () => {
   }
 
   return {
+    hajime,
     notify,
     show_detail,
     edit_mode,

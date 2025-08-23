@@ -46,6 +46,13 @@ const background: Background = {
     document.addEventListener('touchend', (e) => {
       background.reset()
     })
+    gsap.timeline().fromTo(background.balls,{
+      y: '-5rem'
+    },{
+      y: 0,
+      duration: 4,
+      ease: "power4.out"
+    })
   },
   move: (x: number, y: number) => {
     if (background.mouse_x === 0 && background.mouse_y === 0) {
@@ -91,7 +98,7 @@ onMounted(() => background.init())
     background-color: #000;
     position: absolute;
     border-radius: 50%;
-    transform: scale(var(--s));
+    scale: var(--s);
     left: calc(100vw * var(--x));
     top: calc(100vh * var(--y));
     opacity: var(--o);

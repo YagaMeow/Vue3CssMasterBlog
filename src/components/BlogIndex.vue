@@ -9,6 +9,7 @@
     <PostTab></PostTab>
     <Login></Login>
     <MyNotify></MyNotify>
+    <Loading></Loading>
   </div>
 </template>
 <script setup lang="ts">
@@ -23,6 +24,35 @@ import TitleMenu from './TitleMenu.vue'
 import PostList from './Posts/PostList.vue'
 import MasonryPost from './Posts/MasonryPost.vue'
 import { useAppStore } from '@/pinia'
+import Loading from './Loading/Circle.vue'
+import { onMounted } from 'vue'
+import gsap from 'gsap'
+
+
+const appStore = useAppStore()
+const index = {
+  container: null as null | HTMLElement,
+  animator: null as null | gsap.core.Timeline,
+  init() {
+    this.container = document.querySelector('.index-container')
+    this.show()
+  },
+  show() {
+    if(appStore.hajime) {
+      appStore.hajime = false
+      this.animator = gsap.timeline().to(this.container,{
+        clipPath: 'circle(100%)',
+        duration: 2,
+        force3D: true,
+        ease: "power4.out"
+      })
+    }
+  },
+}
+
+onMounted(() => {
+  index.init()
+})
 // const appStore = useAppStore()
 // const lenis = new Lenis({})
 // appStore.lenis = lenis
@@ -42,8 +72,10 @@ import { useAppStore } from '@/pinia'
       transparent 85%,
       rgba(105, 82, 116, 0.15) 100%
     ); */
+  clip-path: circle(0%);
   width: 100%;
   min-height: 100vh;
   display: flex;
+  will-change: clip-path;
 }
 </style>

@@ -27,6 +27,24 @@
             <input type="checkbox">
           </label>
         </div>
+        <div class="type-list-items">
+          <label class="type-list-item" for="">
+            <div>test</div>
+            <input type="checkbox">
+          </label>
+        </div>
+        <div class="type-list-items">
+          <label class="type-list-item" for="">
+            <div>test</div>
+            <input type="checkbox">
+          </label>
+        </div>
+        <div class="type-list-items">
+          <label class="type-list-item" for="">
+            <div>test</div>
+            <input type="checkbox">
+          </label>
+        </div>
       </div>
       <div class="button-content">
         <span>type</span>
@@ -197,7 +215,9 @@ const nav = {
     appStore.show_tab?.()
   },
   handleTypeFilter() {
+
     if (nav.type?.classList.contains('expand')) {
+      appStore.audio_controller.leavemenubutton.play()
       nav.type.classList.remove('expand')
       gsap.timeline().to(nav.type_list, {
         height: 0,
@@ -213,6 +233,7 @@ const nav = {
       }, "<")
     }
     else {
+      appStore.audio_controller.entermenubutton.play()
       nav.type?.classList.add("expand")
       gsap.timeline().to(nav.type_list, {
         height: 'auto',
@@ -230,6 +251,7 @@ const nav = {
   },
   handleDateFilter() {
     if (nav.date?.classList.contains('expand')) {
+      appStore.audio_controller.leavemenubutton.play()
       nav.date.classList.remove('expand')
       gsap.timeline().to(nav.date_list, {
         height: 0,
@@ -245,6 +267,7 @@ const nav = {
       }, "<")
     }
     else {
+      appStore.audio_controller.entermenubutton.play()
       nav.date?.classList.add("expand")
       gsap.timeline().to(nav.date_list, {
         height: 'auto',
@@ -281,12 +304,12 @@ onMounted(() => {
   nav.init()
   console.log(nav.type)
   nav.type?.addEventListener("click", nav.handleTypeFilter)
-  nav.date?.addEventListener("click",nav.handleDateFilter)
+  nav.date?.addEventListener("click", nav.handleDateFilter)
 })
 
 onUnmounted(() => {
   nav.type?.removeEventListener("click", nav.handleTypeFilter)
-  nav.date?.removeEventListener("click",nav.handleDateFilter)
+  nav.date?.removeEventListener("click", nav.handleDateFilter)
 
 })
 </script>

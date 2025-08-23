@@ -222,8 +222,8 @@ onUnmounted(() => {
     position: absolute;
     top: 0.9rem;
     left: 0.9rem;
-    width: 30.2rem;
-    height: 30.2rem;
+    width: calc(100% - 1.8rem);
+    height: calc(100% - 1.8rem);
     display: flex;
     flex-direction: column;
     background-color: rgba(0, 0, 0, 0.8);

@@ -1,15 +1,16 @@
 <template>
-  <div class="title_menu" ref="container" v-show="(titleMenu.if_visible as Ref).value"
-    @mouseenter="appStore.audio_controller.entermenubutton.play()">
-    <div @mouseleave="titleMenu.mouseout" class="title_menu_button" @click="appStore.menus_to_posts()">
-      <div class="live">live now</div>
-      2025
+    <div class="title_menu" ref="container" v-show="(titleMenu.if_visible as Ref).value"
+      @mouseenter="appStore.audio_controller.entermenubutton.play()">
+      <div @mouseleave="titleMenu.mouseout" class="title_menu_button" @click="appStore.menus_to_posts()">
+        <div class="live">live now</div>
+        2025
+      </div>
+      <div @mouseleave="titleMenu.mouseout" class="title_menu_button">2024</div>
+      <div @mouseleave="titleMenu.mouseout" class="title_menu_button">2023</div>
+      <div @mouseleave="titleMenu.mouseout" class="title_menu_button">2022</div>
+      <div @mouseleave="titleMenu.mouseout" class="title_menu_button">2021</div>
     </div>
-    <div @mouseleave="titleMenu.mouseout" class="title_menu_button">2024</div>
-    <div @mouseleave="titleMenu.mouseout" class="title_menu_button">2023</div>
-    <div @mouseleave="titleMenu.mouseout" class="title_menu_button">2022</div>
-    <div @mouseleave="titleMenu.mouseout" class="title_menu_button">2021</div>
-  </div>
+
 </template>
 <script setup lang="ts">
 import { useAppStore } from '@/pinia/index'
@@ -29,16 +30,26 @@ const titleMenu = {
     this.animator = gsap.timeline().fromTo(
       container.value,
       {
-        opacity: 0,
+        clipPath: 'circle(0)',
       },
       {
-        opacity: 1,
-        duration: 0.5,
+        duration: 3,
         onComplete: () => {
           console.log('complete')
         },
+        delay: .5,
+        ease: 'power4.out',
+        clipPath: 'circle(100%)'
       },
-    )
+    ).fromTo(buttons.value,{
+      opacity: 0,
+    },{
+      opacity: 1,
+      stagger: .2,
+      duration: .6,
+      delay: .3,
+      ease: "power3.in"
+    },"<")
   },
   show() {
     if (this.animator?.isActive()) return
@@ -84,7 +95,7 @@ const titleMenu = {
   },
   mouseout() {
     if (!no_audio) appStore.audio_controller.leavemenubutton.play()
-  },
+  }
 }
 appStore.show_menus = titleMenu.show.bind(titleMenu)
 appStore.hide_menus = titleMenu.hide.bind(titleMenu)
@@ -100,8 +111,6 @@ onMounted(() => {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  height: 100vh;
-  opacity: 0;
 
   display: flex;
   flex-direction: column;
@@ -172,7 +181,7 @@ onMounted(() => {
         font-size: 2rem;
         bottom: 10%;
         opacity: 0;
-        text-wrap:nowrap;
+        text-wrap: nowrap;
       }
     }
   }
