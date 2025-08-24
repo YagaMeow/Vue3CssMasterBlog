@@ -5,46 +5,65 @@
       <div class="tools control-group">
         <div class="button-group" v-if="ed">
           <!-- <button @click="editor.setEditable(false)">ban</button> -->
-          <button @click="ed.editor.chain().focus().toggleBold().run()"
+          <button
+            @click="ed.editor.chain().focus().toggleBold().run()"
             :disabled="!ed.editor.can().chain().focus().toggleBold().run()"
-            :class="{ 'is-active': ed.editor.isActive('bold') }">
+            :class="{ 'is-active': ed.editor.isActive('bold') }"
+          >
             <svg-icon iconClass="bold"></svg-icon>
           </button>
-          <button @click="ed.editor.chain().focus().toggleItalic().run()"
+          <button
+            @click="ed.editor.chain().focus().toggleItalic().run()"
             :disabled="!ed.editor.can().chain().focus().toggleItalic().run()"
-            :class="{ 'is-active': ed.editor.isActive('italic') }">
+            :class="{ 'is-active': ed.editor.isActive('italic') }"
+          >
             <svg-icon iconClass="italic"></svg-icon>
           </button>
-          <button @click="ed.editor.chain().focus().toggleStrike().run()"
+          <button
+            @click="ed.editor.chain().focus().toggleStrike().run()"
             :disabled="!ed.editor.can().chain().focus().toggleStrike().run()"
-            :class="{ 'is-active': ed.editor.isActive('strike') }">
+            :class="{ 'is-active': ed.editor.isActive('strike') }"
+          >
             <svg-icon iconClass="strikethrough"></svg-icon>
           </button>
-          <button @click="ed.editor.chain().focus().toggleCode().run()"
+          <button
+            @click="ed.editor.chain().focus().toggleCode().run()"
             :disabled="!ed.editor.can().chain().focus().toggleCode().run()"
-            :class="{ 'is-active': ed.editor.isActive('code') }">
+            :class="{ 'is-active': ed.editor.isActive('code') }"
+          >
             <svg-icon iconClass="code"></svg-icon>
           </button>
           <!-- <button @click="editor.chain().focus().unsetAllMarks().run()">Clear marks</button>
         <button @click="editor.chain().focus().clearNodes().run()">Clear nodes</button> -->
-          <button @click="ed.editor.chain().focus().setParagraph().run()"
-            :class="{ 'is-active': ed.editor.isActive('paragraph') }">
+          <button
+            @click="ed.editor.chain().focus().setParagraph().run()"
+            :class="{ 'is-active': ed.editor.isActive('paragraph') }"
+          >
             <svg-icon iconClass="paragraph"></svg-icon>
           </button>
-          <button @click="ed.editor.chain().focus().toggleBulletList().run()"
-            :class="{ 'is-active': ed.editor.isActive('bulletList') }" id="bullet-list">
+          <button
+            @click="ed.editor.chain().focus().toggleBulletList().run()"
+            :class="{ 'is-active': ed.editor.isActive('bulletList') }"
+            id="bullet-list"
+          >
             <svg-icon iconClass="unordered-list"></svg-icon>
           </button>
-          <button @click="ed.editor.chain().focus().toggleOrderedList().run()"
-            :class="{ 'is-active': ed.editor.isActive('orderedList') }">
+          <button
+            @click="ed.editor.chain().focus().toggleOrderedList().run()"
+            :class="{ 'is-active': ed.editor.isActive('orderedList') }"
+          >
             <svg-icon iconClass="ordered-list"></svg-icon>
           </button>
-          <button @click="ed.editor.chain().focus().toggleCodeBlock().run()"
-            :class="{ 'is-active': ed.editor.isActive('codeBlock') }">
+          <button
+            @click="ed.editor.chain().focus().toggleCodeBlock().run()"
+            :class="{ 'is-active': ed.editor.isActive('codeBlock') }"
+          >
             <svg-icon iconClass="code"></svg-icon>
           </button>
-          <button @click="ed.editor.chain().focus().toggleBlockquote().run()"
-            :class="{ 'is-active': ed.editor.isActive('blockquote') }">
+          <button
+            @click="ed.editor.chain().focus().toggleBlockquote().run()"
+            :class="{ 'is-active': ed.editor.isActive('blockquote') }"
+          >
             <svg-icon iconClass="quote"></svg-icon>
           </button>
           <button @click="ed.editor.chain().focus().setHorizontalRule().run()">
@@ -53,22 +72,36 @@
           <button @click="ed.editor.chain().focus().setHardBreak().run()">
             <svg-icon iconClass="text-wrap"></svg-icon>
           </button>
-          <button @click="ed.editor.chain().focus().undo().run()"
-            :disabled="!ed.editor.can().chain().focus().undo().run()" id="undo">
+          <button
+            @click="ed.editor.chain().focus().undo().run()"
+            :disabled="!ed.editor.can().chain().focus().undo().run()"
+            id="undo"
+          >
             <svg-icon iconClass="undo"></svg-icon>
           </button>
-          <button @click="ed.editor.chain().focus().redo().run()"
-            :disabled="!ed.editor.can().chain().focus().redo().run()" id="redo">
+          <button
+            @click="ed.editor.chain().focus().redo().run()"
+            :disabled="!ed.editor.can().chain().focus().redo().run()"
+            id="redo"
+          >
             <svg-icon iconClass="redo"></svg-icon>
           </button>
-          <button @click="ed.editor.chain().focus().setColor('#958DF1').run()"
-            :class="{ 'is-active': ed.editor.isActive('textStyle', { color: '#958DF1' }) }">
+          <button
+            @click="ed.editor.chain().focus().setColor('#958DF1').run()"
+            :class="{ 'is-active': ed.editor.isActive('textStyle', { color: '#958DF1' }) }"
+          >
             <svg-icon iconClass="font-color"></svg-icon>
           </button>
           <button @click="onImageUploadClick">
             <svg-icon iconClass="image"></svg-icon>
           </button>
-          <input id="imageInput" type="file" accept="image/*" style="display: none" @change="onImageSelected" />
+          <input
+            id="imageInput"
+            type="file"
+            accept="image/*"
+            style="display: none"
+            @change="onImageSelected"
+          />
         </div>
       </div>
       <div class="tab-title">
@@ -76,32 +109,27 @@
           <div class="title" v-if="!appStore.edit_mode">{{ appStore.post_data.title }}</div>
           <div v-else>
             <div class="tab-title-input">
-              <input v-model="_title" type="text" placeholder="Please enter title...">
+              <input v-model="_title" type="text" placeholder="Please enter title..." />
             </div>
             <div class="tab-uri-input">
-              <input v-model="_uri" type="text" placeholder="uri"></input>
+              <input v-model="_uri" type="text" placeholder="uri" />
             </div>
           </div>
 
-          <div class="info" v-if="!appStore.edit_mode">{{ formatDate(appStore.post_data.created_at.toString()) }}</div>
+          <div class="info" v-if="!appStore.edit_mode">
+            {{ formatDate(appStore.post_data.created_at.toString()) }}
+          </div>
         </div>
         <MyButton v-if="appStore.edit_mode" class="confirm_btn" @click="handleHide">√</MyButton>
         <MyButton v-else class="edit_btn" @click="posttap.handleEdit">
-          <svg-icon :iconClass="posttap.editable.value ? 'no-edit' : 'edit'">
-          </svg-icon>
+          <svg-icon :iconClass="posttap.editable.value ? 'no-edit' : 'edit'"> </svg-icon>
         </MyButton>
         <MyButton class="close_btn" @click="handleClose">×</MyButton>
       </div>
       <div class="tab-content">
-        <ContextMenu :menu="[
-          { label: 'Large' },
-          { label: 'Middle' },
-          { label: 'Small' }
-        ]">
-
+        <ContextMenu :menu="[{ label: 'Large' }, { label: 'Middle' }, { label: 'Small' }]">
           <PostPage ref="ed" :uri="appStore.post_data.uri.toString()"></PostPage>
         </ContextMenu>
-
       </div>
     </div>
   </div>
@@ -121,8 +149,8 @@ import { Editor } from '@tiptap/vue-3'
 import SvgIcon from './SvgIcon.vue'
 const appStore = useAppStore()
 
-const _title = ref("")
-const _uri = ref("")
+const _title = ref('')
+const _uri = ref('')
 const ed = ref()
 
 const posttap = {
@@ -142,7 +170,7 @@ const posttap = {
     console.log(this.container, this.mask)
   },
   show() {
-    this.buttons = document.querySelectorAll(".button-group button")
+    this.buttons = document.querySelectorAll('.button-group button')
     console.log(this.lenis)
     appStore.show_detail = true
     if (appStore.edit_mode) {
@@ -151,17 +179,16 @@ const posttap = {
       if (posttap.editable.value) {
         posttap.animator = gsap.timeline().to(posttap.buttons, {
           scale: 1,
-          duration: .1,
-          stagger: .05,
-          ease: "power3.out"
+          duration: 0.1,
+          stagger: 0.05,
+          ease: 'power3.out',
         })
-      }
-      else {
+      } else {
         posttap.animator = gsap.timeline().to(posttap.buttons, {
           scale: 0,
-          duration: .1,
-          stagger: .05,
-          ease: "powe3.in"
+          duration: 0.1,
+          stagger: 0.05,
+          ease: 'powe3.in',
         })
       }
     }
@@ -238,7 +265,7 @@ const posttap = {
     await ArticleAPI.create({
       title: _title.value,
       content: JSON.stringify(ed.value.editor.getJSON()),
-      uri: _uri.value
+      uri: _uri.value,
     })
   },
   handleEdit() {
@@ -249,17 +276,16 @@ const posttap = {
     if (posttap.editable.value) {
       posttap.animator = gsap.timeline().to(posttap.buttons, {
         scale: 1,
-        duration: .1,
-        stagger: .05,
-        ease: "power3.out"
+        duration: 0.1,
+        stagger: 0.05,
+        ease: 'power3.out',
       })
-    }
-    else {
+    } else {
       posttap.animator = gsap.timeline().to(posttap.buttons, {
         scale: 0,
-        duration: .1,
-        stagger: .05,
-        ease: "powe3.in"
+        duration: 0.1,
+        stagger: 0.05,
+        ease: 'powe3.in',
       })
     }
   },
@@ -271,36 +297,36 @@ const posttap = {
       id: 0,
       created_at: '',
     }
-    _title.value = ""
-    _uri.value = ""
+    _title.value = ''
+    _uri.value = ''
     posttap.editable.value = false
     posttap.animator = gsap.timeline().to(posttap.buttons, {
       scale: 0,
       duration: 0,
-      ease: "powe3.in"
+      ease: 'powe3.in',
     })
     ed.value.editor.setEditable(false)
     ed.value.editor.commands.clearContent()
-  }
+  },
 }
 
 async function handleClose() {
-  if (appStore.edit_mode) {
+  if (appStore.edit_mode || !posttap.editable.value) {
     posttap.reset()
     appStore.hide_tab?.()
-
   } else {
     await ArticleAPI.update({
       title: appStore.post_data.title as string,
       content: JSON.stringify(ed.value.editor.getJSON()),
-      uri: appStore.post_data.uri as string
-    }).then(() => {
-      posttap.reset()
-      appStore.hide_tab?.()
-    }).catch((e) => {
-      if (appStore.notify)
-        appStore.notify(e.message)
+      uri: appStore.post_data.uri as string,
     })
+      .then(() => {
+        posttap.reset()
+        appStore.hide_tab?.()
+      })
+      .catch((e) => {
+        if (appStore.notify) appStore.notify(e.message)
+      })
   }
 }
 
@@ -325,7 +351,7 @@ async function onImageSelected(event: Event) {
   if (target.files && target.files.length > 0) {
     const file = target.files[0]
     const url = (await ArticleAPI.upload(file)).data.url
-    const newurl = import.meta.env.VITE_BASE_API + "/api" + url
+    const newurl = import.meta.env.VITE_BASE_API + '/api' + url
     ed.value.editor.chain().focus().setImage({ src: newurl }).run()
   }
 }
@@ -388,7 +414,6 @@ onMounted(() => {
         height: 4rem;
         font-size: 2rem;
         color: var(--white);
-
       }
 
       .tab-title-info {
@@ -402,7 +427,7 @@ onMounted(() => {
           position: relative;
 
           &::after {
-            content: "";
+            content: '';
             width: 100%;
             height: 0.1rem;
             background-color: #fff;
@@ -431,7 +456,6 @@ onMounted(() => {
             // }
           }
         }
-
       }
 
       .title,

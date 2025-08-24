@@ -9,6 +9,7 @@
         <circle class="_dashed" cx="25" cy="25" r="25" vector-effect="non-scaling-stroke"></circle>
       </svg>
       <svg class="out_line" viewBox="0 0 50 50">
+        <!-- <circle class="orbit" cx="25" cy="25" r="25"></circle> -->
         <circle class="_dashed" cx="25" cy="25" r="25" vector-effect="non-scaling-stroke"></circle>
       </svg>
       <div
@@ -30,7 +31,7 @@
 import { useAppStore } from '@/pinia/index'
 import { onMounted, ref } from 'vue'
 import type { Ref } from 'vue'
-import gsap from 'gsap'
+import gsap, { Circ } from 'gsap'
 const appStore = useAppStore()
 const container = ref<HTMLElement | null>(null)
 const buttons = ref<NodeListOf<HTMLElement> | null>(null)
@@ -70,7 +71,7 @@ const titleMenu = {
         {
           duration: 2,
           scale: 1,
-          delay: 0.5,
+          delay: 0.6,
           onComplete: () => {
             console.log('complete')
           },
@@ -275,6 +276,9 @@ onMounted(() => {
 
 .out_line {
   scale: 1.3;
+  ._dashed {
+    stroke-width: 1rem;
+  }
 }
 
 .middle_line,
@@ -287,6 +291,12 @@ onMounted(() => {
     stroke-dasharray: 0 4rem;
     transform-origin: center;
     stroke: rgba($color: #000000, $alpha: 0.8);
+  }
+  .orbit {
+    fill: none;
+    stroke-dasharray: none;
+    stroke-width: 0.001rem;
+    stroke: rgba($color: #000, $alpha: 0.8);
   }
   // animation: rotate infinite 40s linear;
 }

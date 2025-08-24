@@ -6,7 +6,7 @@ interface LoginData {
 
 export const login = (data: LoginData) => {
   return service({
-    url: 'http://127.0.0.1:8889/login',
+    url: '/login',
     method: 'post',
     data: data,
   })

@@ -1,11 +1,9 @@
 <template>
-  <div class="posts-container _fullscreen" v-show="diagram.if_visible.value" @dragover="dragOver">
-    <div class="create" style="display: none"></div>
-    <div
-      class="bin"
-      :class="dragData.isDragging === true ? 'active' : 'inactive'"
-      style="display: none"
-    ></div>
+  <div
+    class="posts-diagram-container _fullscreen"
+    v-show="diagram.if_visible.value"
+    @dragover="dragOver"
+  >
     <Post
       v-for="(item, index) in postList"
       :key="index"
@@ -48,14 +46,14 @@ const diagram = {
   if_visible: ref(false),
   animator: null as gsap.core.Timeline | null,
   container: null as HTMLElement | null,
-  posts: null as NodeListOf<HTMLElement> | null,
+  posts: ref<NodeListOf<HTMLElement> | null>(null),
   draggable: ref(false),
   mouse_pos: ref([0, 0]),
   moving: [] as gsap.core.Tween[],
   offset_per: ref([0, 0]),
   timer: null as null | number,
   init: () => {
-    diagram.container = document.querySelector('.posts-container')
+    diagram.container = document.querySelector('.posts-diagram-container')
     document.addEventListener('mousedown', () => {
       if (diagram.if_visible.value) diagram.draggable.value = true
     })
@@ -89,8 +87,8 @@ const diagram = {
         console.error('Failed to fetch posts:', error)
       })
     this.if_visible.value = true
-    this.posts = document.querySelectorAll('.diagram-post')
-    this.animator = gsap.timeline().to(this.posts, {
+    this.posts.value = document.querySelectorAll('.diagram-post')
+    this.animator = gsap.timeline().to(this.posts.value, {
       opacity: 1,
       scale: 1,
       duration: 0.2,
@@ -106,13 +104,15 @@ const diagram = {
       diagram.animator.kill()
     }
     if (immediate) immediate()
-    if (diagram.posts) {
-      diagram.animator = gsap.timeline().to(diagram.posts, {
+    if (diagram.posts.value) {
+      console.log('[diagram]', diagram.posts)
+      diagram.animator = gsap.timeline().to(diagram.posts.value, {
         opacity: 0,
         duration: 0.2,
         ease: 'power3.out',
         onComplete: () => {
           diagram.if_visible.value = false
+          console.log(diagram.if_visible.value)
           if (next) next()
         },
       })
@@ -124,25 +124,28 @@ const diagram = {
     diagram.offset_per.value[0] = offet_x * 100
     diagram.offset_per.value[1] = offet_y * 100
     // if (diagram.offset_per.value[0]) console.log(diagram.offset_per.value)
-
-    diagram.posts?.forEach((p, idx) => {
-      let new_left = parseFloat(p.style.left) + diagram.offset_per.value[0] * 10
-      let new_top = parseFloat(p.style.top) + diagram.offset_per.value[1] * 10
-      let _duration = 0
-      const width = 250
-      if (new_left < 50 - width / 2) new_left += width
-      else if (new_left > width / 2 + 50) new_left -= width
-      else if (new_top < 50 - width / 2) new_top += width
-      else if (new_top > width / 2 + 50) new_top -= width
-      else _duration = 0.5
-      if (this.moving[idx] != undefined && this.moving[idx].isActive()) this.moving[idx].kill()
-      this.moving[idx] = gsap.to(p, {
-        left: new_left + '%',
-        top: new_top + '%',
-        duration: _duration,
-        ease: 'power4.out',
+    console.log('[move]', diagram.posts)
+    if (diagram.posts.value) {
+      diagram.posts.value.forEach((p, idx) => {
+        console.log('yes')
+        let new_left = parseFloat(p.style.left) + diagram.offset_per.value[0] * 10
+        let new_top = parseFloat(p.style.top) + diagram.offset_per.value[1] * 10
+        let _duration = 0
+        const width = 250
+        if (new_left < 50 - width / 2) new_left += width
+        else if (new_left > width / 2 + 50) new_left -= width
+        else if (new_top < 50 - width / 2) new_top += width
+        else if (new_top > width / 2 + 50) new_top -= width
+        else _duration = 0.5
+        if (this.moving[idx] != undefined && this.moving[idx].isActive()) this.moving[idx].kill()
+        this.moving[idx] = gsap.to(p, {
+          left: new_left + '%',
+          top: new_top + '%',
+          duration: _duration,
+          ease: 'power4.out',
+        })
       })
-    })
+    }
   },
   reset() {
     this.mouse_pos.value = [0, 0]
@@ -253,7 +256,7 @@ function handleDelete(uri: string) {
 }
 </script>
 <style lang="scss" scoped>
-.posts-container {
+.posts-diagram-container {
   --scale: 1;
   cursor: grab;
   &:active {
@@ -308,7 +311,7 @@ function handleDelete(uri: string) {
   content: '';
 }
 
-.posts-container {
+.posts-diagram-container {
   overflow: hidden;
   padding: 20px 100px;
   width: 100%;

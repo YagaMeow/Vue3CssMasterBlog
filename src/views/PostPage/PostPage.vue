@@ -8,14 +8,24 @@
       </drag-handle>
     </div> -->
     <div class="loading" v-show="myeditor.is_loading.value">Loading...</div>
-    <div :class="{
-      'character-count': true,
-      'character-count--warning': editor.storage.characterCount.characters() === limit,
-    }">
+    <div
+      :class="{
+        'character-count': true,
+        'character-count--warning': editor.storage.characterCount.characters() === limit,
+      }"
+    >
       <svg height="20" width="20" viewBox="0 0 20 20">
         <circle r="10" cx="10" cy="10" fill="#c1e3f7" />
-        <circle r="5" cx="10" cy="10" fill="transparent" stroke="#68c3f7" stroke-width="10"
-          :stroke-dasharray="`calc(${percentage} * 31.4 / 100) 31.4`" transform="rotate(-90) translate(-20)" />
+        <circle
+          r="5"
+          cx="10"
+          cy="10"
+          fill="transparent"
+          stroke="#68c3f7"
+          stroke-width="10"
+          :stroke-dasharray="`calc(${percentage} * 31.4 / 100) 31.4`"
+          transform="rotate(-90) translate(-20)"
+        />
         <circle r="6" cx="10" cy="10" fill="rgb(232, 231, 231)" />
       </svg>
 
@@ -77,7 +87,7 @@ const appStore = useAppStore()
 
 const myeditor = {
   is_loading: ref(true),
-  init() { },
+  init() {},
   async show() {
     if (appStore.edit_mode) this.is_loading.value = false
     const res = await ArticleAPI.getByUri(props.uri)
@@ -208,7 +218,7 @@ function onImageSelected(event: Event) {
 }
 
 defineExpose({
-  editor
+  editor,
 })
 </script>
 <style lang="scss" scoped>
@@ -227,6 +237,7 @@ defineExpose({
       color: #aaa;
       position: absolute;
     }
+    overflow-x: hidden;
   }
 
   .character-count {

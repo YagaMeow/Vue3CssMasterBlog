@@ -14,7 +14,7 @@
     <MyButton id="info">
       <div class="button-content">i</div>
     </MyButton>
-    <MyButton id="login" @click="appStore.show_login">
+    <MyButton id="login" @click="appStore.show_login?.()">
       <div class="button-content">L</div>
     </MyButton>
   </div>

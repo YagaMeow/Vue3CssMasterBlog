@@ -1,6 +1,8 @@
 import { useUserStore } from '@/pinia/modules/user'
 import axios, { type AxiosRequestHeaders, type InternalAxiosRequestConfig } from 'axios'
 
+console.log(import.meta.env)
+
 const service = axios.create({
   baseURL: import.meta.env.VITE_BASE_API,
   timeout: 5 * 1000,
@@ -10,8 +12,7 @@ service.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const userStore = useUserStore()
     const token = userStore.currentToken
-    if(!config.headers['Content-Type'])
-    config.headers['Content-Type'] = 'application/json'
+    if (!config.headers['Content-Type']) config.headers['Content-Type'] = 'application/json'
     config.headers['x-token'] = token
     return config
   },
