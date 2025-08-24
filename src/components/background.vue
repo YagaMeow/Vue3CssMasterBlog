@@ -46,13 +46,17 @@ const background: Background = {
     document.addEventListener('touchend', (e) => {
       background.reset()
     })
-    gsap.timeline().fromTo(background.balls,{
-      y: '-5rem'
-    },{
-      y: 0,
-      duration: 4,
-      ease: "power4.out"
-    })
+    gsap.timeline().fromTo(
+      document.querySelector('.bg'),
+      {
+        z: '-100rem',
+      },
+      {
+        z: 0,
+        duration: 15,
+        ease: 'power3.out',
+      },
+    )
   },
   move: (x: number, y: number) => {
     if (background.mouse_x === 0 && background.mouse_y === 0) {
@@ -90,7 +94,8 @@ onMounted(() => background.init())
 .bg {
   user-select: none;
   pointer-events: none;
-  overflow: hidden;
+  overflow: visible;
+  transform: perspective(500rem);
   --scale: 1;
   .bg-ball {
     width: 30rem;
@@ -98,7 +103,7 @@ onMounted(() => background.init())
     background-color: #000;
     position: absolute;
     border-radius: 50%;
-    scale: var(--s);
+    scale: calc(var(--scale) * var(--s));
     left: calc(100vw * var(--x));
     top: calc(100vh * var(--y));
     opacity: var(--o);

@@ -1,10 +1,10 @@
 <template>
   <div class="nav-container" v-show="nav.if_visible.value">
-    <MyButton id="discover">
-      <div class="button-content" @click="appStore.posts_to_menus">discover</div>
+    <MyButton id="discover" @click="appStore.posts_to_menus">
+      <div class="button-content">discover</div>
     </MyButton>
-    <MyButton id="collect">
-      <div class="button-content" @click="nav.handleCollect">collect</div>
+    <MyButton id="collect" @click="nav.handleCollect">
+      <div class="button-content">collect</div>
     </MyButton>
     <MyButton id="sound">
       <div class="button-content">
@@ -24,25 +24,25 @@
         <div class="type-list-items">
           <label class="type-list-item" for="">
             <div>test</div>
-            <input type="checkbox">
+            <input type="checkbox" />
           </label>
         </div>
         <div class="type-list-items">
           <label class="type-list-item" for="">
             <div>test</div>
-            <input type="checkbox">
+            <input type="checkbox" />
           </label>
         </div>
         <div class="type-list-items">
           <label class="type-list-item" for="">
             <div>test</div>
-            <input type="checkbox">
+            <input type="checkbox" />
           </label>
         </div>
         <div class="type-list-items">
           <label class="type-list-item" for="">
             <div>test</div>
-            <input type="checkbox">
+            <input type="checkbox" />
           </label>
         </div>
       </div>
@@ -59,7 +59,7 @@
         <div class="date-list-items">
           <label class="date-list-item" for="">
             <div>test</div>
-            <input type="checkbox">
+            <input type="checkbox" />
           </label>
         </div>
       </div>
@@ -183,7 +183,7 @@ const nav = {
           ease: 'power3.in',
           onComplete: () => {
             nav.if_visible.value = false
-          }
+          },
         },
         '<',
       )
@@ -215,74 +215,119 @@ const nav = {
     appStore.show_tab?.()
   },
   handleTypeFilter() {
-
     if (nav.type?.classList.contains('expand')) {
       appStore.audio_controller.leavemenubutton.play()
       nav.type.classList.remove('expand')
-      gsap.timeline().to(nav.type_list, {
-        height: 0,
-        duration: .2,
-        ease: "power1.out"
-      }).to(nav.type_after, {
-        rotate: -90,
-        duration: .2,
-        ease: "myEase2"
-      }, "<").to(nav.type_after?.querySelector('.row') as Element, {
-        opacity: 1,
-        duration: .2
-      }, "<")
-    }
-    else {
+      gsap
+        .timeline()
+        .to(nav.type_list, {
+          height: 0,
+          duration: 0.2,
+          ease: 'power1.out',
+        })
+        .to(
+          nav.type_after,
+          {
+            rotate: -90,
+            duration: 0.2,
+            ease: 'myEase2',
+          },
+          '<',
+        )
+        .to(
+          nav.type_after?.querySelector('.row') as Element,
+          {
+            opacity: 1,
+            duration: 0.2,
+          },
+          '<',
+        )
+    } else {
       appStore.audio_controller.entermenubutton.play()
-      nav.type?.classList.add("expand")
-      gsap.timeline().to(nav.type_list, {
-        height: 'auto',
-        duration: .2,
-        ease: "power1.out"
-      }).to(nav.type_after, {
-        rotate: 90,
-        duration: .2,
-        ease: "myEase2"
-      }, "<").to(nav.type_after?.querySelector('.row') as Element, {
-        opacity: 0,
-        duration: .2
-      }, "<")
+      nav.type?.classList.add('expand')
+      gsap
+        .timeline()
+        .to(nav.type_list, {
+          height: 'auto',
+          duration: 0.2,
+          ease: 'power1.out',
+        })
+        .to(
+          nav.type_after,
+          {
+            rotate: 90,
+            duration: 0.2,
+            ease: 'myEase2',
+          },
+          '<',
+        )
+        .to(
+          nav.type_after?.querySelector('.row') as Element,
+          {
+            opacity: 0,
+            duration: 0.2,
+          },
+          '<',
+        )
     }
   },
   handleDateFilter() {
     if (nav.date?.classList.contains('expand')) {
       appStore.audio_controller.leavemenubutton.play()
       nav.date.classList.remove('expand')
-      gsap.timeline().to(nav.date_list, {
-        height: 0,
-        duration: .2,
-        ease: "power1.out"
-      }).to(nav.date_after, {
-        rotate: -90,
-        duration: .2,
-        ease: "myEase2"
-      }, "<").to(nav.date_after?.querySelector('.row') as Element, {
-        opacity: 1,
-        duration: .2
-      }, "<")
-    }
-    else {
+      gsap
+        .timeline()
+        .to(nav.date_list, {
+          height: 0,
+          duration: 0.2,
+          ease: 'power1.out',
+        })
+        .to(
+          nav.date_after,
+          {
+            rotate: -90,
+            duration: 0.2,
+            ease: 'myEase2',
+          },
+          '<',
+        )
+        .to(
+          nav.date_after?.querySelector('.row') as Element,
+          {
+            opacity: 1,
+            duration: 0.2,
+          },
+          '<',
+        )
+    } else {
       appStore.audio_controller.entermenubutton.play()
-      nav.date?.classList.add("expand")
-      gsap.timeline().to(nav.date_list, {
-        height: 'auto',
-        duration: .2,
-        ease: "power1.out"
-      }).to(nav.date_after, {
-        rotate: 90,
-        duration: .2,
-        ease: "myEase2"
-      }, "<").to(nav.date_after?.querySelector('.row') as Element, {
-        opacity: 0,
-        duration: .2
-      }, "<")
+      nav.date?.classList.add('expand')
+      gsap
+        .timeline()
+        .to(nav.date_list, {
+          height: 'auto',
+          duration: 0.2,
+          ease: 'power1.out',
+        })
+        .to(
+          nav.date_after,
+          {
+            rotate: 90,
+            duration: 0.2,
+            ease: 'myEase2',
+          },
+          '<',
+        )
+        .to(
+          nav.date_after?.querySelector('.row') as Element,
+          {
+            opacity: 0,
+            duration: 0.2,
+          },
+          '<',
+        )
     }
-  }
+  },
 }
 appStore.show_nav = nav.show.bind(nav)
 appStore.hide_nav = nav.hide.bind(nav)
@@ -303,14 +348,13 @@ async function handleLogout() {
 onMounted(() => {
   nav.init()
   console.log(nav.type)
-  nav.type?.addEventListener("click", nav.handleTypeFilter)
-  nav.date?.addEventListener("click", nav.handleDateFilter)
+  nav.type?.addEventListener('click', nav.handleTypeFilter)
+  nav.date?.addEventListener('click', nav.handleDateFilter)
 })
 
 onUnmounted(() => {
-  nav.type?.removeEventListener("click", nav.handleTypeFilter)
-  nav.date?.removeEventListener("click", nav.handleDateFilter)
-
+  nav.type?.removeEventListener('click', nav.handleTypeFilter)
+  nav.date?.removeEventListener('click', nav.handleDateFilter)
 })
 </script>
 <style lang="scss" scoped>
@@ -402,7 +446,8 @@ onUnmounted(() => {
       background-color: rgba($color: #000, $alpha: 0.4);
       backdrop-filter: blur(0.1rem);
       border-radius: 1rem;
-      box-shadow: inset 0px 1px #fff,
+      box-shadow:
+        inset 0px 1px #fff,
         inset 0px -1px #fff;
 
       * {
@@ -519,7 +564,8 @@ onUnmounted(() => {
   transform: translateY(-0.1em);
 }
 
-@media screen and (max-width: 1280px) {}
+@media screen and (max-width: 1280px) {
+}
 
 @media screen and (max-width: 1024px) {
   .nav-container .pc {

@@ -78,17 +78,37 @@
     color: #fff;
 
     code {
+      background-color: transparent;
+      color: yellow;
       * {
         word-break: break-all;
       }
 
       .hljs-attr {
-        color: rgb(0, 186, 96);
+        color: aqua;
       }
 
       .hljs-string {
         color: #ffc800;
 
+      }
+
+      .hljs-comment {
+        color: #aaa;
+      }
+
+      .hljs-selector-tag {
+        color: aqua;
+      }
+
+      .hljs-selector-class {
+        color: yellow;
+      }
+      .hljs-property {
+        color: aqua;
+      }
+      .hljs-variable {
+        color: rgb(0, 149, 255);
       }
     }
   }

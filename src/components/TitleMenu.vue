@@ -1,7 +1,21 @@
 <template>
-    <div class="title_menu" ref="container" v-show="(titleMenu.if_visible as Ref).value"
-      @mouseenter="appStore.audio_controller.entermenubutton.play()">
-      <div @mouseleave="titleMenu.mouseout" class="title_menu_button" @click="appStore.menus_to_posts()">
+  <div class="_fullscreen title_menu_container" v-show="(titleMenu.if_visible as Ref).value">
+    <div
+      class="title_menu"
+      ref="container"
+      @mouseenter="appStore.audio_controller.entermenubutton.play()"
+    >
+      <svg class="middle_line" viewBox="0 0 50 50">
+        <circle class="_dashed" cx="25" cy="25" r="25" vector-effect="non-scaling-stroke"></circle>
+      </svg>
+      <svg class="out_line" viewBox="0 0 50 50">
+        <circle class="_dashed" cx="25" cy="25" r="25" vector-effect="non-scaling-stroke"></circle>
+      </svg>
+      <div
+        @mouseleave="titleMenu.mouseout"
+        class="title_menu_button"
+        @click="appStore.menus_to_posts()"
+      >
         <div class="live">live now</div>
         2025
       </div>
@@ -10,7 +24,7 @@
       <div @mouseleave="titleMenu.mouseout" class="title_menu_button">2022</div>
       <div @mouseleave="titleMenu.mouseout" class="title_menu_button">2021</div>
     </div>
-
+  </div>
 </template>
 <script setup lang="ts">
 import { useAppStore } from '@/pinia/index'
@@ -27,29 +41,69 @@ const titleMenu = {
   if_visible: ref(true),
   init() {
     buttons.value = document.querySelectorAll('.title_menu_button')
-    this.animator = gsap.timeline().fromTo(
-      container.value,
-      {
-        clipPath: 'circle(0)',
-      },
-      {
-        duration: 3,
-        onComplete: () => {
-          console.log('complete')
+    gsap
+      .timeline()
+      .to(document.querySelector('.middle_line'), {
+        rotate: '360deg',
+        duration: 40,
+        repeat: -1,
+        ease: 'none',
+      })
+      .to(
+        document.querySelector('.out_line'),
+        {
+          rotate: '-360deg',
+          duration: 30,
+          repeat: -1,
+          ease: 'none',
         },
-        delay: .5,
-        ease: 'power4.out',
-        clipPath: 'circle(100%)'
-      },
-    ).fromTo(buttons.value,{
-      opacity: 0,
-    },{
-      opacity: 1,
-      stagger: .2,
-      duration: .6,
-      delay: .3,
-      ease: "power3.in"
-    },"<")
+        '<',
+      )
+    this.animator = gsap
+      .timeline()
+      .fromTo(
+        container.value,
+        {
+          // clipPath: 'circle(0)',
+          scale: 0,
+        },
+        {
+          duration: 2,
+          scale: 1,
+          delay: 0.5,
+          onComplete: () => {
+            console.log('complete')
+          },
+          ease: 'power4.out',
+          // clipPath: 'circle(100%)',
+        },
+      )
+      .fromTo(
+        buttons.value,
+        {
+          scale: 0.9,
+          opacity: 0,
+        },
+        {
+          scale: 1,
+          opacity: 1,
+          stagger: 0.2,
+          duration: 0.6,
+          ease: 'power4.out',
+        },
+        '<+0.3',
+      )
+      .fromTo(
+        document.querySelector('.middle_line'),
+        {
+          scale: 0,
+        },
+        {
+          scale: 1,
+          duration: 2,
+        },
+        '<-0.2',
+      )
   },
   show() {
     if (this.animator?.isActive()) return
@@ -84,7 +138,7 @@ const titleMenu = {
         duration: 0.2,
         ease: 'power3.in',
         onComplete: () => {
-          ; (this.if_visible as Ref).value = false
+          ;(this.if_visible as Ref).value = false
           if (next) next()
         },
       })
@@ -95,7 +149,7 @@ const titleMenu = {
   },
   mouseout() {
     if (!no_audio) appStore.audio_controller.leavemenubutton.play()
-  }
+  },
 }
 appStore.show_menus = titleMenu.show.bind(titleMenu)
 appStore.hide_menus = titleMenu.hide.bind(titleMenu)
@@ -105,12 +159,13 @@ onMounted(() => {
 })
 </script>
 <style lang="scss" scoped>
+.title_menu_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .title_menu {
   --scale: 1;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
 
   display: flex;
   flex-direction: column;
@@ -118,15 +173,16 @@ onMounted(() => {
   align-items: center;
 
   .title_menu_button {
+    transform-origin: 50% 0;
     width: calc(var(--scale) * 60rem);
     height: calc(var(--scale) * 16rem);
     overflow: hidden;
 
-    margin: .3rem 0;
+    margin: 0.3rem 0;
     transition: height cubic-bezier(0, 0, 0.8, 1.2) 0.1s;
     background-color: #616161;
     border-radius: 1rem;
-    box-shadow: inset .1rem .1rem #fff;
+    box-shadow: inset 0.1rem 0.1rem #fff;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -208,6 +264,39 @@ onMounted(() => {
 
   100% {
     opacity: 0;
+  }
+}
+
+._dashed {
+  fill: none;
+  stroke-width: 0.5rem;
+  stroke-linecap: round;
+}
+
+.out_line {
+  scale: 1.3;
+}
+
+.middle_line,
+.out_line {
+  position: absolute;
+  width: 80rem;
+  overflow: visible;
+  circle {
+    stroke-linecap: round;
+    stroke-dasharray: 0 4rem;
+    transform-origin: center;
+    stroke: rgba($color: #000000, $alpha: 0.8);
+  }
+  // animation: rotate infinite 40s linear;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 </style>
