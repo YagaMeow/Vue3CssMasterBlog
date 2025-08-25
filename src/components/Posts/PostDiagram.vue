@@ -1,23 +1,9 @@
 <template>
-  <div
-    class="posts-diagram-container _fullscreen"
-    v-show="diagram.if_visible.value"
-    @dragover="dragOver"
-  >
-    <Post
-      v-for="(item, index) in postList"
-      :key="index"
-      :data="item"
-      :class="{
-        dragging: dragData.activeUri === item.uri,
-      }"
-      draggable="true"
-      @dragstart="dragStart"
-      @dragend="dragEnd"
-      @drag="onDrag"
-      :uri="item.uri"
-      class="diagram-post"
-    ></Post>
+  <div class="posts-diagram-container _fullscreen" v-show="diagram.if_visible.value" @dragover="dragOver">
+    <Post v-for="(item, index) in postList" :key="index" :data="item" :class="{
+      dragging: dragData.activeUri === item.uri,
+    }" draggable="true" @dragstart="dragStart" @dragend="dragEnd" @drag="onDrag" :uri="item.uri" class="diagram-post">
+    </Post>
   </div>
 </template>
 <script setup lang="ts">
@@ -57,7 +43,14 @@ const diagram = {
     document.addEventListener('mousedown', () => {
       if (diagram.if_visible.value) diagram.draggable.value = true
     })
+    document.addEventListener('touchstart', () => {
+      if (diagram.if_visible.value) diagram.draggable.value = true
+    })
     document.addEventListener('mouseup', () => {
+      diagram.draggable.value = false
+      diagram.reset()
+    })
+    document.addEventListener('touchend', () => {
       diagram.draggable.value = false
       diagram.reset()
     })
@@ -74,6 +67,20 @@ const diagram = {
       if (diagram.mouse_pos.value[0] !== 0 || diagram.mouse_pos.value[1] !== 0)
         diagram.move(e.x, e.y)
       diagram.mouse_pos.value = [e.x, e.y]
+    })
+    document.addEventListener('touchmove', (e) => {
+      if (!diagram.draggable.value || appStore.show_detail) return
+      if (diagram.mouse_pos.value[0] === 0 || diagram.mouse_pos.value[1] === 0) {
+        diagram.mouse_pos.value = [e.touches[0].clientX, e.touches[0].clientY]
+        return
+      }
+      if (diagram.timer) return
+      diagram.timer = setTimeout(() => {
+        diagram.timer = 0
+      }, 10)
+      if (diagram.mouse_pos.value[0] !== 0 || diagram.mouse_pos.value[1] !== 0)
+        diagram.move(e.touches[0].clientX, e.touches[0].clientY)
+      diagram.mouse_pos.value = [e.touches[0].clientX, e.touches[0].clientY]
     })
   },
   async show() {
@@ -259,6 +266,7 @@ function handleDelete(uri: string) {
 .posts-diagram-container {
   --scale: 1;
   cursor: grab;
+
   &:active {
     cursor: grabbing;
   }
@@ -318,6 +326,7 @@ function handleDelete(uri: string) {
   display: flex;
   gap: 30px;
   flex-wrap: wrap;
+
   .post {
     position: absolute;
   }
@@ -337,15 +346,19 @@ function handleDelete(uri: string) {
   0% {
     transform: translate(0, 0);
   }
+
   25% {
     transform: rotate(-10deg);
   }
+
   50% {
     transform: rotate(10deg);
   }
+
   75% {
     transform: rotate(-5deg);
   }
+
   100% {
     transform: translate(0, 0);
   }

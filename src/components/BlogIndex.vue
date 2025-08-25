@@ -77,5 +77,6 @@ onMounted(() => {
   min-height: 100vh;
   display: flex;
   will-change: clip-path;
+  overflow: hidden;
 }
 </style>

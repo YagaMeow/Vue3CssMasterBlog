@@ -432,8 +432,8 @@ onUnmounted(() => {
 
   &.footer {
     align-items: end;
-    bottom: 1rem;
-    left: 1rem;
+    bottom: 0;
+    left: 0;
     transform: translateY(6rem);
 
     #type,
@@ -516,6 +516,7 @@ onUnmounted(() => {
       margin-right: 2rem;
       position: relative;
       filter: none;
+      --move: 3.5rem;
 
       .button-content {
         --type: 0;
@@ -527,7 +528,7 @@ onUnmounted(() => {
           content: '';
           display: block;
           position: absolute;
-          left: calc(var(--type) * 3.5rem);
+          left: calc(var(--type) * var(--move));
           width: 4rem;
           height: 4rem;
           border-radius: 1rem;
@@ -564,18 +565,116 @@ onUnmounted(() => {
   transform: translateY(-0.1em);
 }
 
-@media screen and (max-width: 1280px) {
-}
+@media screen and (max-aspect-ratio: 1.7/1) {}
 
-@media screen and (max-width: 1024px) {
-  .nav-container .pc {
-    margin-left: 50px;
+@media screen and (max-aspect-ratio: 1.4/1) {}
+
+@media screen and (max-aspect-ratio: 1/1) {}
+
+@media screen and (max-aspect-ratio: 0.8/1) {
+  * {
+    font-size: 5rem !important;
   }
-}
 
-@media screen and (max-width: 768px) {
-  .nav-container .pc {
-    margin-left: 0;
+  .nav-container {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,2fr)) repeat(3,minmax(0,1fr)); 
+    #discover,
+    #collect {
+      border-right: .1rem solid #eee;
+    }
+    :deep(.mybutton) {
+      box-shadow: none;
+      border-radius: 0;
+      height: 8rem;
+      .button-content{
+        &::before,
+        &::after {
+          font-size: 5rem !important;
+        }
+      }
+    }
+    #info,
+    #login,
+    #sound {
+      width: 100%;
+      border-left: .1rem solid #fff;
+      justify-self: center;
+      align-self: center;
+    }
+    #sound{
+      width: 8rem;
+      margin-right: 2rem;
+      border: none;
+    }
+
+    &::before {
+      content: "";
+      background-color: #000;
+      width: 100%;
+      position: absolute;
+      height: 10rem;
+      top: 0;
+    }
+
+    .svg-icon {
+      width: 8rem !important;
+      height: 8rem !important;
+    }
+
+    &.footer {
+      padding-left: 0;
+      &::before {
+        content: "";
+        display: block;
+        background-color: #000;
+        width: 100%;
+        position: absolute;
+        height: 10rem;
+        top: auto;
+        bottom: 0;
+      }
+
+      display: grid;
+      gap: 0;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) 1fr;
+
+      #date,
+      #type {
+        background-color: #000;
+        box-shadow: none;
+        border-radius: 0;
+        border-right: .1rem solid #eee;
+
+        .button-content {
+          .plus {
+            margin-right: 3rem;
+
+            .row,
+            .col {
+              width: 5rem;
+              height: 1rem;
+            }
+          }
+        }
+      }
+
+      #layout {
+        margin: 0 auto;
+        --move: 9.9rem;
+        height: 8rem;
+        box-shadow: none;
+
+        .button-content {
+          gap: 2rem;
+        }
+
+        .button-content::after {
+          width: 9rem;
+          height: 9rem;
+        }
+      }
+    }
   }
 }
 </style>
