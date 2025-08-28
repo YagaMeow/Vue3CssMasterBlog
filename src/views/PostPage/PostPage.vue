@@ -227,7 +227,8 @@ defineExpose({
   position: relative;
   height: 100%;
   width: 100%;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 
   .editor-text {
     margin: 0.5rem 1rem;
