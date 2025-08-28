@@ -161,12 +161,13 @@ const post = {
     })
   },
   show_details() {
+    console.log(props.data)
     appStore.post_data = props.data as {
       title: string
       uri: string
       id: number
       created_at: string
-      tags: Object[]
+      tags: { name: string }[]
     }
     // console.log(appStore.post_data.title)
     appStore.edit_mode = false

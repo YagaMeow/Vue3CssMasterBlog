@@ -1,6 +1,27 @@
 <template>
   <div class="mask-container _fullscreen" v-show="posttap.if_visible.value">
     <div class="mask _fullscreen" @click="handleClose"></div>
+    <div class="tag-content">
+      <div
+        class="tag"
+        v-for="(tag, idx) in appStore.post_data.tags || []"
+        :key="'tag' + idx"
+        @click="posttap.handleRemoveTag(tag.name)"
+      >
+        <span>{{ tag.name }}</span>
+        <span class="delete-tag" style="margin-left: auto; margin-right: 1rem">×</span>
+      </div>
+      <div
+        v-show="posttap.addtag_visible.value"
+        class="tag input"
+        @keydown.enter="posttap.handleAddTag"
+      >
+        <input type="text" v-model="posttap.newtag.value" />
+      </div>
+      <div class="tag" @click="posttap.showAddTag">
+        <span>...</span>
+      </div>
+    </div>
     <div class="tab-container">
       <div class="tools control-group">
         <div class="button-group" v-if="ed">
@@ -105,28 +126,6 @@
         </div>
       </div>
 
-      <div class="tag-content">
-        <div
-          class="tag"
-          v-for="(tag, idx) in appStore.post_data.tags || []"
-          :key="'tag' + idx"
-          @click="posttap.handleRemoveTag(tag.name)"
-        >
-          <span>{{ tag.name }}</span>
-          <span class="delete-tag" style="margin-left: auto; margin-right: 1rem">×</span>
-        </div>
-        <div
-          v-show="posttap.addtag_visible.value"
-          class="tag input"
-          @keydown.enter="posttap.handleAddTag"
-        >
-          <input type="text" v-model="posttap.newtag.value" />
-        </div>
-        <div class="tag" @click="posttap.showAddTag">
-          <span>...</span>
-        </div>
-      </div>
-
       <div class="tab-title">
         <div class="tab-title-info">
           <div class="title" v-if="!appStore.edit_mode">{{ appStore.post_data.title }}</div>
@@ -160,7 +159,7 @@
 <script lang="ts" setup>
 import ContextMenu from '@/components/ui/contextmenu.vue'
 import MyButton from '@/components/ui/btn.vue'
-import { onMounted, ref } from 'vue'
+import { nextTick, onMounted, ref } from 'vue'
 import gsap from 'gsap'
 import { useAppStore } from '@/pinia'
 import { formatDate } from '@/utils/utils'
@@ -188,6 +187,7 @@ const posttap = {
   rafId: 0,
   addtag_visible: ref(false),
   newtag: ref(''),
+  tags: null as null | NodeListOf<HTMLElement>,
   init() {
     this.container = document.querySelector('.tab-container')
     this.mask = document.querySelector('.mask-container .mask')
@@ -197,6 +197,7 @@ const posttap = {
   show() {
     if (this.animator?.isActive()) return
     this.buttons = document.querySelectorAll('.button-group button')
+    console.log(this.tags)
     console.log(this.lenis)
     appStore.show_detail = true
     if (appStore.edit_mode) {
@@ -237,9 +238,19 @@ const posttap = {
           'backdrop-filter': 'blur(1rem)',
           duration: 1,
           ease: 'power3.out',
+          onComplete: () => {
+            gsap.timeline().to(document.querySelectorAll('.tag'), {
+              x: 0,
+              opacity: 1,
+              duration: 0.2,
+              stagger: 0.05,
+              ease: 'power1.out',
+            })
+          },
         },
         '<',
       )
+
     appStore.audio_controller.showposttab.play()
   },
   hide(immediate: () => void, next: () => void) {
@@ -247,6 +258,13 @@ const posttap = {
     if (immediate) immediate()
     this.animator = gsap
       .timeline()
+      .to(document.querySelectorAll('.tag'), {
+        x: '-100%',
+        opacity: 0,
+        duration: 0.2,
+        stagger: 0.05,
+        ease: 'power1.out',
+      })
       .to(this.container, {
         scale: 0.8,
         opacity: 0,
@@ -296,9 +314,12 @@ const posttap = {
     })
   },
   handleEdit() {
+    if (posttap.animator?.isActive()) {
+      return
+    }
+
     posttap.editable.value = !posttap.editable.value
     ed.value.editor.setEditable(posttap.editable.value)
-    if (posttap.animator?.isActive()) posttap.animator.kill()
 
     if (posttap.editable.value) {
       posttap.animator = gsap.timeline().to(posttap.buttons, {
@@ -328,6 +349,8 @@ const posttap = {
     _title.value = ''
     _uri.value = ''
     posttap.editable.value = false
+    posttap.addtag_visible.value = false
+    posttap.newtag.value = ''
     posttap.animator = gsap.timeline().to(posttap.buttons, {
       scale: 0,
       duration: 0,
@@ -347,6 +370,7 @@ const posttap = {
   async handleAddTag() {
     await ArticleAPI.addTag({ id: appStore.post_data.id, tag: posttap.newtag.value })
     posttap.addtag_visible.value = false
+    posttap.newtag.value = ''
   },
 }
 
@@ -428,7 +452,70 @@ onMounted(() => {
     opacity: 0;
   }
 
+  .tag-content {
+    user-select: none;
+    position: absolute;
+    // background-color: red;
+    // background-color: red;
+    height: 80rem;
+    left: calc(50% + 30rem);
+    top: calc(50% - 40rem);
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    filter: drop-shadow(0.1rem 0.1rem #fff);
+    padding-top: 8rem;
+
+    .tag {
+      transform: translateX(-100%);
+      opacity: 0;
+      cursor: pointer;
+      margin-left: -1rem;
+      min-height: 3rem;
+      min-width: 5rem;
+      max-width: 10rem;
+      width: fit-content;
+      background-color: #191919;
+      color: #fff;
+      clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 50%, calc(100% - 1rem) 100%, 0 100%);
+      margin-top: 2rem;
+      display: flex;
+      align-items: center;
+      padding-left: 1rem;
+      padding-right: 2rem;
+
+      input {
+        background: transparent;
+        display: block;
+        width: 8rem;
+        color: #fff;
+        outline: none;
+        border: none;
+        &:focus {
+          border: none;
+          outline: none;
+        }
+      }
+
+      * {
+        font-size: 2rem;
+      }
+
+      .delete-tag {
+        display: none;
+      }
+
+      &:hover {
+        padding-right: 0;
+        .delete-tag {
+          display: block;
+        }
+      }
+    }
+  }
+
   .tab-container {
+    user-select: none;
     scale: 0.8;
     opacity: 0;
     width: 60rem;
@@ -441,61 +528,6 @@ onMounted(() => {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-
-    .tag-content {
-      position: absolute;
-      // background-color: red;
-      height: 100%;
-      right: 0;
-      transform: translateX(100%);
-      display: flex;
-      flex-direction: column;
-      flex-wrap: wrap;
-      filter: drop-shadow(0.1rem 0.1rem #fff);
-      padding-top: 8rem;
-
-      .tag {
-        cursor: pointer;
-        margin-left: -1rem;
-        min-height: 3rem;
-        min-width: 5rem;
-        max-width: 10rem;
-        width: fit-content;
-        background-color: #191919;
-        color: #fff;
-        clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 50%, calc(100% - 1rem) 100%, 0 100%);
-        margin-top: 2rem;
-        display: flex;
-        align-items: center;
-        padding-left: 1rem;
-        padding-right: 2rem;
-
-        input {
-          background: transparent;
-          display: block;
-          width: 8rem;
-          color: #fff;
-          &:focus {
-            outline: none;
-          }
-        }
-
-        * {
-          font-size: 2rem;
-        }
-
-        .delete-tag {
-          display: none;
-        }
-
-        &:hover {
-          padding-right: 0;
-          .delete-tag {
-            display: block;
-          }
-        }
-      }
-    }
 
     .tab-title {
       width: 100%;
