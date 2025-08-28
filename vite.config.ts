@@ -8,7 +8,7 @@ import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import path from 'path'
 // https://vite.dev/config/
 
-const env = loadEnv('production', process.cwd())
+const env = loadEnv('development', process.cwd())
 
 export default defineConfig({
   plugins: [

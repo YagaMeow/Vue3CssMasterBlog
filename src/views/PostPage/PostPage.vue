@@ -219,6 +219,7 @@ function onImageSelected(event: Event) {
 
 defineExpose({
   editor,
+  _data
 })
 </script>
 <style lang="scss" scoped>

@@ -1,4 +1,5 @@
 import service from '@/utils/request'
+import { ta } from 'element-plus/es/locales.mjs'
 
 interface ArticlesListParams {
   page: number
@@ -71,6 +72,25 @@ export const ArticleAPI = {
         'Content-Type': 'multipart/form-data'
       },
     })
-
+  },
+  addTag(data:{
+    id: number,
+    tag:string
+  }) {
+    return service({
+      url: '/api/addtag',
+      method: 'POST',
+      data: data
+    })
+  },
+  removeTag(data: {
+    id:number,
+    tag: string
+  }) {
+    return service({
+      url: '/api/removetag',
+      method: 'POST',
+      data: data
+    })
   }
 }
