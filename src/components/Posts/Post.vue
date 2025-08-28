@@ -1,13 +1,17 @@
 <template>
   <div class="post post-container" ref="p" v-show="post.if_visible.value">
-    <div class="post-info" ref="info" @dragover="
-      (e: DragEvent) => {
-        e.preventDefault()
-        if (e.dataTransfer) {
-          e.dataTransfer.dropEffect = 'move'
+    <div
+      class="post-info"
+      ref="info"
+      @dragover="
+        (e: DragEvent) => {
+          e.preventDefault()
+          if (e.dataTransfer) {
+            e.dataTransfer.dropEffect = 'move'
+          }
         }
-      }
-    ">
+      "
+    >
       <div class="myform col">
         <div class="row">
           <div class="text">Creator</div>
@@ -17,9 +21,7 @@
         <div class="row">
           <div class="text">Create at</div>
           <div class="dot"></div>
-          <div class="text">{{new Date(data.created_at).toLocaleDateString('zh-CN',{
-
-          })}} </div>
+          <div class="text">{{ new Date(data.created_at).toLocaleDateString('zh-CN', {}) }}</div>
         </div>
       </div>
       <MyButton>
@@ -37,7 +39,7 @@
       <p class="abstract"></p>
       <p class="post-footer">
         <MyButton @click.stop="post.switchInfo" class="icon" ref="i">i</MyButton>
-        <MyButton style="margin-left: 1rem;" @click.stop="handleDelete(data.uri)">
+        <MyButton style="margin-left: 1rem" @click.stop="handleDelete(data.uri)">
           <svg-icon iconClass="bin"></svg-icon>
         </MyButton>
         <span class="date">{{ formatDate(data.created_at) }}</span>
@@ -93,8 +95,8 @@ const post = {
     post.post = p.value
     post.info = info.value
     post.icon = i.value ? (i.value.$el as HTMLElement) : null
-      ; (post.post as HTMLElement).style.left = `${left}%`
-      ; (post.post as HTMLElement).style.top = `${top}%`
+    ;(post.post as HTMLElement).style.left = `${left}%`
+    ;(post.post as HTMLElement).style.top = `${top}%`
   },
   glitch: () => {
     setTimeout(
@@ -106,28 +108,28 @@ const post = {
           const y = Math.random() * 100
           const w = Math.random() * 50 + 50
           const h = Math.random() * 10 + 40
-            ; (post.post as HTMLElement).style.clipPath =
-              `polygon(${x}% ${y}%, ${x + w}% ${y}%,${x + w}% ${y + h}%,${x}% ${y + h}%)`
-            ; (post.post as HTMLElement).style.left = `${left}%`
-            ; (post.post as HTMLElement).style.top = `${top}%`
+          ;(post.post as HTMLElement).style.clipPath =
+            `polygon(${x}% ${y}%, ${x + w}% ${y}%,${x + w}% ${y + h}%,${x}% ${y + h}%)`
+          ;(post.post as HTMLElement).style.left = `${left}%`
+          ;(post.post as HTMLElement).style.top = `${top}%`
         }, 30)
-          // post.if_visible.value = true
-          ; (post.post as HTMLElement).style.opacity = '1'
+        // post.if_visible.value = true
+        ;(post.post as HTMLElement).style.opacity = '1'
         setTimeout(post.reset, 800)
       },
       range(0, 500),
     )
   },
   reset: () => {
-    ; (post.post as HTMLElement).style.clipPath = ``
-      ; (post.post as HTMLElement).classList.remove('glitch')
+    ;(post.post as HTMLElement).style.clipPath = ``
+    ;(post.post as HTMLElement).classList.remove('glitch')
     clearInterval(post.timer as number)
   },
   switchInfo() {
     if (post.show_info.value === false) {
       post.show_info.value = true
-        ; (post.info as HTMLElement).style.pointerEvents = 'auto'
-        ; (post.icon as HTMLElement).textContent = '×'
+      ;(post.info as HTMLElement).style.pointerEvents = 'auto'
+      ;(post.icon as HTMLElement).textContent = '×'
       gsap.timeline().to(post.info, {
         opacity: 1,
         duration: 0.2,
@@ -138,8 +140,8 @@ const post = {
       })
     } else {
       post.show_info.value = false
-        ; (post.info as HTMLElement).style.pointerEvents = 'none'
-        ; (post.icon as HTMLElement).textContent = 'i'
+      ;(post.info as HTMLElement).style.pointerEvents = 'none'
+      ;(post.icon as HTMLElement).textContent = 'i'
       gsap.timeline().to(post.info, {
         opacity: 0,
         duration: 0.2,
@@ -154,8 +156,8 @@ const post = {
     gsap.timeline().to(this.post, {
       scale: 0.8,
       opacity: 0,
-      duration: .2,
-      ease: "power1.out"
+      duration: 0.2,
+      ease: 'power1.out',
     })
   },
   show_details() {
@@ -164,6 +166,7 @@ const post = {
       uri: string
       id: number
       created_at: string
+      tags: Object[]
     }
     // console.log(appStore.post_data.title)
     appStore.edit_mode = false

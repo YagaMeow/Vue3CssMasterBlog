@@ -11,6 +11,7 @@ interface Article {
   uri: String
   id: number
   created_at: String
+  tags: { name: string }[]
 }
 
 function elasticEase(progress: number) {

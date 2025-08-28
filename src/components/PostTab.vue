@@ -104,6 +104,29 @@
           />
         </div>
       </div>
+
+      <div class="tag-content">
+        <div
+          class="tag"
+          v-for="(tag, idx) in appStore.post_data.tags || []"
+          :key="'tag' + idx"
+          @click="posttap.handleRemoveTag(tag.name)"
+        >
+          <span>{{ tag.name }}</span>
+          <span class="delete-tag" style="margin-left: auto; margin-right: 1rem">×</span>
+        </div>
+        <div
+          v-show="posttap.addtag_visible.value"
+          class="tag input"
+          @keydown.enter="posttap.handleAddTag"
+        >
+          <input type="text" v-model="posttap.newtag.value" />
+        </div>
+        <div class="tag" @click="posttap.showAddTag">
+          <span>...</span>
+        </div>
+      </div>
+
       <div class="tab-title">
         <div class="tab-title-info">
           <div class="title" v-if="!appStore.edit_mode">{{ appStore.post_data.title }}</div>
@@ -163,6 +186,8 @@ const posttap = {
   editable: ref(false),
   buttons: null as null | NodeListOf<HTMLElement>,
   rafId: 0,
+  addtag_visible: ref(false),
+  newtag: ref(''),
   init() {
     this.container = document.querySelector('.tab-container')
     this.mask = document.querySelector('.mask-container .mask')
@@ -170,6 +195,7 @@ const posttap = {
     console.log(this.container, this.mask)
   },
   show() {
+    if (this.animator?.isActive()) return
     this.buttons = document.querySelectorAll('.button-group button')
     console.log(this.lenis)
     appStore.show_detail = true
@@ -216,9 +242,9 @@ const posttap = {
       )
     appStore.audio_controller.showposttab.play()
   },
-  hide() {
+  hide(immediate: () => void, next: () => void) {
     if (this.animator?.isActive()) return
-
+    if (immediate) immediate()
     this.animator = gsap
       .timeline()
       .to(this.container, {
@@ -239,6 +265,7 @@ const posttap = {
             console.log(appStore.hide_post)
             appStore.show_detail = false
             appStore.hide_post?.()
+            if (next) next()
           },
         },
         '<',
@@ -296,6 +323,7 @@ const posttap = {
       uri: '',
       id: 0,
       created_at: '',
+      tags: [],
     }
     _title.value = ''
     _uri.value = ''
@@ -308,12 +336,28 @@ const posttap = {
     ed.value.editor.setEditable(false)
     ed.value.editor.commands.clearContent()
   },
+  showAddTag() {
+    posttap.addtag_visible.value = true
+  },
+  async handleRemoveTag(tagname: string) {
+    await ArticleAPI.removeTag({ id: appStore.post_data.id, tag: tagname })
+    appStore.post_data.tags = appStore.post_data.tags.filter((tag) => tag.name != tagname)
+    console.log(appStore.post_data.tags)
+  },
+  async handleAddTag() {
+    await ArticleAPI.addTag({ id: appStore.post_data.id, tag: posttap.newtag.value })
+    posttap.addtag_visible.value = false
+  },
 }
 
 async function handleClose() {
   if (appStore.edit_mode || !posttap.editable.value) {
-    posttap.reset()
-    appStore.hide_tab?.()
+    appStore.hide_tab?.(
+      () => {},
+      () => {
+        posttap.reset()
+      },
+    )
   } else {
     await ArticleAPI.update({
       title: appStore.post_data.title as string,
@@ -321,8 +365,12 @@ async function handleClose() {
       uri: appStore.post_data.uri as string,
     })
       .then(() => {
-        posttap.reset()
-        appStore.hide_tab?.()
+        appStore.hide_tab?.(
+          () => {},
+          () => {
+            posttap.reset()
+          },
+        )
       })
       .catch((e) => {
         if (appStore.notify) appStore.notify(e.message)
@@ -333,8 +381,12 @@ async function handleClose() {
 async function handleHide() {
   if (appStore.edit_mode) {
     posttap.handleCreate().then(() => {
-      posttap.reset()
-      appStore.hide_tab?.()
+      appStore.hide_tab?.(
+        () => {},
+        () => {
+          posttap.reset()
+        },
+      )
     })
   }
 }
@@ -390,6 +442,61 @@ onMounted(() => {
     align-items: center;
     flex-direction: column;
 
+    .tag-content {
+      position: absolute;
+      // background-color: red;
+      height: 100%;
+      right: 0;
+      transform: translateX(100%);
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      filter: drop-shadow(0.1rem 0.1rem #fff);
+      padding-top: 8rem;
+
+      .tag {
+        cursor: pointer;
+        margin-left: -1rem;
+        min-height: 3rem;
+        min-width: 5rem;
+        max-width: 10rem;
+        width: fit-content;
+        background-color: #191919;
+        color: #fff;
+        clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 50%, calc(100% - 1rem) 100%, 0 100%);
+        margin-top: 2rem;
+        display: flex;
+        align-items: center;
+        padding-left: 1rem;
+        padding-right: 2rem;
+
+        input {
+          background: transparent;
+          display: block;
+          width: 8rem;
+          color: #fff;
+          &:focus {
+            outline: none;
+          }
+        }
+
+        * {
+          font-size: 2rem;
+        }
+
+        .delete-tag {
+          display: none;
+        }
+
+        &:hover {
+          padding-right: 0;
+          .delete-tag {
+            display: block;
+          }
+        }
+      }
+    }
+
     .tab-title {
       width: 100%;
       display: flex;
@@ -414,6 +521,9 @@ onMounted(() => {
         height: 4rem;
         font-size: 2rem;
         color: var(--white);
+        * {
+          font-size: 2rem;
+        }
       }
 
       .tab-title-info {

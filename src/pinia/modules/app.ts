@@ -33,7 +33,7 @@ export const useAppStore = defineStore('app', () => {
 
   // 文章标签页
   const show_tab = ref<(() => void) | null>(null)
-  const hide_tab = ref<(() => void) | null>(null)
+  const hide_tab = ref<((im: () => void, nx: () => void) => void) | null>(null)
   // 文章页面
   const show_post = ref<(() => void) | null>(null)
   const hide_post = ref<(() => void) | null>(null)
@@ -41,7 +41,7 @@ export const useAppStore = defineStore('app', () => {
   const show_login = ref<(() => void) | null>(null)
   const hide_login = ref<(() => void) | null>(null)
   //提示栏
-  const notify = ref<((text :string) => void) | null>(null)
+  const notify = ref<((text: string) => void) | null>(null)
 
   const audio_controller = {
     entermenubutton: new Howl({
@@ -80,7 +80,7 @@ export const useAppStore = defineStore('app', () => {
       audio_controller.switchlayout.stop()
       audio_controller.switchmenubutton.stop()
       audio_controller.toorfrompost.stop()
-    }
+    },
   }
 
   const post_data = ref<Article>({
@@ -88,6 +88,7 @@ export const useAppStore = defineStore('app', () => {
     uri: '',
     id: 0,
     created_at: '',
+    tags: [],
   })
 
   const edit_mode = ref(false)
@@ -103,7 +104,7 @@ export const useAppStore = defineStore('app', () => {
       () => {
         show_menus.value?.()
       },
-      () => { },
+      () => {},
     )
   }
 
@@ -154,8 +155,8 @@ export const useAppStore = defineStore('app', () => {
         hide_diagram.value?.(
           () => {
             hide_nav.value?.(
-              () => { },
-              () => { },
+              () => {},
+              () => {},
             )
             audio_controller.toorfrompost.play()
           },
@@ -169,8 +170,8 @@ export const useAppStore = defineStore('app', () => {
         hide_masonry.value?.(
           () => {
             hide_nav.value?.(
-              () => { },
-              () => { },
+              () => {},
+              () => {},
             )
             audio_controller.toorfrompost.play()
           },
@@ -184,8 +185,8 @@ export const useAppStore = defineStore('app', () => {
         hide_list.value?.(
           () => {
             hide_nav.value?.(
-              () => { },
-              () => { },
+              () => {},
+              () => {},
             )
             audio_controller.toorfrompost.play()
           },
@@ -200,7 +201,7 @@ export const useAppStore = defineStore('app', () => {
 
   function diagram_to_list() {
     hide_diagram.value?.(
-      () => { },
+      () => {},
       () => {
         show_list.value?.()
       },
@@ -209,7 +210,7 @@ export const useAppStore = defineStore('app', () => {
 
   function diagram_to_masonry() {
     hide_diagram.value?.(
-      () => { },
+      () => {},
       () => {
         show_masonry.value?.()
       },
@@ -218,7 +219,7 @@ export const useAppStore = defineStore('app', () => {
 
   function list_to_diagram() {
     hide_list.value?.(
-      () => { },
+      () => {},
       () => {
         show_diagram.value?.()
       },
@@ -227,7 +228,7 @@ export const useAppStore = defineStore('app', () => {
 
   function list_to_masonry() {
     hide_list.value?.(
-      () => { },
+      () => {},
       () => {
         show_masonry.value?.()
       },
@@ -236,7 +237,7 @@ export const useAppStore = defineStore('app', () => {
 
   function masonry_to_diagram() {
     hide_masonry.value?.(
-      () => { },
+      () => {},
       () => {
         show_diagram.value?.()
       },
@@ -245,7 +246,7 @@ export const useAppStore = defineStore('app', () => {
 
   function masonry_to_list() {
     hide_masonry.value?.(
-      () => { },
+      () => {},
       () => {
         show_list.value?.()
       },
