@@ -222,6 +222,15 @@ onUnmounted(() => {
 @media screen and (max-aspect-ratio: 0.8/1) {
   .masonry-post-container {
     --cols: 1;
+    padding-top: 12rem;
+  }
+  .post {
+    :deep(.title) {
+      font-size: 5rem;
+    }
+    :deep(.date) {
+      font-size: 4rem !important;
+    }
   }
 }
 </style>

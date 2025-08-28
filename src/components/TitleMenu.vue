@@ -309,4 +309,22 @@ onMounted(() => {
     transform: rotate(360deg);
   }
 }
+
+@media screen and (max-aspect-ratio: 0.8/1) {
+  .title_menu {
+    .title_menu_button {
+      width: calc(var(--scale) * 80rem);
+      height: calc(var(--scale) * 24rem);
+      font-size: 10rem;
+      .live {
+        font-size: 4rem;
+        &::after {
+          margin-left: 2rem;
+          width: 1.6rem;
+          height: 1.6rem;
+        }
+      }
+    }
+  }
+}
 </style>

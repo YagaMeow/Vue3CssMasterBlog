@@ -358,6 +358,14 @@ defineExpose({
   border-bottom-right-radius: 10%;
   cursor: pointer;
 }
+
+@media screen and (max-aspect-ratio: 0.8/1) {
+  .editor-text {
+    * {
+      font-size: 3rem;
+    }
+  }
+}
 </style>
 <!-- <style lang="scss">
 .tiptap {

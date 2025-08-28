@@ -124,7 +124,7 @@
         <MyButton v-else class="edit_btn" @click="posttap.handleEdit">
           <svg-icon :iconClass="posttap.editable.value ? 'no-edit' : 'edit'"> </svg-icon>
         </MyButton>
-        <MyButton class="close_btn" @click="handleClose">×</MyButton>
+        <MyButton class="close_btn" @click="handleClose"> <span>×</span></MyButton>
       </div>
       <div class="tab-content">
         <ContextMenu :menu="[{ label: 'Large' }, { label: 'Middle' }, { label: 'Small' }]">
@@ -478,7 +478,7 @@ onMounted(() => {
     .tab-content {
       cursor: pointer;
       position: relative;
-      width: 58rem;
+      width: 100%;
       flex: 1 1 auto;
       background-color: transparent;
       margin-bottom: 1rem;
@@ -509,6 +509,50 @@ onMounted(() => {
           &.is-active {
             background-color: #71066a;
             color: #ccc;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-aspect-ratio: 0.8/1) {
+  .tab-container {
+    width: 90rem !important;
+    height: 120rem !important;
+    .mybutton {
+      width: 8rem !important;
+      height: 8rem !important;
+      span {
+        font-size: 6rem;
+      }
+      .svg-icon {
+        width: 6rem;
+        height: 6rem;
+      }
+    }
+    .tab-title .tab-title-info {
+      .title {
+        font-size: 4rem;
+      }
+      .info {
+        font-size: 3rem;
+      }
+    }
+
+    .tools {
+      top: -10rem;
+      width: 100%;
+      flex-wrap: wrap;
+      left: 0 !important;
+      .button-group {
+        flex-direction: row !important;
+        button {
+          width: 8rem !important;
+          height: 8rem !important;
+          .svg-icon {
+            width: 4rem;
+            height: 4rem;
           }
         }
       }

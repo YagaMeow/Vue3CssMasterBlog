@@ -1,8 +1,23 @@
 <template>
-  <div class="posts-diagram-container _fullscreen" v-show="diagram.if_visible.value" @dragover="dragOver">
-    <Post v-for="(item, index) in postList" :key="index" :data="item" :class="{
-      dragging: dragData.activeUri === item.uri,
-    }" draggable="true" @dragstart="dragStart" @dragend="dragEnd" @drag="onDrag" :uri="item.uri" class="diagram-post">
+  <div
+    class="posts-diagram-container _fullscreen"
+    v-show="diagram.if_visible.value"
+    @dragover="dragOver"
+  >
+    <Post
+      v-for="(item, index) in postList"
+      :key="index"
+      :data="item"
+      :class="{
+        dragging: dragData.activeUri === item.uri,
+      }"
+      draggable="true"
+      @dragstart="dragStart"
+      @dragend="dragEnd"
+      @drag="onDrag"
+      :uri="item.uri"
+      class="diagram-post"
+    >
     </Post>
   </div>
 </template>
@@ -370,5 +385,20 @@ function handleDelete(uri: string) {
   transform: translate(-50%, -50%);
   pointer-events: none;
   z-index: 9999;
+}
+
+@media screen and (max-aspect-ratio: 0.8/1) {
+  .diagram-post {
+    width: 48rem;
+    height: 48rem;
+  }
+  .post {
+    :deep(.title) {
+      font-size: 5rem;
+    }
+    :deep(.date) {
+      font-size: 4rem !important;
+    }
+  }
 }
 </style>

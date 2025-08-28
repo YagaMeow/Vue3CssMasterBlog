@@ -20,7 +20,7 @@
         </div>
         <div class="type">none</div>
         <div class="created">{{ formatDate((item as Article).created_at.toString()) }}</div>
-        <div class="creator">John Doe</div>
+        <div class="creator">Loujz</div>
         <div class="id">{{ (item as Article).id }}</div>
       </div>
     </div>
@@ -135,10 +135,7 @@ onMounted(() => {
   .post-list-head,
   .post-list-item {
     display: grid;
-    grid-template-columns: minmax(0, 8fr) minmax(0, 2fr) minmax(0, 8fr) minmax(0, 4fr) minmax(
-        0,
-        2fr
-      );
+    grid-template-columns: 10fr auto 8fr 4fr auto;
     grid-gap: 1rem;
   }
   .post-list-item-container {
@@ -195,6 +192,17 @@ onMounted(() => {
     }
     &:nth-child(2n-1) {
       background-color: rgba($color: #616161, $alpha: 0.8);
+    }
+  }
+}
+@media screen and (max-aspect-ratio: 0.8/1) {
+  .post-list-item {
+    * {
+      font-size: 4rem !important;
+    }
+    .id,
+    .type {
+      width: 0;
     }
   }
 }
