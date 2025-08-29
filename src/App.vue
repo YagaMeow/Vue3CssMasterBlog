@@ -31,6 +31,10 @@ onMounted(() => {
   //   loading.value?._in(next)
   // })
   // check_loading()
+  const viewportMeta = document.createElement('meta')
+  viewportMeta.name = 'viewport'
+  viewportMeta.content = 'width=device-width, initial-scale=1.0, viewport-fit=cover'
+  document.head.appendChild(viewportMeta)
 })
 </script>
 <style scoped></style>

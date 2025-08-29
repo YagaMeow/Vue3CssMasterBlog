@@ -1,5 +1,5 @@
 <template>
-  <div class="index-container">
+  <div class="index-container _fullscreen">
     <BackGround></BackGround>
     <Nav></Nav>
     <Posts></Posts>
@@ -28,7 +28,6 @@ import Loading from './Loading/Circle.vue'
 import { onMounted } from 'vue'
 import gsap from 'gsap'
 
-
 const appStore = useAppStore()
 const index = {
   container: null as null | HTMLElement,
@@ -38,13 +37,13 @@ const index = {
     this.show()
   },
   show() {
-    if(appStore.hajime) {
+    if (appStore.hajime) {
       appStore.hajime = false
-      this.animator = gsap.timeline().to(this.container,{
+      this.animator = gsap.timeline().to(this.container, {
         clipPath: 'circle(100%)',
         duration: 2,
         force3D: true,
-        ease: "power4.out"
+        ease: 'power4.out',
       })
     }
   },
@@ -73,8 +72,6 @@ onMounted(() => {
       rgba(105, 82, 116, 0.15) 100%
     ); */
   clip-path: circle(0%);
-  width: 100%;
-  min-height: 100vh;
   display: flex;
   will-change: clip-path;
   overflow: hidden;
