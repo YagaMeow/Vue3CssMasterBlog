@@ -69,7 +69,7 @@ const login = {
   },
   hide() {
     if (this.animator?.isActive()) {
-      this.animator.kill()
+      return
     }
     console.log('hide login')
     this.animator = gsap

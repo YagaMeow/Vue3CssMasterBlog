@@ -127,6 +127,7 @@ const nav = {
     nav.date_after = document.querySelector('#date .button-content .plus')
   },
   show: () => {
+    if (nav.animator?.isActive()) return
     nav.if_visible.value = true
     nav.animator = gsap
       .timeline()
@@ -565,11 +566,14 @@ onUnmounted(() => {
   transform: translateY(-0.1em);
 }
 
-@media screen and (max-aspect-ratio: 1.7/1) {}
+@media screen and (max-aspect-ratio: 1.7/1) {
+}
 
-@media screen and (max-aspect-ratio: 1.4/1) {}
+@media screen and (max-aspect-ratio: 1.4/1) {
+}
 
-@media screen and (max-aspect-ratio: 1/1) {}
+@media screen and (max-aspect-ratio: 1/1) {
+}
 
 @media screen and (max-aspect-ratio: 0.8/1) {
   * {
@@ -578,16 +582,16 @@ onUnmounted(() => {
 
   .nav-container {
     display: grid;
-    grid-template-columns: repeat(2,minmax(0,2fr)) repeat(3,minmax(0,1fr)); 
+    grid-template-columns: repeat(2, minmax(0, 2fr)) repeat(3, minmax(0, 1fr));
     #discover,
     #collect {
-      border-right: .1rem solid #eee;
+      border-right: 0.1rem solid #eee;
     }
     :deep(.mybutton) {
       box-shadow: none;
       border-radius: 0;
       height: 8rem;
-      .button-content{
+      .button-content {
         &::before,
         &::after {
           font-size: 5rem !important;
@@ -598,18 +602,18 @@ onUnmounted(() => {
     #login,
     #sound {
       width: 100%;
-      border-left: .1rem solid #fff;
+      border-left: 0.1rem solid #fff;
       justify-self: center;
       align-self: center;
     }
-    #sound{
+    #sound {
       width: 8rem;
       margin-right: 2rem;
       border: none;
     }
 
     &::before {
-      content: "";
+      content: '';
       background-color: #000;
       width: 100%;
       position: absolute;
@@ -625,7 +629,7 @@ onUnmounted(() => {
     &.footer {
       padding-left: 0;
       &::before {
-        content: "";
+        content: '';
         display: block;
         background-color: #000;
         width: 100%;
@@ -644,7 +648,7 @@ onUnmounted(() => {
         background-color: #000;
         box-shadow: none;
         border-radius: 0;
-        border-right: .1rem solid #eee;
+        border-right: 0.1rem solid #eee;
 
         .button-content {
           .plus {

@@ -127,7 +127,6 @@ const titleMenu = {
   },
   hide(immediate: () => void, next: () => void) {
     if ((this.animator as gsap.core.Timeline).isActive()) {
-      this.animator?.kill()
       return
     }
     no_audio = true
