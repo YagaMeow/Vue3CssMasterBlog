@@ -310,6 +310,10 @@ onMounted(() => {
 }
 
 @media screen and (max-aspect-ratio: 0.8/1) {
+  .middle_line,
+  .out_line {
+    display: none;
+  }
   .title_menu {
     .title_menu_button {
       width: calc(var(--scale) * 80rem);

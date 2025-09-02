@@ -586,6 +586,8 @@ onUnmounted(() => {
     #discover,
     #collect {
       border-right: 0.1rem solid #eee;
+      background-color: transparent;
+      backdrop-filter: none;
     }
     :deep(.mybutton) {
       box-shadow: none;
@@ -603,8 +605,11 @@ onUnmounted(() => {
     #sound {
       width: 100%;
       border-left: 0.1rem solid #fff;
-      justify-self: center;
-      align-self: center;
+      width: 100%;
+      height: 100%;
+      background-color: transparent;
+      backdrop-filter: none;
+      z-index: 10;
     }
     #sound {
       width: 8rem;
@@ -614,11 +619,11 @@ onUnmounted(() => {
 
     &::before {
       content: '';
-      background-color: #000;
       width: 100%;
       position: absolute;
       height: 10rem;
       top: 0;
+      background-color: rgba($color: #000, $alpha: 0.4);
     }
 
     .svg-icon {
@@ -631,10 +636,10 @@ onUnmounted(() => {
       &::before {
         content: '';
         display: block;
-        background-color: #000;
+        background-color: rgba($color: #000000, $alpha: 0.4);
         width: 100%;
         position: absolute;
-        height: 10rem;
+        height: 9rem;
         top: auto;
         bottom: 0;
       }
@@ -645,10 +650,18 @@ onUnmounted(() => {
 
       #date,
       #type {
-        background-color: #000;
+        background-color: transparent;
+        backdrop-filter: none;
+        z-index: 10;
         box-shadow: none;
-        border-radius: 0;
+        border-radius: 0rem;
+        overflow: hidden;
         border-right: 0.1rem solid #eee;
+
+        .type-list,
+        .date-list {
+          background-color: rgba($color: #000, $alpha: 0.4);
+        }
 
         .button-content {
           .plus {
@@ -668,6 +681,8 @@ onUnmounted(() => {
         --move: 9.9rem;
         height: 8rem;
         box-shadow: none;
+        backdrop-filter: none;
+        background-color: transparent;
 
         .button-content {
           gap: 2rem;

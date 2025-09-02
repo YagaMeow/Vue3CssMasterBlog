@@ -21,7 +21,7 @@ defineOptions({
   backdrop-filter: blur(1rem);
   display: flex;
   justify-content: center;
-  align-items:center;
+  align-items: center;
   &:hover {
     filter: brightness(2);
   }

@@ -2,10 +2,10 @@
   <div class="post-list-container" v-show="postlist.if_visible.value">
     <div class="post-list-head">
       <div>Name</div>
-      <div>Type</div>
+      <div id="type">Type</div>
       <div>CreatedAt</div>
       <div>Creator</div>
-      <div>ID</div>
+      <div id="id">ID</div>
     </div>
     <div class="post-list-item-container">
       <div
@@ -144,7 +144,6 @@ onMounted(() => {
   .post-list-head {
     flex-shrink: 0;
     padding: 1rem;
-    height: 6rem;
     width: 100%;
 
     align-items: center;
@@ -196,13 +195,27 @@ onMounted(() => {
   }
 }
 @media screen and (max-aspect-ratio: 0.8/1) {
-  .post-list-item {
-    * {
-      font-size: 4rem !important;
+  .post-list-container {
+    margin-top: 11rem;
+    .post-list-head,
+    .post-list-item {
+      padding: 2rem !important;
+      * {
+        font-size: 4rem !important;
+      }
     }
-    .id,
-    .type {
-      width: 0;
+    .post-list-head {
+      #id,
+      #type {
+        width: 0;
+        font-size: 0 !important;
+      }
+    }
+    .post-list-item {
+      .id,
+      .type {
+        width: 0;
+      }
     }
   }
 }

@@ -666,11 +666,11 @@ onMounted(() => {
       width: 8rem !important;
       height: 8rem !important;
       span {
-        font-size: 6rem;
+        font-size: 5rem !important;
       }
       .svg-icon {
-        width: 6rem;
-        height: 6rem;
+        width: 5rem;
+        height: 5rem;
       }
     }
     .tab-title .tab-title-info {
