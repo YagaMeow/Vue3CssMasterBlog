@@ -103,20 +103,34 @@ const diagram = {
     await ArticleAPI.getList({ page: 1, limit: 10 })
       .then((response) => {
         postList.value = response.data
-        console.log(postList.value)
       })
       .catch((error) => {
         console.error('Failed to fetch posts:', error)
       })
     this.if_visible.value = true
     this.posts.value = document.querySelectorAll('.diagram-post')
-    this.animator = gsap.timeline().to(this.posts.value, {
-      opacity: 1,
-      scale: 1,
-      duration: 0.2,
-      stagger: 0.1,
-      ease: 'power3.out',
-    })
+    this.animator = gsap
+      .timeline()
+      .to(this.posts.value, {
+        opacity: 1,
+        scale: 1,
+        duration: 0.2,
+        stagger: 0.1,
+        ease: 'power3.out',
+      })
+      .to(
+        this.posts.value,
+        {
+          x: function (index, target, targets) {
+            return parseFloat(target.getAttribute('x')) || 0
+          },
+          y: function (index, target, targets) {
+            return parseFloat(target.getAttribute('y')) || 0
+          },
+          duration: 0,
+        },
+        '<',
+      )
     // this.posts?.forEach((p) => {
     //   p.classList.add('glitch')
     // })
@@ -127,14 +141,14 @@ const diagram = {
     }
     if (immediate) immediate()
     if (diagram.posts.value) {
-      console.log('[diagram]', diagram.posts)
       diagram.animator = gsap.timeline().to(diagram.posts.value, {
         opacity: 0,
         duration: 0.2,
+        scale: 0.8,
         ease: 'power3.out',
         onComplete: () => {
           diagram.if_visible.value = false
-          console.log(diagram.if_visible.value)
+          diagram.reset()
           if (next) next()
         },
       })
@@ -169,6 +183,9 @@ const diagram = {
   },
   reset() {
     this.mouse_pos.value = [0, 0]
+    dragData.value.isDragging = false
+    dragData.value.pos = { x: 0, y: 0 }
+    dragData.value.activeUri = ''
   },
 }
 
@@ -239,14 +256,13 @@ function onDrag(event: DragEvent) {
       const windowWidth = window.innerWidth
       const windowHeight = window.innerHeight
       const offsetY = event.clientY - dragData.value.pos.y
-      let offsetX = event.clientX - dragData.value.pos.x
-
+      const offsetX = event.clientX - dragData.value.pos.x
       if (event.clientX !== 0 || event.clientY !== 0) {
-        if (offsetX + left < 0) {
-          offsetX = -left
-        } else if (offsetX + width + left > windowWidth - 5) {
-          offsetX = windowWidth - width - left - 5
-        }
+        // if (offsetX + left < 0) {
+        //   offsetX = -left
+        // } else if (offsetX + width + left > windowWidth - 5) {
+        //   offsetX = windowWidth - width - left - 5
+        // }
         target.setAttribute('x', offsetX.toString())
         target.setAttribute('y', offsetY.toString())
         draggingElement.style.transform = `translate(${offsetX}px, ${offsetY}px)`

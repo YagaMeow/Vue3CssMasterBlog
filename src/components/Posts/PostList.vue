@@ -11,11 +11,12 @@
       <div
         class="post-list-item"
         @click="postlist.show_details(item)"
-        v-for="(item, index) in postlist.postList.value"
-        :key="index"
+        v-for="item in postlist.postList.value"
+        :key="item.uri.toString()"
+        :uri="item.uri.toString()"
       >
         <div class="title">
-          <div class="avatar _null"></div>
+          <div class="avatar"></div>
           <span>{{ (item as Article).title }}</span>
         </div>
         <div class="type">none</div>
@@ -64,6 +65,15 @@ const postlist = {
       })
     this.if_visible.value = true
     this.posts = document.querySelectorAll('.post-list-item')
+    this.posts.forEach((post) => {
+      const origin = document.querySelector(`.diagram-post [uri="${post.getAttribute('uri')}"]`)
+      if (origin?.getAttribute('bgstyle')) {
+        const avatar = (post as HTMLElement).querySelector('.avatar')
+        const bgstyle = origin.getAttribute('bgstyle')
+        if (avatar)
+          (avatar as HTMLElement).style.backgroundImage = `url("/img/music${bgstyle}.jpg")`
+      }
+    })
     this.animator = gsap
       .timeline()
       .to(this.container, {
@@ -174,6 +184,8 @@ onMounted(() => {
         height: 5rem;
         min-width: 5rem;
         background-color: black;
+        background-size: cover;
+        filter: blur(0.05rem);
         flex-shrink: 0;
       }
     }
@@ -187,7 +199,7 @@ onMounted(() => {
       color: #fff;
     }
     &:nth-child(2n) {
-      background-color: rgba($color: #000000, $alpha: 0.7);
+      background-color: rgba($color: #000000, $alpha: 0);
     }
     &:nth-child(2n-1) {
       background-color: rgba($color: #616161, $alpha: 0.8);

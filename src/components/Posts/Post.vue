@@ -28,7 +28,7 @@
         <div id="share">share</div>
       </MyButton>
     </div>
-    <div class="post-content" @click="post.show_details">
+    <div class="post-content" @click="post.show_details" :uri="data.uri">
       <h2 class="post-title">
         <!-- <RouterLink :to="`/posts/${data.uri}`" class="post-link"> -->
         <div class="post-link">
@@ -91,12 +91,19 @@ const post = {
   init: () => {
     const top = Math.random() * 100
     const left = Math.random() * 100
-
     post.post = p.value
     post.info = info.value
     post.icon = i.value ? (i.value.$el as HTMLElement) : null
     ;(post.post as HTMLElement).style.left = `${left}%`
     ;(post.post as HTMLElement).style.top = `${top}%`
+    const bgcontainer = post.post?.querySelector('.post-content')
+    const bgstyle = range(1, 4)
+    const colorstyle = range(1, 9)
+    ;(bgcontainer as HTMLElement).style.backgroundImage =
+      `url("/img/music${Math.floor(bgstyle)}.jpg")`
+    bgcontainer?.setAttribute('bgstyle', Math.floor(bgstyle).toString())
+    if (post.post) post.post.style.backgroundColor = 'transparent'
+    // post.post.style.backgroundColor = `var(--color${Math.floor(colorstyle)})`
   },
   glitch: () => {
     setTimeout(
@@ -197,6 +204,14 @@ onUnmounted(() => {
 .post-container {
   opacity: 0;
   scale: 0.8;
+  --color1: rgb(112, 219, 246);
+  --color2: rgb(0, 0, 0);
+  --color3: rgb(246, 112, 197);
+  --color4: rgb(246, 246, 112);
+  --color5: rgb(246, 168, 112);
+  --color6: rgb(112, 139, 246);
+  --color7: rgb(219, 112, 246);
+  --color8: rgb(190, 246, 112);
 
   &:hover {
     z-index: 998;
@@ -290,10 +305,12 @@ onUnmounted(() => {
   }
 
   .post-content {
+    background-repeat: no-repeat;
+    background-size: cover;
     margin: 1rem;
     flex-grow: 1;
     border-radius: 1rem;
-    background-color: rgba($color: #d1d1d1, $alpha: 1);
+    background-color: rgba($color: #d1d1d1, $alpha: 0);
     color: #000;
     display: flex;
     flex-direction: column;

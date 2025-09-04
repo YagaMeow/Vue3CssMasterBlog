@@ -274,7 +274,7 @@ onMounted(() => {
 }
 
 .out_line {
-  scale: 1.3;
+  scale: 1.5;
   ._dashed {
     stroke-width: 1rem;
   }
