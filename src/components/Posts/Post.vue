@@ -1,17 +1,13 @@
 <template>
   <div class="post post-container" ref="p" v-show="post.if_visible.value">
-    <div
-      class="post-info"
-      ref="info"
-      @dragover="
-        (e: DragEvent) => {
-          e.preventDefault()
-          if (e.dataTransfer) {
-            e.dataTransfer.dropEffect = 'move'
-          }
+    <div class="post-info" ref="info" @dragover="
+      (e: DragEvent) => {
+        e.preventDefault()
+        if (e.dataTransfer) {
+          e.dataTransfer.dropEffect = 'move'
         }
-      "
-    >
+      }
+    ">
       <div class="myform col">
         <div class="row">
           <div class="text">Creator</div>
@@ -29,6 +25,7 @@
       </MyButton>
     </div>
     <div class="post-content" @click="post.show_details" :uri="data.uri">
+      <div class="blur"></div>
       <h2 class="post-title">
         <!-- <RouterLink :to="`/posts/${data.uri}`" class="post-link"> -->
         <div class="post-link">
@@ -45,6 +42,15 @@
         <span class="date">{{ formatDate(data.created_at) }}</span>
       </p>
     </div>
+    <svg style="position: absolute;">
+      <filter id="mosaic">
+        <feFlood x="4" y="4" height="2" width="2" />
+        <feComposite width="8" height="8" />
+        <feTile result="a" />
+        <feComposite in="SourceGraphic" in2="a" operator="in" />
+        <feMorphology operator="dilate" radius="4" />
+      </filter>
+    </svg>
   </div>
 </template>
 <script setup lang="ts">
@@ -94,13 +100,13 @@ const post = {
     post.post = p.value
     post.info = info.value
     post.icon = i.value ? (i.value.$el as HTMLElement) : null
-    ;(post.post as HTMLElement).style.left = `${left}%`
-    ;(post.post as HTMLElement).style.top = `${top}%`
+      ; (post.post as HTMLElement).style.left = `${left}%`
+      ; (post.post as HTMLElement).style.top = `${top}%`
     const bgcontainer = post.post?.querySelector('.post-content')
-    const bgstyle = range(1, 4)
+    const bgstyle = range(1, 7)
     const colorstyle = range(1, 9)
-    ;(bgcontainer as HTMLElement).style.backgroundImage =
-      `url("/img/music${Math.floor(bgstyle)}.jpg")`
+      ; (bgcontainer as HTMLElement).style.backgroundImage =
+        `url("/img/music${Math.floor(bgstyle)}.jpg")`
     bgcontainer?.setAttribute('bgstyle', Math.floor(bgstyle).toString())
     if (post.post) post.post.style.backgroundColor = 'transparent'
     // post.post.style.backgroundColor = `var(--color${Math.floor(colorstyle)})`
@@ -115,28 +121,28 @@ const post = {
           const y = Math.random() * 100
           const w = Math.random() * 50 + 50
           const h = Math.random() * 10 + 40
-          ;(post.post as HTMLElement).style.clipPath =
-            `polygon(${x}% ${y}%, ${x + w}% ${y}%,${x + w}% ${y + h}%,${x}% ${y + h}%)`
-          ;(post.post as HTMLElement).style.left = `${left}%`
-          ;(post.post as HTMLElement).style.top = `${top}%`
+            ; (post.post as HTMLElement).style.clipPath =
+              `polygon(${x}% ${y}%, ${x + w}% ${y}%,${x + w}% ${y + h}%,${x}% ${y + h}%)`
+            ; (post.post as HTMLElement).style.left = `${left}%`
+            ; (post.post as HTMLElement).style.top = `${top}%`
         }, 30)
-        // post.if_visible.value = true
-        ;(post.post as HTMLElement).style.opacity = '1'
+          // post.if_visible.value = true
+          ; (post.post as HTMLElement).style.opacity = '1'
         setTimeout(post.reset, 800)
       },
       range(0, 500),
     )
   },
   reset: () => {
-    ;(post.post as HTMLElement).style.clipPath = ``
-    ;(post.post as HTMLElement).classList.remove('glitch')
+    ; (post.post as HTMLElement).style.clipPath = ``
+      ; (post.post as HTMLElement).classList.remove('glitch')
     clearInterval(post.timer as number)
   },
   switchInfo() {
     if (post.show_info.value === false) {
       post.show_info.value = true
-      ;(post.info as HTMLElement).style.pointerEvents = 'auto'
-      ;(post.icon as HTMLElement).textContent = '×'
+        ; (post.info as HTMLElement).style.pointerEvents = 'auto'
+        ; (post.icon as HTMLElement).textContent = '×'
       gsap.timeline().to(post.info, {
         opacity: 1,
         duration: 0.2,
@@ -147,8 +153,8 @@ const post = {
       })
     } else {
       post.show_info.value = false
-      ;(post.info as HTMLElement).style.pointerEvents = 'none'
-      ;(post.icon as HTMLElement).textContent = 'i'
+        ; (post.info as HTMLElement).style.pointerEvents = 'none'
+        ; (post.icon as HTMLElement).textContent = 'i'
       gsap.timeline().to(post.info, {
         opacity: 0,
         duration: 0.2,
@@ -216,6 +222,18 @@ onUnmounted(() => {
   &:hover {
     z-index: 998;
     filter: brightness(0.9);
+
+    .blur {
+      backdrop-filter: none !important;
+      transition: backdrop-filter ease-in .2s;
+    }
+
+    .post-title,
+    .post-footer .date {
+      opacity: 0;
+      filter: blur(1rem);
+      transition: all ease-in 0.4s;
+    }
 
     .mybutton {
       opacity: 1 !important;
@@ -314,8 +332,28 @@ onUnmounted(() => {
     color: #000;
     display: flex;
     flex-direction: column;
+    position: relative;
+    clip-path: text;
+
+    .blur {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      backdrop-filter: blur(2rem);
+      image-rendering: pixelated;
+      border-radius: 1rem;
+    }
+
+    .post-title {
+      z-index: 10;
+      color: rgba($color: #000, $alpha: 0.7);
+      // color: transparent;
+    }
 
     .post-footer {
+      z-index: 10;
       padding: 2rem;
       margin-top: auto;
       display: flex;
