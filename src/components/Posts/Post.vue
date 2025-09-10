@@ -42,7 +42,7 @@
         <span class="date">{{ formatDate(data.created_at) }}</span>
       </p>
     </div>
-    <svg style="position: absolute;">
+    <svg style="position: absolute;pointer-events: none;">
       <filter id="mosaic">
         <feFlood x="4" y="4" height="2" width="2" />
         <feComposite width="8" height="8" />
@@ -267,6 +267,7 @@ onUnmounted(() => {
     border-radius: 1rem;
     backdrop-filter: blur(1rem);
     padding: 1rem;
+    z-index: 10;
 
     .col {
       display: flex;
@@ -337,11 +338,11 @@ onUnmounted(() => {
 
     .blur {
       position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      backdrop-filter: blur(2rem);
+      left: -0.1rem;
+      top: -0.1rem;
+      width: calc(100% + 0.2rem);
+      height: calc(100% + 0.2rem);
+      backdrop-filter: blur(2rem) grayscale(100%);
       image-rendering: pixelated;
       border-radius: 1rem;
     }

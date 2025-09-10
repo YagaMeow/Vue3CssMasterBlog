@@ -10,9 +10,11 @@
     <Login></Login>
     <MyNotify></MyNotify>
     <Loading></Loading>
+    <ScrollIndex></ScrollIndex>
   </div>
 </template>
 <script setup lang="ts">
+import ScrollIndex from './ScrollPage/ScrollIndex.vue'
 import MyNotify from './ui/notofication.vue'
 import Login from './Login.vue'
 import PostTab from './PostTab.vue'

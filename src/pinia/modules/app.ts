@@ -42,6 +42,9 @@ export const useAppStore = defineStore('app', () => {
   const hide_login = ref<(() => void) | null>(null)
   //提示栏
   const notify = ref<((text: string) => void) | null>(null)
+  //滚动触发页面
+  const show_scroll_page = ref<(() => void) | null>(null)
+  const hide_scroll_page = ref<((im: () => void,nx: () => void) => void) | null>(null)
 
   const audio_controller = {
     entermenubutton: new Howl({
@@ -253,7 +256,29 @@ export const useAppStore = defineStore('app', () => {
     )
   }
 
+  function menus_to_scroll_page() {
+    hide_menus.value?.(
+      () => {
+      },
+      () => {
+        show_scroll_page.value?.()
+      }
+    )
+  }
+
+  function scroll_page_to_menus() {
+    hide_scroll_page.value?.(
+      () => {},
+      () => {
+        show_menus.value?.()
+      }
+    )
+  }
+
   return {
+    show_scroll_page,
+    hide_scroll_page,
+    menus_to_scroll_page,
     hajime,
     notify,
     show_detail,

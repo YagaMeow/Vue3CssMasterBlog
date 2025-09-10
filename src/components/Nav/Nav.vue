@@ -99,7 +99,7 @@ const appStore = useAppStore()
 let CheckLogin = userStore.isLoggedIn
 
 const nav = {
-  if_visible: ref(false),
+  if_visible: ref(true),
   layout_type: 0,
   container: null as null | HTMLElement,
   footer: null as null | HTMLElement,
@@ -183,7 +183,7 @@ const nav = {
           duration: 0.2,
           ease: 'power3.in',
           onComplete: () => {
-            nav.if_visible.value = false
+            // nav.if_visible.value = false
           },
         },
         '<',

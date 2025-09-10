@@ -5,10 +5,10 @@
       ref="container"
       @mouseenter="appStore.audio_controller.entermenubutton.play()"
     >
-      <svg class="middle_line" viewBox="0 0 50 50">
+      <svg class="middle_line _null" viewBox="0 0 50 50">
         <circle class="_dashed" cx="25" cy="25" r="25" vector-effect="non-scaling-stroke"></circle>
       </svg>
-      <svg class="out_line" viewBox="0 0 50 50">
+      <svg class="out_line _null" viewBox="0 0 50 50">
         <!-- <circle class="orbit" cx="25" cy="25" r="25"></circle> -->
         <circle class="_dashed" cx="25" cy="25" r="25" vector-effect="non-scaling-stroke"></circle>
       </svg>
@@ -18,12 +18,21 @@
         @click="appStore.menus_to_posts()"
       >
         <div class="live">live now</div>
-        2025
+        Articles
       </div>
-      <div @mouseleave="titleMenu.mouseout" class="title_menu_button">2024</div>
-      <div @mouseleave="titleMenu.mouseout" class="title_menu_button">2023</div>
-      <div @mouseleave="titleMenu.mouseout" class="title_menu_button">2022</div>
-      <div @mouseleave="titleMenu.mouseout" class="title_menu_button">2021</div>
+      <div @mouseleave="titleMenu.mouseout" class="title_menu_button"
+      @click="appStore.menus_to_scroll_page()">
+        Scroll Trigger
+      </div>
+      <div @mouseleave="titleMenu.mouseout" class="title_menu_button">
+        Fun Stuffs
+      </div>
+      <div @mouseleave="titleMenu.mouseout" class="title_menu_button">
+        Game
+      </div>
+      <div @mouseleave="titleMenu.mouseout" class="title_menu_button">
+        Nothing
+      </div>
     </div>
   </div>
 </template>

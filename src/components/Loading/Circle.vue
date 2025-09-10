@@ -17,22 +17,22 @@ const loading = {
   c2: null as null | HTMLElement,
   animator: null as null | gsap.core.Timeline,
   show() {
-    this.animator = gsap
-      .timeline()
-      .to(this.c1, {
-        transform: 'translate(-25rem, -25rem) scale(2.2)',
-        duration: 2,
-        ease: 'power4.out',
-        delay: 0.5,
-      })
-      .to(
-        this.c1,
-        {
-          opacity: 0,
-          duration: 1,
-        },
-        '<+1',
-      )
+    // this.animator = gsap
+    //   .timeline()
+    //   .to(this.c1, {
+    //     transform: 'translate(-25rem, -25rem) scale(2.2)',
+    //     duration: 2,
+    //     ease: 'power4.out',
+    //     delay: 0.5,
+    //   })
+    //   .to(
+    //     this.c1,
+    //     {
+    //       opacity: 0,
+    //       duration: 1,
+    //     },
+    //     '<+1',
+    //   )
     // .to(
     //   this.c2,
     //   {
