@@ -8,7 +8,7 @@
                 </div>
             </div>
         </div>
-        <div class="second_screen _screen">
+        <div class="second_screen _screen _null">
             <div class="row">
                 <div class="bowl rgb" style="--color:#71dcf7;">
                     <div class="liquid"></div>
@@ -61,37 +61,47 @@ const scroll = {
     width: 0,
     height: 0,
     scale: 2,
-    texts: [] as string[],
+    texts: [[], []] as string[][],
     current_idx: 0,
     animationId: null as null | number,
+    worker: null as null | Worker,
+    animate_statuts: 0,
     init() {
-        const worker = new Worker();
-        fetch("/img/p3r_4.gif").then(resp =>
-            resp.arrayBuffer()
-        ).then((buff) => 
-            worker.postMessage(buff)
-        )
+        this.worker = new Worker()
 
-        worker.onmessage = (e) => {
-            this.texts = e.data
+        this.animate("/img/p3r_8.gif")
+        // this.animate("/img/p3r_4.gif")
+
+        this.worker.onmessage = (e) => {
+            this.texts[this.animate_statuts] = e.data
             this.startUpdating();
         }
+    },
+    animate(url: string) {
+        fetch(url)
+            .then(resp => resp.arrayBuffer())
+            .then(buff => {
+                if (this.worker)
+                    this.worker.postMessage(buff)
+            })
     },
     startUpdating() {
         let lastTime = 0;
         const update = (time: number) => {
-            if (!this.if_visible.value) {
+            if (!this.if_visible.value && this.animationId) {
+                cancelAnimationFrame(this.animationId)
                 this.animationId = null
                 return;
             }
             if (!lastTime) lastTime = time;
             const delta = time - lastTime;
             if (delta > 100) {
-                this.current_idx = (this.current_idx + 1) % this.texts.length;
+                this.current_idx = (this.current_idx + 1) % this.texts[this.animate_statuts].length;
                 const asciibox = document.querySelector(".asciibox")
                 if (asciibox)
-                    (asciibox as HTMLElement).innerText = this.texts[this.current_idx]
+                    (asciibox as HTMLElement).innerText = this.texts[this.animate_statuts][this.current_idx]
                 lastTime = time
+                console.log(this.current_idx)
             }
             this.animationId = requestAnimationFrame(update)
         }
@@ -109,7 +119,11 @@ const scroll = {
             opacity: 1,
             duration: .3,
             ease: 'power3.out'
-        }, "<+0.2")
+        }, "<+0.2").to(document.querySelector('pre'), {
+            opacity: 1,
+            duration: .5,
+            ease: 'power1.in'
+        }, "<")
         this.animator = gsap.timeline({
             scrollTrigger: {
                 scroller: document.querySelector('.page_container'),
@@ -296,6 +310,7 @@ onMounted(() => {
 }
 
 .asciibox {
+    opacity: 0;
     --scale: 0.9;
     color: #71dcf7;
     font-family: monospace;

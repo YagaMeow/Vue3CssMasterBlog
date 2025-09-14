@@ -6,7 +6,9 @@ self.onmessage = (e) => {
     const width = gif.lsd.width
     const height = gif.lsd.height
     const scale = 2
-    const levels = "@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
+    // const levels = "@. "
+    const levels = "@%#*+=-:. "
+    // const levels = "@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
 
     const frames = decompressFrames(gif, true)
     const texts = [] as string[]
@@ -30,8 +32,8 @@ self.onmessage = (e) => {
                 let row = "";
                 for (let x = 0; x < width; x += scale) {
                     const idx = (y * width + x) * 4;
-                    const avg = (data[idx] + data[idx + 1] + data[idx + 2]) / 3;
-                    const charIndex = Math.floor(avg / 255 * (levels.length - 1));
+                    const avg = (data[idx] + data[idx + 1] + data[idx + 2]) / 3.0;
+                    const charIndex = Math.floor(avg * (levels.length - 1) / 255);
                     row += levels[charIndex];
                 }
                 text += row + "\n";
