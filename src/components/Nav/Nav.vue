@@ -1,6 +1,6 @@
 <template>
   <div class="nav-container" v-show="nav.if_visible.value">
-    <MyButton id="discover" @click="appStore.posts_to_menus">
+    <MyButton id="discover" @click="nav.handle_back">
       <div class="button-content">discover</div>
     </MyButton>
     <MyButton id="collect" @click="nav.handleCollect">
@@ -188,6 +188,13 @@ const nav = {
         },
         '<',
       )
+  },
+  handle_back() {
+    if (appStore.current_page == "articles")
+      appStore.posts_to_menus()
+    else if (appStore.current_page == "scroll")
+      appStore.scroll_page_to_menus()
+    else console.log("[error] page not found")
   },
   switch(type: number) {
     const change = type !== nav.layout_type
@@ -566,14 +573,11 @@ onUnmounted(() => {
   transform: translateY(-0.1em);
 }
 
-@media screen and (max-aspect-ratio: 1.7/1) {
-}
+@media screen and (max-aspect-ratio: 1.7/1) {}
 
-@media screen and (max-aspect-ratio: 1.4/1) {
-}
+@media screen and (max-aspect-ratio: 1.4/1) {}
 
-@media screen and (max-aspect-ratio: 1/1) {
-}
+@media screen and (max-aspect-ratio: 1/1) {}
 
 @media screen and (max-aspect-ratio: 0.8/1) {
   * {
@@ -583,23 +587,28 @@ onUnmounted(() => {
   .nav-container {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 2fr)) repeat(3, minmax(0, 1fr));
+
     #discover,
     #collect {
       border-right: 0.1rem solid #eee;
       background-color: transparent;
       backdrop-filter: none;
     }
+
     :deep(.mybutton) {
       box-shadow: none;
       border-radius: 0;
       height: 8rem;
+
       .button-content {
+
         &::before,
         &::after {
           font-size: 5rem !important;
         }
       }
     }
+
     #info,
     #login,
     #sound {
@@ -611,6 +620,7 @@ onUnmounted(() => {
       backdrop-filter: none;
       z-index: 10;
     }
+
     #sound {
       width: 8rem;
       margin-right: 2rem;
@@ -633,6 +643,7 @@ onUnmounted(() => {
 
     &.footer {
       padding-left: 0;
+
       &::before {
         content: '';
         display: block;

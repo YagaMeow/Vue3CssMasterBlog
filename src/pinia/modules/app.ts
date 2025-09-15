@@ -102,6 +102,8 @@ export const useAppStore = defineStore('app', () => {
 
   const hajime = ref(true)
 
+  const current_page = ref("")
+
   function first_show() {
     hide_loading.value?.(
       () => {
@@ -112,6 +114,7 @@ export const useAppStore = defineStore('app', () => {
   }
 
   function menus_to_posts() {
+    current_page.value = "articles"
     switch (layout_type.value) {
       case 0: {
         hide_menus.value?.(
@@ -259,9 +262,11 @@ export const useAppStore = defineStore('app', () => {
   function menus_to_scroll_page() {
     hide_menus.value?.(
       () => {
+        show_scroll_page.value?.()
       },
       () => {
-        show_scroll_page.value?.()
+        show_nav.value?.()
+        current_page.value = "scroll"
       }
     )
   }
@@ -271,14 +276,17 @@ export const useAppStore = defineStore('app', () => {
       () => {},
       () => {
         show_menus.value?.()
+        hide_nav.value?.(() =>{},() =>{})
       }
     )
   }
 
   return {
+    current_page,
     show_scroll_page,
     hide_scroll_page,
     menus_to_scroll_page,
+    scroll_page_to_menus,
     hajime,
     notify,
     show_detail,

@@ -5,10 +5,10 @@ self.onmessage = (e) => {
     const gif = parseGIF(buff)
     const width = gif.lsd.width
     const height = gif.lsd.height
-    const scale = 2
+    const scale = 1
     // const levels = "@. "
-    const levels = "@%#*+=-:. "
-    // const levels = "@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
+    // const levels = "###*+=-:  "
+    const levels = "@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'  ";
 
     const frames = decompressFrames(gif, true)
     const texts = [] as string[]

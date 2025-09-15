@@ -4,7 +4,7 @@
             <pre class="asciibox"></pre>
             <div class="title-container">
                 <div class="svg-container">
-                    <h1>Svg PlaceHolder</h1>
+                    Hello
                 </div>
             </div>
         </div>
@@ -44,6 +44,35 @@
         </div>
         <div class="end_screen _screen"></div>
     </div>
+    <svg width="0" height="0">
+        <defs>
+            <clipPath id="myClip">
+                <polygon points="400,50 400,320, 140,300" />
+                <polygon points="450,10 500,200 600,100" />
+                <polygon points="150,10 100,200 300,100" />
+            </clipPath>
+
+            <clipPath id="clip1" clipPathUnits="objectBoundingBox">
+                <rect id="rect1" x="5rem" y="5rem" width="90rem" height="90rem"></rect>
+            </clipPath>
+            <clipPath id="clip2" clipPathUnits="objectBoundingBox">
+                <rect id="rect2" x="90rem" y="10rem" width="60rem" height="60rem"></rect>
+            </clipPath>
+            <clipPath id="clip3" clipPathUnits="objectBoundingBox">
+                <rect id="rect3" x="20rem" y="60rem" width="25rem" height="30rem"></rect>
+            </clipPath>
+            <clipPath id="clip4" clipPathUnits="objectBoundingBox">
+                <rect id="rect4" x="60rem" y="20rem" width="30rem" height="25rem"></rect>
+            </clipPath>
+
+            <clipPath id="combinedClip">
+                <use xlink:href="#rect1" />
+                <use xlink:href="#rect2" />
+                <use xlink:href="#rect3" />
+                <use xlink:href="#rect4" />
+            </clipPath>
+        </defs>
+    </svg>
 </template>
 <script lang="ts" setup>
 import { useAppStore } from '@/pinia';
@@ -61,29 +90,41 @@ const scroll = {
     width: 0,
     height: 0,
     scale: 2,
-    texts: [[], []] as string[][],
+    texts: [] as string[][],
     current_idx: 0,
     animationId: null as null | number,
-    worker: null as null | Worker,
-    animate_statuts: 0,
-    init() {
-        this.worker = new Worker()
-
-        this.animate("/img/p3r_8.gif")
-        // this.animate("/img/p3r_4.gif")
-
-        this.worker.onmessage = (e) => {
-            this.texts[this.animate_statuts] = e.data
-            this.startUpdating();
+    worker: [] as Worker[],
+    animate_status: 0,
+    splitText() {
+        const h1 = document.querySelector(".svg-container")
+        const text = (h1 as HTMLElement).innerText;
+        (h1 as HTMLElement).innerText = ""
+        for (let i = 0; i < text.length; ++i) {
+            const newh1 = document.createElement("span")
+            newh1.innerText = text[i]
+            h1?.appendChild(newh1)
         }
     },
-    animate(url: string) {
-        fetch(url)
+    init() {
+        this.splitText()
+        const worker1 = new Worker()
+        const worker2 = new Worker()
+        worker1.onmessage = worker2.onmessage = (e) => {
+            this.texts.push(e.data)
+            // this.startUpdating();
+        }
+        this.worker.push(worker1)
+        this.worker.push(worker2)
+
+
+        fetch("/img/p3r_9.gif")
             .then(resp => resp.arrayBuffer())
-            .then(buff => {
-                if (this.worker)
-                    this.worker.postMessage(buff)
-            })
+            .then(buff => worker1.postMessage(buff))
+
+        fetch("/img/p3r_4.gif")
+            .then(resp => resp.arrayBuffer())
+            .then(buff => worker2.postMessage(buff))
+        // this.animate("/img/p3r_4.gif")
     },
     startUpdating() {
         let lastTime = 0;
@@ -96,21 +137,24 @@ const scroll = {
             if (!lastTime) lastTime = time;
             const delta = time - lastTime;
             if (delta > 100) {
-                this.current_idx = (this.current_idx + 1) % this.texts[this.animate_statuts].length;
                 const asciibox = document.querySelector(".asciibox")
                 if (asciibox)
-                    (asciibox as HTMLElement).innerText = this.texts[this.animate_statuts][this.current_idx]
+                    (asciibox as HTMLElement).innerText = this.texts[this.animate_status][this.current_idx]
                 lastTime = time
-                console.log(this.current_idx)
+                this.current_idx = (this.current_idx + 1) % this.texts[this.animate_status].length;
+                if (this.current_idx == 0 && this.animate_status == 0) {
+                    this.animate_status++;
+                }
             }
             this.animationId = requestAnimationFrame(update)
         }
         this.animationId = requestAnimationFrame(update)
     },
     show() {
+        if (this.animator?.isActive()) return
         this.if_visible.value = true
         this.startUpdating()
-        this.animator = gsap.timeline().to(document.querySelector('.page_container'), {
+        this.animator = gsap.timeline().to(document.querySelectorAll('.page_container'), {
             opacity: 1,
             clipPath: 'circle(100%)',
             duration: .5,
@@ -124,6 +168,17 @@ const scroll = {
             duration: .5,
             ease: 'power1.in'
         }, "<")
+        gsap.timeline().fromTo(document.querySelectorAll('.svg-container span'), {
+            y: "15rem",
+            opacity: 0,
+        }, {
+            y: 0,
+            opacity: 1,
+            duration: 2,
+            stagger: .03,
+            delay: 1.5,
+            ease: "power3.out"
+        })
         this.animator = gsap.timeline({
             scrollTrigger: {
                 scroller: document.querySelector('.page_container'),
@@ -143,10 +198,21 @@ const scroll = {
         }, "<")
 
     },
-    hide() {
-        this.animator = gsap.timeline().to(null, {
+    hide(immediate: () => void, next: () => void) {
+        if (this.animator?.isActive()) return
+        if (immediate) immediate()
+        this.animator = gsap.timeline().to(document.querySelector('.page_container'), {
+            opacity: 0,
+            clipPath: 'circle(0%)',
+            duration: .5,
+            ease: 'power3.out',
             onComplete: () => {
                 this.if_visible.value = false
+                if (next) next()
+                if (this.animationId)
+                    cancelAnimationFrame(this.animationId)
+                this.animate_status = 0
+                this.current_idx = 0
             }
         })
 
@@ -171,12 +237,14 @@ onMounted(() => {
     background-color: rgba($color: #000, $alpha: 1);
     opacity: 0;
     clip-path: circle(0);
+
 }
 
 .first_screen {
     height: calc(100dvh - 25rem);
     position: relative;
     display: flex;
+    // clip-path: url(#combinedClip);
 
     .title-container {
         position: absolute;
@@ -186,13 +254,7 @@ onMounted(() => {
         opacity: 0;
 
         .svg-container {
-            h1 {
-                color: #fff;
-                font-size: 10rem;
-                text-shadow: 0 0 2rem #71dcf7,
-                    0 0 1rem #fff,
-                    0 0 5rem rgb(72, 72, 251);
-            }
+            padding: 2rem;
         }
     }
 }
@@ -311,7 +373,7 @@ onMounted(() => {
 
 .asciibox {
     opacity: 0;
-    --scale: 0.9;
+    --scale: 0.5;
     color: #71dcf7;
     font-family: monospace;
     line-height: calc(var(--scale) * 1.3rem);
@@ -323,5 +385,20 @@ onMounted(() => {
         font-weight: bolder;
         text-align: center;
     }
+}
+</style>
+<style lang="scss">
+.svg-container {
+    span {
+        color: #fff;
+        font-size: 10rem;
+        font-weight: bold;
+        text-shadow: 0 0 2rem #71dcf7,
+            0 0 1rem #fff,
+            0 0 5rem rgb(72, 72, 251);
+        display: inline-block;
+        // transform: translateY(15rem);
+    }
+    overflow: hidden;
 }
 </style>
