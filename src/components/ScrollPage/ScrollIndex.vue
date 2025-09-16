@@ -1,15 +1,25 @@
 <template>
     <div class="page_container" v-show="scroll.if_visible.value">
+        <pre class="asciibox"></pre>
         <div class="first_screen _screen">
-            <pre class="asciibox"></pre>
             <div class="title-container">
                 <div class="svg-container">
-                    Hello
+                    memento mori
                 </div>
             </div>
         </div>
-        <div class="second_screen _screen _null">
+        <div class="second_screen _screen">
             <div class="row">
+                <div class="text-container">
+                    <h1>
+                        title
+                    </h1>
+                    <p>
+                        message
+                    </p>
+                </div>
+                <div class="img-container"></div>
+
                 <div class="bowl rgb" style="--color:#71dcf7;">
                     <div class="liquid"></div>
                 </div>
@@ -169,17 +179,18 @@ const scroll = {
             ease: 'power1.in'
         }, "<")
         gsap.timeline().fromTo(document.querySelectorAll('.svg-container span'), {
-            y: "15rem",
+            top: "15rem",
             opacity: 0,
         }, {
-            y: 0,
+            top: 0,
             opacity: 1,
             duration: 2,
             stagger: .03,
             delay: 1.5,
             ease: "power3.out"
         })
-        this.animator = gsap.timeline({
+        //横向滑动
+        const rowScroll = gsap.timeline({
             scrollTrigger: {
                 scroller: document.querySelector('.page_container'),
                 trigger: document.querySelector('.row_scroll'),
@@ -196,6 +207,8 @@ const scroll = {
         }).to(document.querySelector('.page_container'), {
             filter: 'hue-rotate(360deg)'
         }, "<")
+        //screen1
+        // document.addEventListener('scroll',)
 
     },
     hide(immediate: () => void, next: () => void) {
@@ -241,7 +254,6 @@ onMounted(() => {
 }
 
 .first_screen {
-    height: calc(100dvh - 25rem);
     position: relative;
     display: flex;
     // clip-path: url(#combinedClip);
@@ -262,7 +274,6 @@ onMounted(() => {
 .second_screen,
 .third_screen {
     display: flex;
-    flex-direction: column;
     box-sizing: border-box;
 }
 
@@ -284,12 +295,27 @@ onMounted(() => {
 .second_screen {
     display: flex;
     align-items: center;
+    height: calc(100vh - 30rem);
 
     .row {
         display: flex;
+        width: 100%;
+        height: 100%;
+        .text-container{
+            flex-grow: 1;
+            background-color: red;
+        }
+        .img-container {
+            flex-grow: 1;
+            background-color: blue;
+            margin: 10rem;
+            margin-right: 0;
+
+        }
     }
 
     .bowl {
+        display: none;
         background-color: rgba($color: #fff, $alpha: .1);
         width: 20rem;
         height: 20rem;
@@ -350,6 +376,7 @@ onMounted(() => {
     position: relative;
 
     .row_unit {
+        background-color: #71dcf7;
         position: sticky;
         top: 100dvh;
         display: flex;
@@ -360,7 +387,7 @@ onMounted(() => {
         .unit {
             width: 100vw;
             height: 100dvh;
-            display: flex;
+            // display: flex;
             align-items: center;
             justify-content: center;
 
@@ -372,6 +399,9 @@ onMounted(() => {
 }
 
 .asciibox {
+    position: fixed;
+    z-index: -1;
+    mask-image: linear-gradient(rgba(0, 0, 0, 1),99%, transparent);
     opacity: 0;
     --scale: 0.5;
     color: #71dcf7;
@@ -380,6 +410,7 @@ onMounted(() => {
     letter-spacing: calc(var(--scale) * 1.03rem);
     font-size: calc(var(--scale) * 1rem);
     user-select: none;
+    height: 100dvh;
 
     * {
         font-weight: bolder;
@@ -396,7 +427,9 @@ onMounted(() => {
         text-shadow: 0 0 2rem #71dcf7,
             0 0 1rem #fff,
             0 0 5rem rgb(72, 72, 251);
-        display: inline-block;
+        padding-bottom: 5rem;
+        // display: block;
+        position: relative;
         // transform: translateY(15rem);
     }
     overflow: hidden;

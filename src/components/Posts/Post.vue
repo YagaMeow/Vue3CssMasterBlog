@@ -26,7 +26,7 @@
     </div>
     <div class="post-content" @click="post.show_details" :uri="data.uri">
       <div class="blur"></div>
-      <h2 class="post-title">
+      <h2 class="post-title _null">
         <!-- <RouterLink :to="`/posts/${data.uri}`" class="post-link"> -->
         <div class="post-link">
           <span class="title">{{ data.title }}</span>
@@ -36,10 +36,10 @@
       <p class="abstract"></p>
       <p class="post-footer">
         <MyButton @click.stop="post.switchInfo" class="icon" ref="i">i</MyButton>
-        <MyButton style="margin-left: 1rem" @click.stop="handleDelete(data.uri)">
+        <MyButton style="margin-right:auto;margin-left: 1rem" @click.stop="handleDelete(data.uri)">
           <svg-icon iconClass="bin"></svg-icon>
         </MyButton>
-        <span class="date">{{ formatDate(data.created_at) }}</span>
+        <span class="date _null">{{ formatDate(data.created_at) }}</span>
       </p>
     </div>
     <svg style="position: absolute;pointer-events: none;">
@@ -336,16 +336,16 @@ onUnmounted(() => {
     position: relative;
     clip-path: text;
 
-    .blur {
-      position: absolute;
-      left: -0.1rem;
-      top: -0.1rem;
-      width: calc(100% + 0.2rem);
-      height: calc(100% + 0.2rem);
-      backdrop-filter: blur(2rem) grayscale(100%);
-      image-rendering: pixelated;
-      border-radius: 1rem;
-    }
+    // .blur {
+    //   position: absolute;
+    //   left: -0.1rem;
+    //   top: -0.1rem;
+    //   width: calc(100% + 0.2rem);
+    //   height: calc(100% + 0.2rem);
+    //   backdrop-filter: blur(2rem) grayscale(100%);
+    //   image-rendering: pixelated;
+    //   border-radius: 1rem;
+    // }
 
     .post-title {
       z-index: 10;
