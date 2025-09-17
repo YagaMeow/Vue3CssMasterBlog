@@ -11,14 +11,25 @@
         <div class="second_screen _screen">
             <div class="row">
                 <div class="text-container">
-                    <h1>
-                        title
-                    </h1>
-                    <p>
-                        message
-                    </p>
+                    <div>
+                        <h1>
+                            Introduction
+                        </h1>
+                        <p>
+                            港区の人工島ポートアイランドにある月光館学園高等部に編入した主人公の少年は、怪物の襲撃をきっかけに「ペルソナ」という心の力に目覚める。
+                        </p>
+                        <p>
+                            彼は特別課外活動部（S.E.E.S.）に加入し、仲間と共に「影時間」に現れる謎の怪物「シャドウ」を討伐するため戦い続ける。
+
+                        </p>
+                        <p>
+                            果たして彼を待ち受ける運命とは…
+                        </p>
+                    </div>
+
                 </div>
-                <div class="img-container"></div>
+                <div class="img-container">
+                </div>
 
                 <div class="bowl rgb" style="--color:#71dcf7;">
                     <div class="liquid"></div>
@@ -42,7 +53,25 @@
 
         </div>
         <div class="third_screen _screen">
+            <div class="row">
 
+                <div class="img-container">
+                </div>
+                <div class="text-container">
+                    <div>
+                        <h1>
+                            Features
+                        </h1>
+                        <p>
+                            操作性の向上、インターフェースを含むゲーム全体が
+                            よりユーザーフレンドリーになるなど、細部にわたり調整。より遊びやすく。</p>
+                        <p>
+                            最新機種でより鮮明に、”あの感動”が蘇る！
+                        </p>
+                    </div>
+
+                </div>
+            </div>
         </div>
         <div class="row_scroll">
             <div class="row_unit">
@@ -115,7 +144,45 @@ const scroll = {
             h1?.appendChild(newh1)
         }
     },
+    showImgText() {
+        const container = document.querySelector('.page_container') as HTMLElement
+        const screen1 = document.querySelector('.first_screen') as HTMLElement
+        const screen2 = document.querySelector('.second_screen') as HTMLElement
+        const screen3 = document.querySelector('.third_screen') as HTMLElement
+
+        const img1 = screen2.querySelector('.img-container') as HTMLElement
+        const img2 = screen3.querySelector('.img-container') as HTMLElement
+
+        const scrollTop = container.scrollTop;
+        const imgdata1 = {
+            height: img1.offsetHeight,
+            top: img1.offsetTop,
+            target: img1,
+        }
+        const imgdata2 = {
+            height: img2.offsetHeight,
+            top: img2.offsetTop,
+            target: img2
+        }
+
+        // console.log(scrollTop,screen1.offsetHeight,imgdata.top)
+
+        if (scrollTop + screen1.offsetHeight > imgdata1.top + imgdata1.height / 2) {
+            // console.log(imgdata.target)
+            // imgdata.target.style.setProperty('--height', `${100 - scrollTop * 100 / 500}%`)
+            imgdata1.target.classList.add("show")
+        }
+
+        if (scrollTop + screen1.offsetHeight > imgdata2.top + imgdata2.height / 2) {
+            imgdata2.target.classList.add('show')
+        }
+    },
     init() {
+        if (document.querySelector(".page_container")) {
+            document.querySelector(".page_container")?.addEventListener("scroll", () => {
+                this.showImgText()
+            })
+        }
         this.splitText()
         const worker1 = new Worker()
         const worker2 = new Worker()
@@ -125,7 +192,6 @@ const scroll = {
         }
         this.worker.push(worker1)
         this.worker.push(worker2)
-
 
         fetch("/img/p3r_9.gif")
             .then(resp => resp.arrayBuffer())
@@ -204,11 +270,11 @@ const scroll = {
             onComplete: () => {
                 (document.querySelector('.row-unit') as HTMLElement).style.setProperty('position', 'absolute')
             }
-        }).to(document.querySelector('.page_container'), {
+        }).to(document.querySelector('.row_unit'), {
             filter: 'hue-rotate(360deg)'
         }, "<")
         //screen1
-        // document.addEventListener('scroll',)
+        // document.addEventListener('scroll',this.showImgText)
 
     },
     hide(immediate: () => void, next: () => void) {
@@ -292,7 +358,8 @@ onMounted(() => {
     }
 }
 
-.second_screen {
+.second_screen,
+.third_screen {
     display: flex;
     align-items: center;
     height: calc(100vh - 30rem);
@@ -301,15 +368,69 @@ onMounted(() => {
         display: flex;
         width: 100%;
         height: 100%;
-        .text-container{
-            flex-grow: 1;
-            background-color: red;
-        }
-        .img-container {
-            flex-grow: 1;
-            background-color: blue;
+
+        .text-container {
+            box-sizing: border-box;
             margin: 10rem;
-            margin-right: 0;
+            margin-left: 0;
+            padding: 5rem;
+            width: 50%;
+
+            // flex-grow: 0;
+            flex: 1 1 0;
+
+            * {
+                font-size: 3rem;
+                color: #fff;
+            }
+
+            h1 {
+                font-size: 5rem;
+            }
+
+            h1,
+            p {
+                padding-left: 20%;
+                text-shadow: 0 0 2rem #71dcf7,
+                    0 0 1rem #fff,
+                    0 0 5rem rgb(72, 72, 251);
+            }
+        }
+
+        .img-container {
+            background-image: url("https://p3re.jp/resources/img/top/ss_introduction_ccbbd0e83f473acf4647f51baab6867f.png");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            width: 50%;
+            flex: 1 1 0;
+            box-sizing: border-box;
+            // flex-grow: 1;
+            background-color: #fff;
+            margin: 10rem 0rem;
+            position: relative;
+            opacity: 0;
+
+            &::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: #fff;
+            }
+
+            &.show {
+                opacity: 1;
+                transition: opacity 0.5s ease-in-out;
+
+                &::before {
+                    height: 0;
+                    transition: height 0.5s 0.5s ease-in-out;
+                }
+
+            }
 
         }
     }
@@ -371,12 +492,17 @@ onMounted(() => {
     }
 }
 
+.third_screen .img-container {
+    background-image: url('https://p3re.jp/resources/img/top/ss_features_57a9f52b44e40f3709e529468cefbeb5.png') !important;
+}
+
 .row_scroll {
     height: calc(8 * 100dvh);
     position: relative;
 
     .row_unit {
         background-color: #71dcf7;
+        opacity: .2;
         position: sticky;
         top: 100dvh;
         display: flex;
@@ -387,7 +513,7 @@ onMounted(() => {
         .unit {
             width: 100vw;
             height: 100dvh;
-            // display: flex;
+            display: flex;
             align-items: center;
             justify-content: center;
 
@@ -400,8 +526,8 @@ onMounted(() => {
 
 .asciibox {
     position: fixed;
-    z-index: -1;
-    mask-image: linear-gradient(rgba(0, 0, 0, 1),99%, transparent);
+    z-index: -10;
+    mask-image: linear-gradient(rgba(0, 0, 0, 1), 99%, transparent);
     opacity: 0;
     --scale: 0.5;
     color: #71dcf7;
@@ -432,6 +558,7 @@ onMounted(() => {
         position: relative;
         // transform: translateY(15rem);
     }
+
     overflow: hidden;
 }
 </style>
