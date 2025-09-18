@@ -11,9 +11,11 @@
     <MyNotify></MyNotify>
     <Loading></Loading>
     <ScrollIndex></ScrollIndex>
+    <Progress></Progress>
   </div>
 </template>
 <script setup lang="ts">
+import Progress from './ui/progress.vue'
 import ScrollIndex from './ScrollPage/ScrollIndex.vue'
 import MyNotify from './ui/notofication.vue'
 import Login from './Login.vue'

@@ -3,7 +3,7 @@
         <pre class="asciibox"></pre>
         <div class="first_screen _screen">
             <div class="title-container">
-                <div class="svg-container">
+                <div class="split svg-container">
                     memento mori
                 </div>
             </div>
@@ -12,7 +12,7 @@
             <div class="row">
                 <div class="text-container">
                     <div>
-                        <h1>
+                        <h1 class="split">
                             Introduction
                         </h1>
                         <p>
@@ -59,7 +59,7 @@
                 </div>
                 <div class="text-container">
                     <div>
-                        <h1>
+                        <h1 class="split">
                             Features
                         </h1>
                         <p>
@@ -119,6 +119,7 @@ import { onMounted, ref } from 'vue';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Worker from './gif-worker?worker'
+import { da } from 'element-plus/es/locales.mjs';
 gsap.registerPlugin(ScrollTrigger)
 
 const color = ref(['#fff', '#bcd', '#cde', '#def', '#fed', '#edc', '#dcb', '#cba'])
@@ -129,20 +130,21 @@ const scroll = {
     width: 0,
     height: 0,
     scale: 2,
-    texts: [] as string[][],
+    texts: [[], []] as string[][],
     current_idx: 0,
     animationId: null as null | number,
-    worker: [] as Worker[],
     animate_status: 0,
     splitText() {
-        const h1 = document.querySelector(".svg-container")
-        const text = (h1 as HTMLElement).innerText;
-        (h1 as HTMLElement).innerText = ""
-        for (let i = 0; i < text.length; ++i) {
-            const newh1 = document.createElement("span")
-            newh1.innerText = text[i]
-            h1?.appendChild(newh1)
-        }
+        const doms = document.querySelectorAll(".split")
+        doms.forEach(d => {
+            const text = (d as HTMLElement).innerText;
+            (d as HTMLElement).innerText = ""
+            for (let i = 0; i < text.length; ++i) {
+                const newh1 = document.createElement("span")
+                newh1.innerText = text[i]
+                d?.appendChild(newh1)
+            }
+        })
     },
     showImgText() {
         const container = document.querySelector('.page_container') as HTMLElement
@@ -170,11 +172,53 @@ const scroll = {
         if (scrollTop + screen1.offsetHeight > imgdata1.top + imgdata1.height / 2) {
             // console.log(imgdata.target)
             // imgdata.target.style.setProperty('--height', `${100 - scrollTop * 100 / 500}%`)
-            imgdata1.target.classList.add("show")
+            if (!imgdata1.target.classList.contains('show')) {
+                imgdata1.target.classList.add("show")
+                gsap.timeline().fromTo(screen2.querySelectorAll('h1 span'), {
+                    top: '5rem',
+                    opacity: 0
+                }, {
+                    top: 0,
+                    opacity: 1,
+                    duration: 2,
+                    stagger: .03,
+                    ease: "power3.out"
+                }).fromTo(screen2.querySelectorAll('p'), {
+                    opacity: 0,
+                    top: '3rem'
+                }, {
+                    opacity: 1,
+                    duration: 2,
+                    stagger: .03,
+                    ease: "power3.out"
+                }, "<")
+            }
+
         }
 
         if (scrollTop + screen1.offsetHeight > imgdata2.top + imgdata2.height / 2) {
-            imgdata2.target.classList.add('show')
+            if (!imgdata2.target.classList.contains('show')) {
+                imgdata2.target.classList.add('show')
+                // console.log(screen3.querySelectorAll('h1 span'))
+                gsap.timeline().fromTo(screen3.querySelectorAll('h1 span'), {
+                    top: '5rem',
+                    opacity: 0
+                }, {
+                    top: 0,
+                    opacity: 1,
+                    duration: 2,
+                    stagger: .03,
+                    ease: "power3.out"
+                }).fromTo(screen3.querySelectorAll('p'), {
+                    opacity: 0,
+                    top: '3rem'
+                }, {
+                    opacity: 1,
+                    duration: 2,
+                    stagger: .03,
+                    ease: "power3.out"
+                }, "<")
+            }
         }
     },
     init() {
@@ -184,23 +228,47 @@ const scroll = {
             })
         }
         this.splitText()
-        const worker1 = new Worker()
-        const worker2 = new Worker()
-        worker1.onmessage = worker2.onmessage = (e) => {
-            this.texts.push(e.data)
-            // this.startUpdating();
-        }
-        this.worker.push(worker1)
-        this.worker.push(worker2)
-
-        fetch("/img/p3r_9.gif")
-            .then(resp => resp.arrayBuffer())
-            .then(buff => worker1.postMessage(buff))
-
-        fetch("/img/p3r_4.gif")
-            .then(resp => resp.arrayBuffer())
-            .then(buff => worker2.postMessage(buff))
         // this.animate("/img/p3r_4.gif")
+        this.solveGif('/img/p3r_4.gif', 1)
+        this.solveGif('/img/p3r_9.gif', 0)
+
+    },
+    solveGif(url: string, id: number) {
+        const worker = new Worker()
+        fetch(url)
+            .then(resp => resp.arrayBuffer())
+            .then(buff => worker.postMessage({
+                buff: buff,
+                workId: id
+            }))
+        appStore.progress.push({
+            current: 0,
+            total: 0,
+            label: '加载资源: ',
+            complete: false
+        })
+        worker.onmessage = (e) => {
+            const data = e.data
+            if (e.data.type == 'progress') {
+                appStore.progress[data.workId] = {
+                    current: data.current,
+                    total: data.total,
+                    label: '加载资源: ',
+                    complete: false
+                }
+                // update progress
+            } else if (data.type == 'complete') {
+                // work complete
+                this.texts[data.workId] = data.result
+                appStore.progress[data.workId] = {
+                    current: 0,
+                    total: 0,
+                    label: 'Completed!',
+                    complete: true
+                }
+                worker.terminate()
+            }
+        }
     },
     startUpdating() {
         let lastTime = 0;
@@ -316,7 +384,6 @@ onMounted(() => {
     background-color: rgba($color: #000, $alpha: 1);
     opacity: 0;
     clip-path: circle(0);
-
 }
 
 .first_screen {
@@ -380,12 +447,21 @@ onMounted(() => {
             flex: 1 1 0;
 
             * {
-                font-size: 3rem;
+                font-size: 2rem;
                 color: #fff;
             }
 
             h1 {
-                font-size: 5rem;
+                * {
+                    font-size: 5rem;
+                }
+            }
+
+            p {
+                margin-top: 2rem;
+                opacity: 0;
+                position: relative;
+                overflow: hidden;
             }
 
             h1,
@@ -499,12 +575,13 @@ onMounted(() => {
 .row_scroll {
     height: calc(8 * 100dvh);
     position: relative;
+    overflow: clip;
+    // background-color: red;
 
     .row_unit {
         background-color: #71dcf7;
         opacity: .2;
         position: sticky;
-        top: 100dvh;
         display: flex;
         width: 800vw;
         top: 0;
@@ -560,5 +637,17 @@ onMounted(() => {
     }
 
     overflow: hidden;
+}
+
+.second_screen,
+.third_screen {
+    h1 {
+        overflow: hidden;
+
+        span {
+            position: relative;
+            opacity: 0;
+        }
+    }
 }
 </style>

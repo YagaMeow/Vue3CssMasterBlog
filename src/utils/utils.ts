@@ -1,3 +1,10 @@
+interface Progress {
+  current: number,
+  total: number,
+  label: string,
+  complete: boolean
+}
+
 function range(a: number, b: number) {
   return Math.random() * (b - a) + a
 }
@@ -37,4 +44,4 @@ function elasticEase2(progress: number) {
     1
   )
 }
-export { range, formatDate, type Article, elasticEase, elasticEase2 }
+export { type Progress, range, formatDate, type Article, elasticEase, elasticEase2 }

@@ -1,4 +1,4 @@
-import type { Article } from '@/utils/utils'
+import type { Article,Progress } from '@/utils/utils'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { Howl } from 'howler'
@@ -103,6 +103,8 @@ export const useAppStore = defineStore('app', () => {
   const hajime = ref(true)
 
   const current_page = ref("")
+
+  const progress = ref([] as Progress[])
 
   function first_show() {
     hide_loading.value?.(
@@ -282,6 +284,7 @@ export const useAppStore = defineStore('app', () => {
   }
 
   return {
+    progress,
     current_page,
     show_scroll_page,
     hide_scroll_page,

@@ -1,7 +1,8 @@
 import { parseGIF, decompressFrames } from "gifuct-js";
 
 self.onmessage = (e) => {
-    const buff = e.data
+    const workId = e.data.workId
+    const buff = e.data.buff
     const gif = parseGIF(buff)
     const width = gif.lsd.width
     const height = gif.lsd.height
@@ -25,7 +26,6 @@ self.onmessage = (e) => {
         ctx?.putImageData(image_data, 0, 0)
         const frameImageData = ctx?.getImageData(0, 0, width, height)
         const data = frameImageData?.data
-
         if (data) {
             let text = "";
             for (let y = 0; y < height; y += scale) {
@@ -39,9 +39,19 @@ self.onmessage = (e) => {
                 text += row + "\n";
             }
             texts.push(text);
+            self.postMessage({
+                type: 'progress',
+                total: frames.length,
+                current: i,
+                workId: workId
+            })
         }
     }
 
     // 将结果发送回主线程
-    self.postMessage(texts);
+    self.postMessage({
+        type: 'complete',
+        result: texts,
+        workId: workId
+    });
 }
