@@ -7,11 +7,13 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
 import gsap from 'gsap'
+import { useAppStore } from '@/pinia'
 
 defineOptions({
   name: 'CircleBg',
 })
 
+const appStore = useAppStore()
 const loading = {
   c1: null as null | HTMLElement,
   c2: null as null | HTMLElement,
@@ -58,13 +60,14 @@ const loading = {
 }
 onMounted(() => {
   loading.init()
-  loading.show()
+  // loading.show()
 })
 </script>
 <style lang="scss" scoped>
 .loading-container {
   user-select: none;
   pointer-events: none;
+
   .circle-1 {
     position: absolute;
     left: 50%;
@@ -79,6 +82,7 @@ onMounted(() => {
     box-shadow: inset 0.2rem 0.2rem 2rem #fff;
     filter: blur(0.1rem);
   }
+
   .circle-2 {
     background-color: transparent;
     border: 0.5rem solid #fff;

@@ -16,14 +16,14 @@
                             Introduction
                         </h1>
                         <p>
-                            港区の人工島ポートアイランドにある月光館学園高等部に編入した主人公の少年は、怪物の襲撃をきっかけに「ペルソナ」という心の力に目覚める。
-                        </p>
-                        <p>
-                            彼は特別課外活動部（S.E.E.S.）に加入し、仲間と共に「影時間」に現れる謎の怪物「シャドウ」を討伐するため戦い続ける。
+                            <span>港区の人工島ポートアイランドにある月光館学園高等部に編入した主人公の少年は、怪物の襲撃をきっかけに「ペルソナ」という心の力に目覚める。</span>
 
                         </p>
                         <p>
-                            果たして彼を待ち受ける運命とは…
+                            <span>彼は特別課外活動部（S.E.E.S.）に加入し、仲間と共に「影時間」に現れる謎の怪物「シャドウ」を討伐するため戦い続ける。</span>
+                        </p>
+                        <p>
+                            <span>果たして彼を待ち受ける運命とは…</span>
                         </p>
                     </div>
 
@@ -63,10 +63,13 @@
                             Features
                         </h1>
                         <p>
-                            操作性の向上、インターフェースを含むゲーム全体が
-                            よりユーザーフレンドリーになるなど、細部にわたり調整。より遊びやすく。</p>
+                            <span>操作性の向上、インターフェースを含むゲーム全体が</span>
+                        </p>
                         <p>
-                            最新機種でより鮮明に、”あの感動”が蘇る！
+                            <span>よりユーザーフレンドリーになるなど、細部にわたり調整。より遊びやすく。</span>
+                        </p>
+                        <p>
+                            <span>最新機種でより鮮明に、”あの感動”が蘇る！</span>
                         </p>
                     </div>
 
@@ -180,18 +183,19 @@ const scroll = {
                 }, {
                     top: 0,
                     opacity: 1,
-                    duration: 2,
+                    duration: 1.5,
                     stagger: .03,
-                    ease: "power3.out"
-                }).fromTo(screen2.querySelectorAll('p'), {
+                    ease: "power1.out"
+                }).fromTo(screen2.querySelectorAll('p span'), {
+                    top: '5rem',
                     opacity: 0,
-                    top: '3rem'
                 }, {
+                    top: 0,
                     opacity: 1,
-                    duration: 2,
-                    stagger: .03,
-                    ease: "power3.out"
-                }, "<")
+                    duration: 1,
+                    stagger: .25,
+                    ease: "power1.out"
+                }, "<+0.5")
             }
 
         }
@@ -201,23 +205,24 @@ const scroll = {
                 imgdata2.target.classList.add('show')
                 // console.log(screen3.querySelectorAll('h1 span'))
                 gsap.timeline().fromTo(screen3.querySelectorAll('h1 span'), {
-                    top: '5rem',
+                    top: '100%',
                     opacity: 0
                 }, {
                     top: 0,
                     opacity: 1,
-                    duration: 2,
+                    duration: 1.5,
                     stagger: .03,
-                    ease: "power3.out"
-                }).fromTo(screen3.querySelectorAll('p'), {
-                    opacity: 0,
-                    top: '3rem'
+                    ease: "power1.out"
+                }).fromTo(screen3.querySelectorAll('p span'), {
+                    opacity: 0.8,
+                    top: '5rem'
                 }, {
+                    top: 0,
                     opacity: 1,
-                    duration: 2,
-                    stagger: .03,
-                    ease: "power3.out"
-                }, "<")
+                    duration: 1,
+                    stagger: .25,
+                    ease: "power1.out"
+                }, "<+0.5")
             }
         }
     },
@@ -241,7 +246,7 @@ const scroll = {
                 buff: buff,
                 workId: id
             }))
-        appStore.progress.push({
+        appStore.add_global_progress({
             current: 0,
             total: 0,
             label: '加载资源: ',
@@ -256,6 +261,7 @@ const scroll = {
                     label: '加载资源: ',
                     complete: false
                 }
+                appStore.update_global_progress()
                 // update progress
             } else if (data.type == 'complete') {
                 // work complete
@@ -267,6 +273,8 @@ const scroll = {
                     complete: true
                 }
                 worker.terminate()
+            }else if(data.type == 'info') {
+                appStore.total_steps += data.total
             }
         }
     },
@@ -438,12 +446,11 @@ onMounted(() => {
 
         .text-container {
             box-sizing: border-box;
-            margin: 10rem;
-            margin-left: 0;
+            margin: 10rem 0;
             padding: 5rem;
-            width: 50%;
+            width: 30%;
 
-            // flex-grow: 0;
+            // flex -grow: 0;
             flex: 1 1 0;
 
             * {
@@ -452,6 +459,8 @@ onMounted(() => {
             }
 
             h1 {
+                padding-left: 20%;
+
                 * {
                     font-size: 5rem;
                 }
@@ -459,18 +468,22 @@ onMounted(() => {
 
             p {
                 margin-top: 2rem;
-                opacity: 0;
                 position: relative;
                 overflow: hidden;
+                padding: 2rem;
+                padding-left: 20%;
             }
 
-            h1,
-            p {
-                padding-left: 20%;
+            h1 span,
+            p span {
+                position: relative;
+                opacity: 0;
                 text-shadow: 0 0 2rem #71dcf7,
                     0 0 1rem #fff,
                     0 0 5rem rgb(72, 72, 251);
             }
+
+
         }
 
         .img-container {
@@ -478,7 +491,7 @@ onMounted(() => {
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
-            width: 50%;
+            width: 70%;
             flex: 1 1 0;
             box-sizing: border-box;
             // flex-grow: 1;
@@ -503,7 +516,7 @@ onMounted(() => {
 
                 &::before {
                     height: 0;
-                    transition: height 0.5s 0.5s ease-in-out;
+                    transition: height 1s 0.5s ease-in-out;
                 }
 
             }

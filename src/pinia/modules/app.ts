@@ -1,4 +1,4 @@
-import type { Article,Progress } from '@/utils/utils'
+import type { Article, Progress } from '@/utils/utils'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { Howl } from 'howler'
@@ -44,7 +44,9 @@ export const useAppStore = defineStore('app', () => {
   const notify = ref<((text: string) => void) | null>(null)
   //滚动触发页面
   const show_scroll_page = ref<(() => void) | null>(null)
-  const hide_scroll_page = ref<((im: () => void,nx: () => void) => void) | null>(null)
+  const hide_scroll_page = ref<((im: () => void, nx: () => void) => void) | null>(null)
+  //加载完成
+  const show_loading = ref<(() => void) | null>(null)
 
   const audio_controller = {
     entermenubutton: new Howl({
@@ -111,7 +113,7 @@ export const useAppStore = defineStore('app', () => {
       () => {
         show_menus.value?.()
       },
-      () => {},
+      () => { },
     )
   }
 
@@ -163,8 +165,8 @@ export const useAppStore = defineStore('app', () => {
         hide_diagram.value?.(
           () => {
             hide_nav.value?.(
-              () => {},
-              () => {},
+              () => { },
+              () => { },
             )
             audio_controller.toorfrompost.play()
           },
@@ -178,8 +180,8 @@ export const useAppStore = defineStore('app', () => {
         hide_masonry.value?.(
           () => {
             hide_nav.value?.(
-              () => {},
-              () => {},
+              () => { },
+              () => { },
             )
             audio_controller.toorfrompost.play()
           },
@@ -193,8 +195,8 @@ export const useAppStore = defineStore('app', () => {
         hide_list.value?.(
           () => {
             hide_nav.value?.(
-              () => {},
-              () => {},
+              () => { },
+              () => { },
             )
             audio_controller.toorfrompost.play()
           },
@@ -209,7 +211,7 @@ export const useAppStore = defineStore('app', () => {
 
   function diagram_to_list() {
     hide_diagram.value?.(
-      () => {},
+      () => { },
       () => {
         show_list.value?.()
       },
@@ -218,7 +220,7 @@ export const useAppStore = defineStore('app', () => {
 
   function diagram_to_masonry() {
     hide_diagram.value?.(
-      () => {},
+      () => { },
       () => {
         show_masonry.value?.()
       },
@@ -227,7 +229,7 @@ export const useAppStore = defineStore('app', () => {
 
   function list_to_diagram() {
     hide_list.value?.(
-      () => {},
+      () => { },
       () => {
         show_diagram.value?.()
       },
@@ -236,7 +238,7 @@ export const useAppStore = defineStore('app', () => {
 
   function list_to_masonry() {
     hide_list.value?.(
-      () => {},
+      () => { },
       () => {
         show_masonry.value?.()
       },
@@ -245,7 +247,7 @@ export const useAppStore = defineStore('app', () => {
 
   function masonry_to_diagram() {
     hide_masonry.value?.(
-      () => {},
+      () => { },
       () => {
         show_diagram.value?.()
       },
@@ -254,7 +256,7 @@ export const useAppStore = defineStore('app', () => {
 
   function masonry_to_list() {
     hide_masonry.value?.(
-      () => {},
+      () => { },
       () => {
         show_list.value?.()
       },
@@ -275,15 +277,42 @@ export const useAppStore = defineStore('app', () => {
 
   function scroll_page_to_menus() {
     hide_scroll_page.value?.(
-      () => {},
+      () => { },
       () => {
         show_menus.value?.()
-        hide_nav.value?.(() =>{},() =>{})
+        hide_nav.value?.(() => { }, () => { })
       }
     )
   }
 
+  let worker_lock = false
+  let buffer = 0
+  const completed_steps = ref(0)
+  const total_steps = ref(0)
+
+  function update_global_progress() {
+    if (worker_lock) {
+      buffer++
+      return
+    }
+    worker_lock = true
+    if (buffer == 0)
+      completed_steps.value++
+    else
+      completed_steps.value += buffer
+    worker_lock = false
+  }
+
+  function add_global_progress(data: Progress) {
+    progress.value.push(data)
+  }
+
   return {
+    total_steps,
+    completed_steps,
+    add_global_progress,
+    update_global_progress,
+    show_loading,
     progress,
     current_page,
     show_scroll_page,

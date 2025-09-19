@@ -11,8 +11,8 @@
     <MyNotify></MyNotify>
     <Loading></Loading>
     <ScrollIndex></ScrollIndex>
-    <Progress></Progress>
   </div>
+  <Progress></Progress>
 </template>
 <script setup lang="ts">
 import Progress from './ui/progress.vue'
@@ -38,7 +38,6 @@ const index = {
   animator: null as null | gsap.core.Timeline,
   init() {
     this.container = document.querySelector('.index-container')
-    this.show()
   },
   show() {
     if (appStore.hajime) {
@@ -52,6 +51,7 @@ const index = {
     }
   },
 }
+appStore.show_loading = index.show.bind(index)
 
 onMounted(() => {
   index.init()

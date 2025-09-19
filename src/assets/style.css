@@ -71,3 +71,7 @@ a:hover {
 a:active {
   color: inherit;
 }
+
+#app {
+  background-color: #000;
+}

@@ -37,4 +37,5 @@ onMounted(() => {
   document.head.appendChild(viewportMeta)
 })
 </script>
-<style scoped></style>
+<style scoped>
+</style>

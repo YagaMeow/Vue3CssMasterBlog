@@ -1,3 +1,4 @@
+import { useAppStore } from "@/pinia";
 import { parseGIF, decompressFrames } from "gifuct-js";
 
 self.onmessage = (e) => {
@@ -13,6 +14,11 @@ self.onmessage = (e) => {
 
     const frames = decompressFrames(gif, true)
     const texts = [] as string[]
+
+    self.postMessage({
+        type: 'info',
+        total: frames.length
+    })
 
     for (let i = 0; i < frames.length; ++i) {
         const f = frames[i]
