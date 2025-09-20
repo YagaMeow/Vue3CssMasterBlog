@@ -22,6 +22,7 @@
 import { useAppStore } from '@/pinia';
 import { nextTick, onMounted, ref } from 'vue';
 import { watch } from 'vue'
+import gsap from 'gsap';
 
 const appStore = useAppStore()
 const progress = {
@@ -30,10 +31,21 @@ const progress = {
 
 watch(() => appStore.completed_steps, (val) => {
     if (appStore.total_steps != 0 && appStore.total_steps == appStore.completed_steps) {
+        gsap.timeline().to(document.querySelector('.progress-text'), {
+            x: '8rem',
+            duration: 2,
+            ease: 'power3.out',
+            delay: .6
+        }).to(document.querySelector('.progress-text'), {
+            opacity: 0,
+            duration: .5,
+            ease: 'power1.out',
+            delay: .6
+        }, "<")
         setTimeout(() => {
             if (appStore.show_loading)
                 appStore?.show_loading()
-        }, 500);
+        }, 1300);
     }
 })
 </script>
@@ -99,7 +111,7 @@ watch(() => appStore.completed_steps, (val) => {
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: scaleY(1) translate(-50%, -50%);
+    transform: scaleX(1) scaleY(1) translate(-50%, -50%);
 
     p span {
         color: #fff;
@@ -117,8 +129,19 @@ watch(() => appStore.completed_steps, (val) => {
     }
 
     &.complete {
-        transform: scaleY(0.1) translate(-50%, -50%);
-        transition: transform 0.5s ease;
+        transform: scaleX(1) scaleY(0.1) translate(-50%, -50%);
+        animation: shrinkright .3s .7s linear forwards;
+        transition: transform 0.5s ease-in;
+    }
+}
+
+@keyframes shrinkright {
+    0% {
+        transform: scaleX(1) scaleY(0.1) translate(-50%, -50%);
+    }
+
+    100% {
+        transform: scaleX(0) scaleY(.1) translate(-50%, -50%);
     }
 }
 

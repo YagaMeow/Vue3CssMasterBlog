@@ -43,6 +43,7 @@ const index = {
     if (appStore.hajime) {
       appStore.hajime = false
       this.animator = gsap.timeline().to(this.container, {
+        // clipPath: 'polygon(-100% 50%, 100% 50%, -100% 50%)',
         clipPath: 'circle(100%)',
         duration: 2,
         force3D: true,
@@ -75,6 +76,7 @@ onMounted(() => {
       transparent 85%,
       rgba(105, 82, 116, 0.15) 100%
     ); */
+  // clip-path: polygon(100% -50%,100% 50%,100% 150%);
   clip-path: circle(0%);
   display: flex;
   will-change: clip-path;
