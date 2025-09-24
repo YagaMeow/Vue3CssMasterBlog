@@ -25,6 +25,8 @@ function check_loading() {
   }, 300)
 }
 
+document.title = "Brand new Day"
+
 onMounted(() => {
   // const container = document.querySelector('.index-container')
   // router.beforeEach((to, from, next) => {

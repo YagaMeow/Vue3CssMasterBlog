@@ -18,3 +18,8 @@
     font-weight: 400;
     font-style: normal;
 }
+
+@font-face {
+    font-family: "Swei";
+    src: url("./fonts/SweiB2SerifCJKsc-Regular.woff2") format("TrueType");
+}

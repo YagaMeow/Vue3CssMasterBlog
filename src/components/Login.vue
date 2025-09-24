@@ -97,6 +97,9 @@ const login = {
       })
       .then(() => {
         login.hide()
+      }).catch(e => {
+        if(appStore.notify)
+        appStore.notify(e.message)
       })
   },
 }

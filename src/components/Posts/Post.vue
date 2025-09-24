@@ -9,6 +9,12 @@
       }
     ">
       <div class="myform col">
+        
+        <div class="row">
+          <div class="text">Title</div>
+          <div class="dot"></div>
+          <div class="text">{{data.title}}</div>
+        </div>
         <div class="row">
           <div class="text">Creator</div>
           <div class="dot"></div>
@@ -42,15 +48,6 @@
         <span class="date _null">{{ formatDate(data.created_at) }}</span>
       </p>
     </div>
-    <svg style="position: absolute;pointer-events: none;">
-      <filter id="mosaic">
-        <feFlood x="4" y="4" height="2" width="2" />
-        <feComposite width="8" height="8" />
-        <feTile result="a" />
-        <feComposite in="SourceGraphic" in2="a" operator="in" />
-        <feMorphology operator="dilate" radius="4" />
-      </filter>
-    </svg>
   </div>
 </template>
 <script setup lang="ts">

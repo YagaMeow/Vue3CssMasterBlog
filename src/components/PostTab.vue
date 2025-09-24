@@ -411,6 +411,8 @@ async function handleHide() {
           posttap.reset()
         },
       )
+    }).catch((e) => {
+      if(appStore.notify) appStore.notify(e.message)
     })
   }
 }

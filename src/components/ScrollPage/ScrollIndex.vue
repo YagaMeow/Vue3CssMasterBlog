@@ -236,7 +236,6 @@ const scroll = {
         // this.animate("/img/p3r_4.gif")
         this.solveGif('/img/p3r_4.gif', 1)
         this.solveGif('/img/p3r_9.gif', 0)
-
     },
     solveGif(url: string, id: number) {
         const worker = new Worker()
@@ -306,6 +305,7 @@ const scroll = {
         if (this.animator?.isActive()) return
         this.if_visible.value = true
         this.startUpdating()
+        
         this.animator = gsap.timeline().to(document.querySelectorAll('.page_container'), {
             opacity: 1,
             clipPath: 'circle(100%)',

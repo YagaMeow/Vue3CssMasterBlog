@@ -30,16 +30,24 @@ service.interceptors.response.use(
     } else return response.data.msg ? response.data : response
   },
   (error) => {
-    if (error.response && error.response.status === 400) {
-      const errMessage = error.response.data.message || '请求错误'
-      return Promise.reject(new Error(errMessage))
+
+    if (error.response) {
+      switch (error.response.status) {
+        case 400: {
+          const errMessage = error.response.data.message || '请求错误'
+          return Promise.reject(new Error(errMessage))
+        }
+        case 401: {
+          const userStore = useUserStore()
+          userStore.Logout()
+          return Promise.reject(new Error('未授权，请登录'))
+        }
+        default: {
+          console.log(error)
+          return Promise.reject(new Error(error.response.data.message))
+        }
+      }
     }
-    if (error.response && error.response.status === 401) {
-      const userStore = useUserStore()
-      userStore.Logout()
-      return Promise.reject(new Error('未授权，请登录'))
-    }
-    return Promise.reject(error)
   },
 )
 

@@ -44,10 +44,11 @@ const index = {
       appStore.hajime = false
       this.animator = gsap.timeline().to(this.container, {
         // clipPath: 'polygon(-100% 50%, 100% 50%, -100% 50%)',
-        clipPath: 'circle(100%)',
-        duration: 2,
+        // clipPath: 'circle(100%)',
+        clipPath: 'polygon(0 0, 100% 0,100% 100%,0 100%)',
+        duration: 1,
         force3D: true,
-        ease: 'power4.out',
+        ease: 'power1.out',
       })
     }
   },
@@ -77,7 +78,9 @@ onMounted(() => {
       rgba(105, 82, 116, 0.15) 100%
     ); */
   // clip-path: polygon(100% -50%,100% 50%,100% 150%);
-  clip-path: circle(0%);
+  // clip-path: path("M10,150 C10,150 25,25 180,25 C180,25 195,150 180,150 L10,150 Z");
+  // clip-path: path("M 100 0 a 50 50 180 1 0 0 100 Z");
+  clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
   display: flex;
   will-change: clip-path;
   overflow: hidden;
