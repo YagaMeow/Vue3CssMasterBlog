@@ -272,7 +272,7 @@ const scroll = {
                     complete: true
                 }
                 worker.terminate()
-            }else if(data.type == 'info') {
+            } else if (data.type == 'info') {
                 appStore.total_steps += data.total
             }
         }
@@ -305,7 +305,7 @@ const scroll = {
         if (this.animator?.isActive()) return
         this.if_visible.value = true
         this.startUpdating()
-        
+
         this.animator = gsap.timeline().to(document.querySelectorAll('.page_container'), {
             opacity: 1,
             clipPath: 'circle(100%)',
@@ -633,6 +633,34 @@ onMounted(() => {
         text-align: center;
     }
 }
+
+@media screen and (max-aspect-ratio: 0.8/1) {
+    .asciibox {
+        --scale: 1;
+        transform: translateX(-10%);
+    }
+
+    .second_screen,
+    .third_screen {
+        .row {
+            flex-direction: column;
+
+            .text-container,
+            .img-container {
+                width: 100%;
+                h1, p {
+                    padding-left: 0;
+                }
+            }
+
+            .text-container {
+                p span {
+                    font-size: 5rem;
+                }
+            }
+        }
+    }
+}
 </style>
 <style lang="scss">
 .svg-container {
@@ -662,5 +690,16 @@ onMounted(() => {
             opacity: 0;
         }
     }
+}
+
+@media screen and (max-aspect-ratio: 0.8/1) {
+
+    .second_screen,
+    .third_screen {
+        .row h1.split span {
+            font-size: 8rem !important;
+        }
+    }
+
 }
 </style>

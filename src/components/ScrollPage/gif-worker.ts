@@ -1,4 +1,3 @@
-import { useAppStore } from "@/pinia";
 import { parseGIF, decompressFrames } from "gifuct-js";
 
 self.onmessage = (e) => {

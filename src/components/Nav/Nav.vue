@@ -163,14 +163,14 @@ const nav = {
     nav.animator = gsap
       .timeline()
       .to(nav.discover, {
-        y: '-6rem',
+        y: '-9rem',
         duration: 0.2,
         ease: 'power3.in',
       })
       .to(
         nav.collect,
         {
-          y: '-6rem',
+          y: '-9rem',
           duration: 0.2,
           ease: 'power3.in',
         },
@@ -179,7 +179,7 @@ const nav = {
       .to(
         nav.footer,
         {
-          y: '6rem',
+          y: '9rem',
           duration: 0.2,
           ease: 'power3.in',
           onComplete: () => {
@@ -385,7 +385,7 @@ onUnmounted(() => {
 
     &#discover,
     &#collect {
-      transform: translateY(-6rem);
+      transform: translateY(-9rem);
     }
 
     .button-content {
@@ -442,7 +442,7 @@ onUnmounted(() => {
     align-items: end;
     bottom: 0;
     left: 0;
-    transform: translateY(6rem);
+    transform: translateY(9rem);
 
     #type,
     #date {
