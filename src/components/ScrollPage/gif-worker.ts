@@ -56,7 +56,7 @@ self.onmessage = (e) => {
     // 将结果发送回主线程
     self.postMessage({
         type: 'complete',
+        workId: workId,
         result: texts,
-        workId: workId
     });
 }

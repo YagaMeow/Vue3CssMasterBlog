@@ -91,6 +91,7 @@ import MyButton from '@/components/ui/btn.vue'
 import gsap from 'gsap'
 import SvgIcon from '../SvgIcon.vue'
 import { elasticEase, elasticEase2 } from '@/utils/utils'
+import { getAuth } from '@/api/user'
 gsap.registerEase('myEase', elasticEase)
 gsap.registerEase('myEase2', elasticEase2)
 
@@ -219,8 +220,12 @@ const nav = {
     appStore.audio_controller.switchlayout.play()
   },
   handleCollect() {
-    appStore.edit_mode = true
-    appStore.show_tab?.()
+    getAuth().then(() => {
+      appStore.edit_mode = true
+      appStore.show_tab?.()
+    }).catch((e) => {
+      appStore.notify?.(e.message)
+    })
   },
   handleTypeFilter() {
     if (nav.type?.classList.contains('expand')) {

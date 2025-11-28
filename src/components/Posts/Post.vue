@@ -9,11 +9,11 @@
       }
     ">
       <div class="myform col">
-        
+
         <div class="row">
           <div class="text">Title</div>
           <div class="dot"></div>
-          <div class="text">{{data.title}}</div>
+          <div class="text">{{ data.title }}</div>
         </div>
         <div class="row">
           <div class="text">Creator</div>

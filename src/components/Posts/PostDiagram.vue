@@ -5,7 +5,7 @@
     @dragover="dragOver"
   >
     <Post
-      v-for="(item, index) in postList"
+      v-for="(item, index) in diagram.postList.value"
       :key="index"
       :data="item"
       :class="{
@@ -33,17 +33,13 @@ import { ElNotification } from 'element-plus'
 import { useAppStore } from '@/pinia'
 import gsap from 'gsap'
 import { fa } from 'element-plus/es/locales.mjs'
-
-interface PostItem {
-  uri: string
-  [key: string]: string | number | boolean | undefined
-}
+import type { Article } from '@/utils/utils'
 
 const appStore = useAppStore()
 
-const postList = ref<PostItem[]>([])
 const router = useRouter()
 const diagram = {
+  postList: ref<Article[]>([]),
   if_visible: ref(false),
   animator: null as gsap.core.Timeline | null,
   container: null as HTMLElement | null,
@@ -102,7 +98,7 @@ const diagram = {
     if (this.animator?.isActive()) return
     await ArticleAPI.getList({ page: 1, limit: 10 })
       .then((response) => {
-        postList.value = response.data
+        this.postList.value = response.data
       })
       .catch((error) => {
         console.error('Failed to fetch posts:', error)
@@ -187,8 +183,12 @@ const diagram = {
     dragData.value.pos = { x: 0, y: 0 }
     dragData.value.activeUri = ''
   },
+  addPost(a: Article) {
+    this.postList.value.push(a)
+  }
 }
 
+appStore.update_diagram = diagram.addPost.bind(diagram)
 appStore.show_diagram = diagram.show.bind(diagram)
 appStore.hide_diagram = diagram.hide.bind(diagram)
 
@@ -287,7 +287,7 @@ function handleDelete(uri: string) {
       type: 'success',
       duration: 2000,
     })
-    postList.value = postList.value.filter((item) => item.uri !== uri)
+    diagram.postList.value = diagram.postList.value.filter((item) => item.uri !== uri)
   })
 }
 </script>

@@ -122,7 +122,6 @@ import { onMounted, ref } from 'vue';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Worker from './gif-worker?worker'
-import { da } from 'element-plus/es/locales.mjs';
 gsap.registerPlugin(ScrollTrigger)
 
 const color = ref(['#fff', '#bcd', '#cde', '#def', '#fed', '#edc', '#dcb', '#cba'])
@@ -214,7 +213,7 @@ const scroll = {
                     stagger: .03,
                     ease: "power1.out"
                 }).fromTo(screen3.querySelectorAll('p span'), {
-                    opacity: 0.8,
+                    opacity: 0,
                     top: '5rem'
                 }, {
                     top: 0,
@@ -245,6 +244,7 @@ const scroll = {
                 buff: buff,
                 workId: id
             }))
+        
         appStore.add_global_progress({
             current: 0,
             total: 0,

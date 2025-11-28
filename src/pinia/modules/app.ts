@@ -48,6 +48,9 @@ export const useAppStore = defineStore('app', () => {
   //加载完成
   const show_loading = ref<(() => void) | null>(null)
 
+  //更新视图
+  const update_diagram = ref<((a:Article) => void) | null>(null)
+
   const audio_controller = {
     entermenubutton: new Howl({
       src: [a_enter],
@@ -308,6 +311,7 @@ export const useAppStore = defineStore('app', () => {
   }
 
   return {
+    update_diagram,
     total_steps,
     completed_steps,
     add_global_progress,

@@ -1,5 +1,4 @@
 import service from '@/utils/request'
-import { ta } from 'element-plus/es/locales.mjs'
 
 interface ArticlesListParams {
   page: number
@@ -11,7 +10,6 @@ interface Article {
   content: string
   uri: string
 }
-
 
 export const ArticleAPI = {
   getList(params: ArticlesListParams) {
@@ -69,28 +67,22 @@ export const ArticleAPI = {
       method: 'POST',
       data: formData,
       headers: {
-        'Content-Type': 'multipart/form-data'
+        'Content-Type': 'multipart/form-data',
       },
     })
   },
-  addTag(data:{
-    id: number,
-    tag:string
-  }) {
+  addTag(data: { id: number; tag: string }) {
     return service({
       url: '/api/addtag',
       method: 'POST',
-      data: data
+      data: data,
     })
   },
-  removeTag(data: {
-    id:number,
-    tag: string
-  }) {
+  removeTag(data: { id: number; tag: string }) {
     return service({
       url: '/api/removetag',
       method: 'POST',
-      data: data
+      data: data,
     })
-  }
+  },
 }
