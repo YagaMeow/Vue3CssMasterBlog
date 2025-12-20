@@ -82,6 +82,10 @@
             <svg-icon iconClass="image"></svg-icon>
           </button>
           <input id="imageInput" type="file" accept="image/*" style="display: none" @change="onImageSelected" />
+          <button @click="onCoverUploadClick">
+            <svg-icon iconClass="image"></svg-icon>
+          </button>
+          <input id="coverInput" type="file" accept="image/*" style="display: none;" @change="onCoverSelected" />
         </div>
       </div>
 
@@ -107,10 +111,10 @@
           :style="{ display: posttap.auth.value ? '' : 'none' }">
           <svg-icon :iconClass="posttap.editable.value ? 'no-edit' : 'edit'"></svg-icon>
         </MyButton>
-        <MyButton class="close_btn" @click="handleScale">
+        <MyButton class="close_btn" @click="handleScale" :style="{ marginLeft: posttap.auth.value ? '' : 'auto' }">
           口
         </MyButton>
-        <MyButton class="close_btn" @click="handleClose" :style="{ marginLeft: posttap.auth.value ? '' : 'auto' }">
+        <MyButton class="close_btn" @click="handleClose">
           <span>×</span>
         </MyButton>
       </div>
@@ -123,6 +127,7 @@
   </div>
 </template>
 <script lang="ts" setup>
+import ImgScaler from './ImgScaler.vue'
 import ContextMenu from '@/components/ui/contextmenu.vue'
 import MyButton from '@/components/ui/btn.vue'
 import { onMounted, ref } from 'vue'
@@ -142,6 +147,7 @@ const _uri = ref('')
 const ed = ref()
 
 const posttap = {
+  has_scaled: false,
   if_visible: ref(false),
   auth: ref(false),
   animator: null as null | gsap.core.Timeline,
@@ -415,11 +421,34 @@ async function handleHide() {
 }
 
 function handleScale() {
+  const container = document.querySelector(".tab-container")
+  if (posttap.has_scaled) {
+    posttap.has_scaled = false
+    gsap.to(container, {
+      width: '60rem',
+      height: '80rem',
+      ease: "power3.out"
+    })
 
+  } else {
+    posttap.has_scaled = true
+    gsap.to(container, {
+      width: '100vw',
+      height: '100dvh',
+      ease: "power3.out"
+    })
+  }
 }
 
 function onImageUploadClick() {
   const imageInput = document.querySelector<HTMLInputElement>('#imageInput')
+  if (imageInput) {
+    imageInput.click()
+  }
+}
+
+function onCoverUploadClick() {
+  const imageInput = document.querySelector<HTMLInputElement>('#coverInput')
   if (imageInput) {
     imageInput.click()
   }
@@ -432,6 +461,21 @@ async function onImageSelected(event: Event) {
     const url = (await ArticleAPI.upload(file)).data.url
     const newurl = import.meta.env.VITE_BASE_API + '/api' + url
     ed.value.editor.chain().focus().setImage({ src: newurl }).run()
+  }
+}
+
+async function onCoverSelected(event: Event) {
+  const target = event.target as HTMLInputElement
+  if (target.files && target.files.length > 0) {
+    const file = target.files[0]
+    await ArticleAPI.uploadCover({
+      uri: appStore.post_data.uri.toString(),
+      file: file
+    }).then((resp) => {
+      appStore.notify?.("上传成功")
+    }).catch(e => {
+      appStore.notify?.(e.message)
+    })
   }
 }
 appStore.show_tab = posttap.show.bind(posttap)

@@ -1,22 +1,18 @@
 <template>
   <div class="masonry-post-container _fullscreen" v-show="masonry.if_visible.value">
     <div v-for="i in cols" :key="'col-' + i" class="masonry-post-col">
-      <Post
-        v-for="item in masonry.colList.value[i - 1]"
-        :key="`masonry-post-${item.id}`"
-        :data="item"
-        class="masonry-post"
-        :style="{ height: masonry.height.get(item.id) + 'rem' }"
-      ></Post>
+      <MasPost v-for="item in masonry.colList.value[i - 1]" :key="`masonry-post-${item.id}`" :data="item"
+        class="masonry-post"></MasPost>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 import { ScrollTrigger } from 'gsap/all'
-import gsap, { random } from 'gsap'
+import gsap from 'gsap'
 import { nextTick, onMounted, onUnmounted, ref } from 'vue'
 import { ArticleAPI } from '@/api/api'
 import type { Article } from '@/utils/utils'
+import MasPost from './MasPost.vue'
 import Post from './Post.vue'
 import { range } from '@/utils/utils'
 import { useAppStore } from '@/pinia'
@@ -35,7 +31,7 @@ const masonry = {
   height: new Map<number, number>(),
   current_height: new Map<number, number>(),
   h_queue: <number[]>[],
-  resizeId: () => {},
+  resizeId: () => { },
 
   cmp(a: number, b: number): number {
     if (!masonry.current_height.has(a)) masonry.current_height.set(a, 0)
@@ -53,6 +49,19 @@ const masonry = {
     this.resizeId = this.resize.bind(this)
     window.addEventListener('resize', this.resizeId)
   },
+  loadImage(url: string) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.setAttribute('crossOrigin', 'anonymous');
+      img.src = url;
+      img.onload = () => {
+        resolve(img);
+      };
+      img.onerror = () => {
+        reject(new Error('图像加载失败'));
+      };
+    });
+  },
   async show() {
     await ArticleAPI.getList({ page: 1, limit: 10 })
       .then((response) => {
@@ -65,12 +74,32 @@ const masonry = {
         //     created_at: 'today',
         //   })
         // }
-        this.postList.value.forEach((p, idx) => {
+        this.postList.value.forEach(async (p, idx) => {
+          // if (p.cover_url) {
+          //   const img = await this.loadImage(import.meta.env.VITE_BASE_API + '/api' + p.cover_url.toString())
+          //   const width = (img as HTMLImageElement).width
+          //   const height = (img as HTMLImageElement).height
+          //   const scaleheight = height / width
+          //   console.log(scaleheight)
+          //   this.height.set(p.id, 32 * scaleheight)
+          // } else
+          {
+            const randomheight = range(32, 50)
+            if(p.cover && p.cover.height && p.cover.width && p.cover?.width != 0){
+              const scale = p.cover.height /p.cover.width
+              console.log(p.id,scale)
+              this.height.set(p.id,scale)
+            }
+            else {
+              this.height.set(p.id,1)
+            }
+          }
+
+
           // const cid = idx
           // p.id = idx
           // p.title = p.title + idx.toString()
-          const randomheight = range(30, 50)
-          this.height.set(p.id, randomheight)
+
         })
         this.calc()
       })
@@ -191,16 +220,19 @@ onUnmounted(() => {
   grid-gap: 3rem;
   padding: 6rem 5rem;
   overflow: auto;
+
   .masonry-post-col {
     display: flex;
     gap: 3rem;
     flex-direction: column;
+
     .masonry-post {
       width: 100%;
       transform: translateY(10rem);
     }
   }
 }
+
 @media screen and (max-aspect-ratio: 1.7/1) {
   .masonry-post-container {
     --cols: 4;
@@ -224,10 +256,12 @@ onUnmounted(() => {
     --cols: 1;
     padding-top: 12rem;
   }
+
   .post {
     :deep(.title) {
       font-size: 5rem;
     }
+
     :deep(.date) {
       font-size: 4rem !important;
     }

@@ -18,6 +18,11 @@ interface Article {
   uri: String
   id: number
   created_at: String
+  cover?: {
+    cover_url: String,
+    width: number,
+    height: number,
+  },
   tags: { name: string }[]
 }
 

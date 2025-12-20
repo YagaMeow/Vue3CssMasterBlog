@@ -8,24 +8,14 @@
       </drag-handle>
     </div> -->
     <div class="loading" v-show="myeditor.is_loading.value">Loading...</div>
-    <div
-      :class="{
-        'character-count': true,
-        'character-count--warning': editor.storage.characterCount.characters() === limit,
-      }"
-    >
+    <div :class="{
+      'character-count': true,
+      'character-count--warning': editor.storage.characterCount.characters() === limit,
+    }">
       <svg height="20" width="20" viewBox="0 0 20 20">
         <circle r="10" cx="10" cy="10" fill="#c1e3f7" />
-        <circle
-          r="5"
-          cx="10"
-          cy="10"
-          fill="transparent"
-          stroke="#68c3f7"
-          stroke-width="10"
-          :stroke-dasharray="`calc(${percentage} * 31.4 / 100) 31.4`"
-          transform="rotate(-90) translate(-20)"
-        />
+        <circle r="5" cx="10" cy="10" fill="transparent" stroke="#68c3f7" stroke-width="10"
+          :stroke-dasharray="`calc(${percentage} * 31.4 / 100) 31.4`" transform="rotate(-90) translate(-20)" />
         <circle r="6" cx="10" cy="10" fill="rgb(232, 231, 231)" />
       </svg>
 
@@ -48,7 +38,7 @@ import Typography from '@tiptap/extension-typography'
 import Placeholder from '@tiptap/extension-placeholder'
 import StarterKit from '@tiptap/starter-kit'
 import { Editor, EditorContent } from '@tiptap/vue-3'
-import { ref, computed, onMounted, onUnmounted, onUpdated, onBeforeUpdate } from 'vue'
+import { ref, computed, onMounted, onUnmounted, onUpdated, onBeforeUpdate, nextTick, type ImgHTMLAttributes } from 'vue'
 import { DragHandle } from '@tiptap-pro/extension-drag-handle-vue-3'
 import NodeRange from '@tiptap-pro/extension-node-range'
 import '@/assets/editor.scss'
@@ -71,10 +61,7 @@ import Dropcursor from '@tiptap/extension-dropcursor'
 import { Mathematics } from '@tiptap-pro/extension-mathematics'
 import CharacterCount from '@tiptap/extension-character-count'
 import 'katex/dist/katex.min.css'
-import { sv } from 'element-plus/es/locales.mjs'
-import { getAuth } from '@/api/user'
 import { useAppStore } from '@/pinia'
-import Contextmenu from '@/components/ui/contextmenu.vue'
 
 const props = defineProps({
   uri: {
@@ -85,9 +72,18 @@ const props = defineProps({
 
 const appStore = useAppStore()
 
+onMounted(() => {
+  myeditor.init()
+})
+
 const myeditor = {
+  container: null as null | HTMLElement,
   is_loading: ref(true),
-  init() {},
+  if_scaler_visible: false,
+  image: null as null | HTMLElement,
+  init() {
+    this.container = document.querySelector(".editor-container")
+  },
   async show() {
     if (appStore.edit_mode) this.is_loading.value = false
     const res = await ArticleAPI.getByUri(props.uri)
@@ -97,9 +93,40 @@ const myeditor = {
     _data.content = res.data.content
 
     // window.addEventListener('keydown', saveHandler)
-    console.log(JSON.parse(_data.content))
     editor.commands.setContent(JSON.parse(_data.content))
     this.is_loading.value = false
+    this.addImgHook()
+  },
+  addImgHook() {
+    this.container?.addEventListener('click', this.handleProxy)
+  },
+  resizeIMG(p: number) {
+    if (myeditor.image) {
+      const width = myeditor.image.offsetWidth
+      const heigt = myeditor.image.offsetHeight
+      const old_p = myeditor.image.getAttribute("s")
+      myeditor.image.style.width = (width / parseInt(old_p as string) * p).toString() + 'px'
+      myeditor.image.style.height = (heigt / parseInt(old_p as string) * p).toString() + 'px'
+      myeditor.image.setAttribute("s", p.toString())
+    }
+  },
+  handleProxy(e: PointerEvent) {
+    if ((e.target as HTMLElement).nodeName == 'IMG' && !myeditor.if_scaler_visible) {
+      myeditor.if_scaler_visible = true
+      myeditor.image = e.target as HTMLElement
+      myeditor.image.style.transformOrigin = "top left"
+      // const reg = /(?<=\()(.+?)(?=\))/g
+      // console.log(myeditor.image.style.transform.match(reg))
+      const sp = myeditor.image.getAttribute("s")
+      if (!myeditor.image.hasAttribute("s"))
+        myeditor.image.setAttribute("s", "1")
+      appStore.show_scaler?.({ x: e.x, y: e.y }, parseInt(sp as string))
+      // appStore.show_scaler?.({ x: dom.offsetWidth + dom.offsetLeft, y: dom.offsetHeight + dom.offsetTop})
+    } else if (myeditor.if_scaler_visible) {
+      console.log(e.target)
+      appStore.hide_scaler?.()
+      myeditor.if_scaler_visible = false
+    }
   },
   reset() {
     console.log('reset')
@@ -109,6 +136,7 @@ const myeditor = {
 }
 appStore.show_post = myeditor.show.bind(myeditor)
 appStore.hide_post = myeditor.reset.bind(myeditor)
+appStore.resize_image = myeditor.resizeIMG.bind(myeditor)
 
 const percentage = computed(() =>
   Math.round((100 / limit) * editor.storage.characterCount.characters()),
@@ -233,11 +261,13 @@ defineExpose({
   .editor-text {
     margin: 0.5rem 1rem;
     color: #fff;
+
     :deep(p.is-empty::before) {
       content: attr(data-placeholder) !important;
       color: #aaa;
       position: absolute;
     }
+
     overflow-x: hidden;
   }
 
@@ -257,14 +287,23 @@ defineExpose({
 }
 
 .character-count {
-  position: absolute;
-  left: calc(50% + 350px);
+  background-color: rgba($color: #fff, $alpha: .4);
+  padding: 1rem;
+  border-radius: 1rem;
+  backdrop-filter: blur(.1rem);
+  z-index: 10;
+  position: fixed;
+  bottom: 1rem;
+  right: 0;
+  // left: calc(50% + 350px);
   align-items: center;
   color: var(--gray-5);
   display: flex;
   font-size: 0.75rem;
   gap: 0.5rem;
   margin: 1.5rem;
+
+  box-shadow: 0px 0px 5px #fff;
 
   svg {
     color: var(--purple);
@@ -273,6 +312,18 @@ defineExpose({
   &--warning,
   &--warning svg {
     color: var(--red);
+  }
+
+  &:hover {
+    svg {
+      opacity: 0;
+      transition: all ease .2s;
+    }
+
+    background-color: rgba($color: #fff, $alpha: .05);
+    backdrop-filter: blur(0);
+    color: transparent;
+    transition: all ease .2s;
   }
 }
 
@@ -363,6 +414,104 @@ defineExpose({
 @media screen and (max-aspect-ratio: 0.8/1) {
   .loading {
     font-size: 7rem !important;
+  }
+}
+</style>
+
+<style lang="scss">
+/* Basic editor styles */
+.tiptap {
+  :first-child {
+    margin-top: 0;
+  }
+
+  img {
+    display: block;
+  }
+
+  [data-resize-handle] {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 2px;
+    z-index: 10;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.8);
+    }
+
+    /* Corner handles */
+    &[data-resize-handle='top-left'],
+    &[data-resize-handle='top-right'],
+    &[data-resize-handle='bottom-left'],
+    &[data-resize-handle='bottom-right'] {
+      width: 8px;
+      height: 8px;
+    }
+
+    &[data-resize-handle='top-left'] {
+      top: -4px;
+      left: -4px;
+      cursor: nwse-resize;
+    }
+
+    &[data-resize-handle='top-right'] {
+      top: -4px;
+      right: -4px;
+      cursor: nesw-resize;
+    }
+
+    &[data-resize-handle='bottom-left'] {
+      bottom: -4px;
+      left: -4px;
+      cursor: nesw-resize;
+    }
+
+    &[data-resize-handle='bottom-right'] {
+      bottom: -4px;
+      right: -4px;
+      cursor: nwse-resize;
+    }
+
+    /* Edge handles */
+    &[data-resize-handle='top'],
+    &[data-resize-handle='bottom'] {
+      height: 6px;
+      left: 8px;
+      right: 8px;
+    }
+
+    &[data-resize-handle='top'] {
+      top: -3px;
+      cursor: ns-resize;
+    }
+
+    &[data-resize-handle='bottom'] {
+      bottom: -3px;
+      cursor: ns-resize;
+    }
+
+    &[data-resize-handle='left'],
+    &[data-resize-handle='right'] {
+      width: 6px;
+      top: 8px;
+      bottom: 8px;
+    }
+
+    &[data-resize-handle='left'] {
+      left: -3px;
+      cursor: ew-resize;
+    }
+
+    &[data-resize-handle='right'] {
+      right: -3px;
+      cursor: ew-resize;
+    }
+  }
+
+  [data-resize-state='true'] [data-resize-wrapper] {
+    outline: 1px solid rgba(0, 0, 0, 0.25);
+    border-radius: 0.125rem;
   }
 }
 </style>

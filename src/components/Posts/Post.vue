@@ -9,7 +9,6 @@
       }
     ">
       <div class="myform col">
-
         <div class="row">
           <div class="text">Title</div>
           <div class="dot"></div>
@@ -51,7 +50,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, watch } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { range } from '@/utils/utils'
 import MyButton from '@/components/ui/btn.vue'
 import gsap from 'gsap'
@@ -102,8 +101,16 @@ const post = {
     const bgcontainer = post.post?.querySelector('.post-content')
     const bgstyle = range(1, 7)
     const colorstyle = range(1, 9)
+    console.log(props.data.cover)
+    if (props.data.cover.cover_url) {
+      const coverUrl = import.meta.env.VITE_BASE_API + '/api' + props.data.cover.cover_url
+        ; (bgcontainer as HTMLElement).style.backgroundImage =
+          `url("${coverUrl}")`
+    } else {
       ; (bgcontainer as HTMLElement).style.backgroundImage =
         `url("/img/music${Math.floor(bgstyle)}.jpg")`
+    }
+
     bgcontainer?.setAttribute('bgstyle', Math.floor(bgstyle).toString())
     if (post.post) post.post.style.backgroundColor = 'transparent'
     // post.post.style.backgroundColor = `var(--color${Math.floor(colorstyle)})`
@@ -171,7 +178,6 @@ const post = {
     })
   },
   show_details() {
-    console.log(props.data)
     appStore.post_data = props.data as {
       title: string
       uri: string
@@ -323,6 +329,7 @@ onUnmounted(() => {
   .post-content {
     background-repeat: no-repeat;
     background-size: cover;
+    background-position: center;
     margin: 1rem;
     flex-grow: 1;
     border-radius: 1rem;

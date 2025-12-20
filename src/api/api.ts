@@ -1,4 +1,5 @@
 import service from '@/utils/request'
+import { da } from 'element-plus/es/locales.mjs'
 
 interface ArticlesListParams {
   page: number
@@ -83,6 +84,19 @@ export const ArticleAPI = {
       url: '/api/removetag',
       method: 'POST',
       data: data,
+    })
+  },
+  uploadCover(data: { uri: string; file: string | Blob }) {
+    const formData = new FormData()
+    formData.append('file', data.file)
+    formData.append('uri',data.uri)
+    return service({
+      url: '/api/articles/cover',
+      method: 'POST',
+      data: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
     })
   },
 }

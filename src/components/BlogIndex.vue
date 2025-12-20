@@ -11,10 +11,12 @@
     <MyNotify></MyNotify>
     <Loading></Loading>
     <ScrollIndex></ScrollIndex>
+    <ImgScaler></ImgScaler>
   </div>
   <Progress></Progress>
 </template>
 <script setup lang="ts">
+import ImgScaler from './ImgScaler.vue'
 import Progress from './ui/progress.vue'
 import ScrollIndex from './ScrollPage/ScrollIndex.vue'
 import MyNotify from './ui/notofication.vue'

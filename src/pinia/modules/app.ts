@@ -48,8 +48,15 @@ export const useAppStore = defineStore('app', () => {
   //加载完成
   const show_loading = ref<(() => void) | null>(null)
 
-  //更新视图
-  const update_diagram = ref<((a:Article) => void) | null>(null)
+  //TODO:更新视图
+  const update_diagram = ref<((a: Article) => void) | null>(null)
+
+  //图片滚动条
+  const show_scaler = ref<null | ((pos: { x: number; y: number },proportion: number) => void)>(null)
+  const hide_scaler = ref<null | (() => void)>(null)
+
+  //调整图片大小
+  const resize_image = ref<null | ((proportion: number) => void)>(null)
 
   const audio_controller = {
     entermenubutton: new Howl({
@@ -107,7 +114,7 @@ export const useAppStore = defineStore('app', () => {
 
   const hajime = ref(true)
 
-  const current_page = ref("")
+  const current_page = ref('')
 
   const progress = ref([] as Progress[])
 
@@ -116,12 +123,12 @@ export const useAppStore = defineStore('app', () => {
       () => {
         show_menus.value?.()
       },
-      () => { },
+      () => {},
     )
   }
 
   function menus_to_posts() {
-    current_page.value = "articles"
+    current_page.value = 'articles'
     switch (layout_type.value) {
       case 0: {
         hide_menus.value?.(
@@ -168,8 +175,8 @@ export const useAppStore = defineStore('app', () => {
         hide_diagram.value?.(
           () => {
             hide_nav.value?.(
-              () => { },
-              () => { },
+              () => {},
+              () => {},
             )
             audio_controller.toorfrompost.play()
           },
@@ -183,8 +190,8 @@ export const useAppStore = defineStore('app', () => {
         hide_masonry.value?.(
           () => {
             hide_nav.value?.(
-              () => { },
-              () => { },
+              () => {},
+              () => {},
             )
             audio_controller.toorfrompost.play()
           },
@@ -198,8 +205,8 @@ export const useAppStore = defineStore('app', () => {
         hide_list.value?.(
           () => {
             hide_nav.value?.(
-              () => { },
-              () => { },
+              () => {},
+              () => {},
             )
             audio_controller.toorfrompost.play()
           },
@@ -214,7 +221,7 @@ export const useAppStore = defineStore('app', () => {
 
   function diagram_to_list() {
     hide_diagram.value?.(
-      () => { },
+      () => {},
       () => {
         show_list.value?.()
       },
@@ -223,7 +230,7 @@ export const useAppStore = defineStore('app', () => {
 
   function diagram_to_masonry() {
     hide_diagram.value?.(
-      () => { },
+      () => {},
       () => {
         show_masonry.value?.()
       },
@@ -232,7 +239,7 @@ export const useAppStore = defineStore('app', () => {
 
   function list_to_diagram() {
     hide_list.value?.(
-      () => { },
+      () => {},
       () => {
         show_diagram.value?.()
       },
@@ -241,7 +248,7 @@ export const useAppStore = defineStore('app', () => {
 
   function list_to_masonry() {
     hide_list.value?.(
-      () => { },
+      () => {},
       () => {
         show_masonry.value?.()
       },
@@ -250,7 +257,7 @@ export const useAppStore = defineStore('app', () => {
 
   function masonry_to_diagram() {
     hide_masonry.value?.(
-      () => { },
+      () => {},
       () => {
         show_diagram.value?.()
       },
@@ -259,7 +266,7 @@ export const useAppStore = defineStore('app', () => {
 
   function masonry_to_list() {
     hide_masonry.value?.(
-      () => { },
+      () => {},
       () => {
         show_list.value?.()
       },
@@ -273,18 +280,21 @@ export const useAppStore = defineStore('app', () => {
       },
       () => {
         show_nav.value?.()
-        current_page.value = "scroll"
-      }
+        current_page.value = 'scroll'
+      },
     )
   }
 
   function scroll_page_to_menus() {
     hide_scroll_page.value?.(
-      () => { },
+      () => {},
       () => {
         show_menus.value?.()
-        hide_nav.value?.(() => { }, () => { })
-      }
+        hide_nav.value?.(
+          () => {},
+          () => {},
+        )
+      },
     )
   }
 
@@ -299,10 +309,8 @@ export const useAppStore = defineStore('app', () => {
       return
     }
     worker_lock = true
-    if (buffer == 0)
-      completed_steps.value++
-    else
-      completed_steps.value += buffer
+    if (buffer == 0) completed_steps.value++
+    else completed_steps.value += buffer
     worker_lock = false
   }
 
@@ -311,6 +319,9 @@ export const useAppStore = defineStore('app', () => {
   }
 
   return {
+    resize_image,
+    hide_scaler,
+    show_scaler,
     update_diagram,
     total_steps,
     completed_steps,
