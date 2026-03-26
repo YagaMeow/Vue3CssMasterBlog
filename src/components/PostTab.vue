@@ -391,7 +391,7 @@ async function handleClose() {
       content: JSON.stringify(ed.value.editor.getJSON()),
       uri: appStore.post_data.uri as string,
     })
-      .then(() => {
+      .then((resp) => {
         appStore.hide_tab?.(
           () => { },
           () => {
@@ -429,7 +429,6 @@ function handleScale() {
       height: '80rem',
       ease: "power3.out"
     })
-
   } else {
     posttap.has_scaled = true
     gsap.to(container, {
@@ -458,7 +457,7 @@ async function onImageSelected(event: Event) {
   const target = event.target as HTMLInputElement
   if (target.files && target.files.length > 0) {
     const file = target.files[0]
-    const url = (await ArticleAPI.upload(file)).data.url
+    const url = (await ArticleAPI.upload(file)).data.url.middle
     const newurl = import.meta.env.VITE_BASE_API + '/api' + url
     ed.value.editor.chain().focus().setImage({ src: newurl }).run()
   }
@@ -472,6 +471,12 @@ async function onCoverSelected(event: Event) {
       uri: appStore.post_data.uri.toString(),
       file: file
     }).then((resp) => {
+      let curl = (resp.data.cover.cover_url as string).replace("covers", "covers/webp")
+      curl = curl.slice(0, curl.lastIndexOf('.')) + '-400w.webp';
+      const coverUrl = import.meta.env.VITE_BASE_API + '/api' + curl
+      const at = document.querySelector(`div[uri="${appStore.post_data.uri}"] .post-content`) as HTMLElement
+      at.style.backgroundImage = `url("${coverUrl}")`
+      console.log(at,coverUrl)
       appStore.notify?.("上传成功")
     }).catch(e => {
       appStore.notify?.(e.message)
@@ -564,11 +569,13 @@ onMounted(() => {
   }
 
   .tab-container {
+    --width: 60;
+    --height: 80;
     user-select: none;
     scale: 0.8;
     opacity: 0;
-    width: 60rem;
-    height: 80rem;
+    width: calc(var(--width) * 1rem);
+    height: calc(var(--height) * 1rem);
     background-color: #61616161;
     border-radius: 1rem;
     box-shadow: inset 1px 1px var(--white);
@@ -709,9 +716,9 @@ onMounted(() => {
 }
 
 @media screen and (max-aspect-ratio: 0.8/1) {
-  .tab-container {
-    width: 90rem !important;
-    height: 120rem !important;
+  .mask-container .tab-container {
+    width: 90rem;
+    height: 120rem;
 
     .mybutton {
       width: 8rem !important;

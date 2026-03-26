@@ -6,7 +6,7 @@ self.onmessage = (e) => {
     const gif = parseGIF(buff)
     const width = gif.lsd.width
     const height = gif.lsd.height
-    const scale = 1
+    const scale = 2
     // const levels = "@. "
     // const levels = "###*+=-:  "
     const levels = "@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'  ";

@@ -195,6 +195,8 @@ const nav = {
       appStore.posts_to_menus()
     else if (appStore.current_page == "scroll")
       appStore.scroll_page_to_menus()
+    else if (appStore.current_page == "game")
+      appStore.game_to_menus_page()
     else console.log("[error] page not found")
   },
   switch(type: number) {

@@ -29,7 +29,7 @@
         <div id="share">share</div>
       </MyButton>
     </div>
-    <div class="post-content" @click="post.show_details" :uri="data.uri">
+    <div class="post-content lazyload" @click="post.show_details" :uri="data.uri">
       <div class="blur"></div>
       <h2 class="post-title _null">
         <!-- <RouterLink :to="`/posts/${data.uri}`" class="post-link"> -->
@@ -103,12 +103,12 @@ const post = {
     const colorstyle = range(1, 9)
     console.log(props.data.cover)
     if (props.data.cover.cover_url) {
-      const coverUrl = import.meta.env.VITE_BASE_API + '/api' + props.data.cover.cover_url
-        ; (bgcontainer as HTMLElement).style.backgroundImage =
-          `url("${coverUrl}")`
+      let curl = (props.data.cover.cover_url as string).replace("covers", "covers/webp")
+      curl = curl.slice(0, curl.lastIndexOf('.')) + '-400w.webp';
+      const coverUrl = import.meta.env.VITE_BASE_API + '/api' + curl
+        ; (bgcontainer as HTMLElement).setAttribute('data-bg', `url("${coverUrl}")`)
     } else {
-      ; (bgcontainer as HTMLElement).style.backgroundImage =
-        `url("/img/music${Math.floor(bgstyle)}.jpg")`
+      ; (bgcontainer as HTMLElement).setAttribute('data-bg', `url("/img/music${Math.floor(bgstyle)}.jpg")`)
     }
 
     bgcontainer?.setAttribute('bgstyle', Math.floor(bgstyle).toString())
@@ -221,10 +221,14 @@ onUnmounted(() => {
   --color6: rgb(112, 139, 246);
   --color7: rgb(219, 112, 246);
   --color8: rgb(190, 246, 112);
+  --x: 0;
+  --y: 0;
+
 
   &:hover {
     z-index: 998;
     filter: brightness(0.9);
+    animation: hover 1s ease forwards;
 
     .blur {
       backdrop-filter: none !important;

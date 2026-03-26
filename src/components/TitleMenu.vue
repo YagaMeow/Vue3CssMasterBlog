@@ -27,7 +27,8 @@
       <div @mouseleave="titleMenu.mouseout" class="title_menu_button">
         Fun Stuffs
       </div>
-      <div @mouseleave="titleMenu.mouseout" class="title_menu_button">
+      <div @mouseleave="titleMenu.mouseout" class="title_menu_button"
+      @click="appStore.menus_to_game_page()">
         Game
       </div>
       <div @mouseleave="titleMenu.mouseout" class="title_menu_button">

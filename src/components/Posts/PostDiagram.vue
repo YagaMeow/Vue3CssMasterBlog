@@ -1,23 +1,8 @@
 <template>
-  <div
-    class="posts-diagram-container _fullscreen"
-    v-show="diagram.if_visible.value"
-    @dragover="dragOver"
-  >
-    <Post
-      v-for="(item, index) in diagram.postList.value"
-      :key="index"
-      :data="item"
-      :class="{
-        dragging: dragData.activeUri === item.uri,
-      }"
-      draggable="true"
-      @dragstart="dragStart"
-      @dragend="dragEnd"
-      @drag="onDrag"
-      :uri="item.uri"
-      class="diagram-post"
-    >
+  <div class="posts-diagram-container _fullscreen" v-show="diagram.if_visible.value" @dragover="dragOver">
+    <Post v-for="(item, index) in diagram.postList.value" :key="index" :data="item" :class="{
+      dragging: dragData.activeUri === item.uri,
+    }" draggable="true" @dragstart="dragStart" @dragend="dragEnd" @drag="onDrag" :uri="item.uri" class="diagram-post">
     </Post>
   </div>
 </template>
@@ -25,11 +10,11 @@
 defineOptions({
   name: 'PostList',
 })
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import Post from './Post.vue'
 import { ArticleAPI } from '@/api/api'
-import { ElNotification } from 'element-plus'
+import { autoResizerProps, ElNotification } from 'element-plus'
 import { useAppStore } from '@/pinia'
 import gsap from 'gsap'
 import { fa } from 'element-plus/es/locales.mjs'
@@ -38,6 +23,17 @@ import type { Article } from '@/utils/utils'
 const appStore = useAppStore()
 
 const router = useRouter()
+
+function handleInter(entries: IntersectionObserverEntry[]) {
+  entries.map((entry) => {
+    (entry.target as HTMLElement).style.backgroundImage = (entry.target as HTMLElement).dataset.bg || ''
+    entry.target.classList.remove('lazy-load')
+    observer.unobserve(entry.target)
+  })
+}
+
+const observer = new IntersectionObserver(handleInter)
+
 const diagram = {
   postList: ref<Article[]>([]),
   if_visible: ref(false),
@@ -99,6 +95,10 @@ const diagram = {
     await ArticleAPI.getList({ page: 1, limit: 10 })
       .then((response) => {
         this.postList.value = response.data
+        nextTick(() => {
+          const images = document.querySelectorAll('.lazyload')
+          images.forEach(img => observer.observe(img))
+        })
       })
       .catch((error) => {
         console.error('Failed to fetch posts:', error)
@@ -113,20 +113,9 @@ const diagram = {
         duration: 0.2,
         stagger: 0.1,
         ease: 'power3.out',
+        x: 'var(--x) + "px"',
+        y: 'var(--y) + "px"',
       })
-      .to(
-        this.posts.value,
-        {
-          x: function (index, target, targets) {
-            return parseFloat(target.getAttribute('x')) || 0
-          },
-          y: function (index, target, targets) {
-            return parseFloat(target.getAttribute('y')) || 0
-          },
-          duration: 0,
-        },
-        '<',
-      )
     // this.posts?.forEach((p) => {
     //   p.classList.add('glitch')
     // })
@@ -221,8 +210,8 @@ function dragStart(event: DragEvent) {
   if (target.classList.contains('post-container')) {
     event.dataTransfer?.setData('text/plain', target.dataset.id || '')
     target.classList.add('dragging')
-    dragData.value.pos.x = event.clientX - parseInt(target.getAttribute('x') || '0')
-    dragData.value.pos.y = event.clientY - parseInt(target.getAttribute('y') || '0')
+    dragData.value.pos.x = event.clientX - parseInt(target.style.getPropertyValue('--x') || '0')
+    dragData.value.pos.y = event.clientY - parseInt(target.style.getPropertyValue('--y') || '0')
     dragData.value.isDragging = true
   }
 }
@@ -263,9 +252,12 @@ function onDrag(event: DragEvent) {
         // } else if (offsetX + width + left > windowWidth - 5) {
         //   offsetX = windowWidth - width - left - 5
         // }
-        target.setAttribute('x', offsetX.toString())
-        target.setAttribute('y', offsetY.toString())
-        draggingElement.style.transform = `translate(${offsetX}px, ${offsetY}px)`
+        target.style.setProperty('--x',offsetX.toString())
+        target.style.setProperty('--y',offsetY.toString())
+        gsap.to(target,{
+          x: 'var(--x) + "px"',
+          y: 'var(--y) + "px"'
+        })
       }
     }
   }
@@ -406,10 +398,12 @@ function handleDelete(uri: string) {
     width: 48rem;
     height: 48rem;
   }
+
   .post {
     :deep(.title) {
       font-size: 5rem;
     }
+
     :deep(.date) {
       font-size: 4rem !important;
     }

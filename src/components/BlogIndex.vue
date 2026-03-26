@@ -8,14 +8,16 @@
     <TitleMenu></TitleMenu>
     <PostTab></PostTab>
     <Login></Login>
-    <MyNotify></MyNotify>
     <Loading></Loading>
     <ScrollIndex></ScrollIndex>
     <ImgScaler></ImgScaler>
+    <Games></Games>
+    <MyNotify></MyNotify>
   </div>
   <Progress></Progress>
 </template>
 <script setup lang="ts">
+import Games from './Games/Games.vue'
 import ImgScaler from './ImgScaler.vue'
 import Progress from './ui/progress.vue'
 import ScrollIndex from './ScrollPage/ScrollIndex.vue'

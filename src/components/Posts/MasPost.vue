@@ -1,7 +1,7 @@
 <template>
   <div class="post mas-post-container">
     <div class="post-cover" @click="mas_post.show_details" :uri="data.uri">
-      <img :id="`cover${data.id}`" :src="mas_post.imgUrl.value" alt="">
+      <img :id="`cover${data.id}`" :src="handleUrl(mas_post.imgUrl.value)" alt="">
 
     </div>
   </div>
@@ -18,6 +18,12 @@ const props = defineProps({
     default: () => ({})
   }
 })
+
+function handleUrl(origin:string) :string {
+  origin = origin.replace('covers','covers/webp')
+  origin = origin.slice(0,origin.lastIndexOf('.'))+'-400w.webp'
+  return origin
+}
 
 const mas_post = {
   imgUrl: ref(""),

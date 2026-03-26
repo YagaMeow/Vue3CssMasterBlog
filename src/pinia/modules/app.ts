@@ -45,6 +45,9 @@ export const useAppStore = defineStore('app', () => {
   //滚动触发页面
   const show_scroll_page = ref<(() => void) | null>(null)
   const hide_scroll_page = ref<((im: () => void, nx: () => void) => void) | null>(null)
+  //游戏页面
+  const show_game_page = ref<(() => void) | null>(null)
+  const hide_game_page = ref<((im: () => void, nx: () => void) => void) | null>(null)
   //加载完成
   const show_loading = ref<(() => void) | null>(null)
 
@@ -52,7 +55,9 @@ export const useAppStore = defineStore('app', () => {
   const update_diagram = ref<((a: Article) => void) | null>(null)
 
   //图片滚动条
-  const show_scaler = ref<null | ((pos: { x: number; y: number },proportion: number) => void)>(null)
+  const show_scaler = ref<null | ((pos: { x: number; y: number }, proportion: number) => void)>(
+    null,
+  )
   const hide_scaler = ref<null | (() => void)>(null)
 
   //调整图片大小
@@ -318,7 +323,38 @@ export const useAppStore = defineStore('app', () => {
     progress.value.push(data)
   }
 
+  function menus_to_game_page() {
+    hide_menus.value?.(
+      () => {
+        show_game_page.value?.()
+      },
+      () => {
+        show_nav.value?.()
+        current_page.value = 'game'
+      },
+    )
+  }
+  function game_to_menus_page() {
+    hide_game_page.value?.(
+      () => {},
+      () => {
+        show_menus.value?.()
+        hide_nav.value?.(
+          () => {},
+          () => {},
+        )
+      },
+    )
+  }
+
+  const update_list = ref<(() => void) | null>(null)
+
   return {
+    update_list,
+    menus_to_game_page,
+    game_to_menus_page,
+    show_game_page,
+    hide_game_page,
     resize_image,
     hide_scaler,
     show_scaler,
