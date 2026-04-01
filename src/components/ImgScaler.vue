@@ -3,13 +3,12 @@
     <div class="scaler-slot"></div>
     <div class="scaler-bar" draggable="false"></div>
   </div>
-
 </template>
 <script lang="ts" setup>
-import { useAppStore } from '@/pinia';
-import { onMounted } from 'vue';
-import { ref } from 'vue';
-import { gsap } from 'gsap';
+import { useAppStore } from '@/pinia'
+import { onMounted } from 'vue'
+import { ref } from 'vue'
+import { gsap } from 'gsap'
 
 const appStore = useAppStore()
 const imgScaler = {
@@ -19,14 +18,13 @@ const imgScaler = {
   lastY: null as null | number,
   bar: null as null | HTMLElement,
   slotHeight: 0,
-  show(pos: { x: number, y: number },p: number) {
+  show(pos: { x: number; y: number }, p: number) {
     this.if_visible.value = true
     if (this.container) {
       this.container.style.top = pos.y + 'px'
       this.container.style.left = pos.x + 'px'
     }
-    if(this.bar)
-    this.bar.style.top = p + 'px'
+    if (this.bar) this.bar.style.top = p + 'px'
     gsap.to(this.container, {
       opacity: 1,
     })
@@ -38,15 +36,14 @@ const imgScaler = {
         this.if_visible.value = false
         this.lastY = null
         this.deltaY = 0
-        if(this.bar)
-        this.bar.style.top = '0'
-      }
+        if (this.bar) this.bar.style.top = '0'
+      },
     })
   },
   init() {
     this.container = document.querySelector('.scaler-container')
     this.bar = document.querySelector('.scaler-bar')
-    this.bar?.addEventListener("mousedown", imgScaler.handleDragBar)
+    // this.bar?.addEventListener("mousedown", imgScaler.handleDragBar)
   },
   handleMove(e: MouseEvent) {
     if (imgScaler.lastY === null) imgScaler.lastY = e.clientY
@@ -54,25 +51,26 @@ const imgScaler = {
       imgScaler.deltaY += e.clientY - imgScaler.lastY
       if (imgScaler.deltaY < 0) imgScaler.deltaY = 0
       if (imgScaler.deltaY > imgScaler.slotHeight) imgScaler.deltaY = imgScaler.slotHeight
-      if (imgScaler.bar)
-        imgScaler.bar.style.top = imgScaler.deltaY + 'px'
+      if (imgScaler.bar) imgScaler.bar.style.top = imgScaler.deltaY + 'px'
       imgScaler.lastY = e.clientY
     }
-    appStore.resize_image?.(1-imgScaler.deltaY/imgScaler.slotHeight)
+    appStore.resize_image?.(1 - imgScaler.deltaY / imgScaler.slotHeight)
   },
   handleUp() {
     console.log('up')
-    document.removeEventListener("mousemove", imgScaler.handleMove)
-    document.removeEventListener("mouseup", imgScaler.handleUp)
+    document.removeEventListener('mousemove', imgScaler.handleMove)
+    document.removeEventListener('mouseup', imgScaler.handleUp)
     imgScaler.lastY = null
   },
   handleDragBar() {
-    imgScaler.slotHeight = (document.querySelector('.scaler-slot')?.clientHeight as number - (imgScaler.bar as HTMLElement).clientHeight as number) || 0
+    imgScaler.slotHeight =
+      (((document.querySelector('.scaler-slot')?.clientHeight as number) -
+        (imgScaler.bar as HTMLElement).clientHeight) as number) || 0
     console.log(imgScaler.slotHeight)
     console.log('down')
-    document.addEventListener("mousemove", imgScaler.handleMove)
-    document.addEventListener("mouseup", imgScaler.handleUp)
-  }
+    // document.addEventListener('mousemove', imgScaler.handleMove)
+    // document.addEventListener('mouseup', imgScaler.handleUp)
+  },
 }
 onMounted(() => {
   imgScaler.init()
@@ -80,7 +78,6 @@ onMounted(() => {
 
 appStore.show_scaler = imgScaler.show.bind(imgScaler)
 appStore.hide_scaler = imgScaler.hide.bind(imgScaler)
-
 </script>
 <style lang="scss" scoped>
 .scaler-container {
@@ -96,11 +93,11 @@ appStore.hide_scaler = imgScaler.hide.bind(imgScaler)
 
   .scaler-slot {
     user-select: none;
-    width: .8em;
+    width: 0.8em;
     height: 10rem;
     background-color: #ccc;
-    outline: solid .4rem #000;
-    border-radius: .5rem;
+    outline: solid 0.4rem #000;
+    border-radius: 0.5rem;
   }
 
   .scaler-bar {
@@ -110,8 +107,8 @@ appStore.hide_scaler = imgScaler.hide.bind(imgScaler)
     width: 3rem;
     height: 1.5rem;
     background-color: #000;
-    border: .2rem solid #ccc;
-    border-radius: .5rem;
+    border: 0.2rem solid #ccc;
+    border-radius: 0.5rem;
   }
 }
 </style>
