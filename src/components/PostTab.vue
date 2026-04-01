@@ -18,9 +18,9 @@
       >
         <input type="text" v-model="posttap.newtag.value" />
       </div>
-      <div class="tag" @click="posttap.showAddTag">
+      <!-- <div class="tag" @click="posttap.showAddTag">
         <span>...</span>
-      </div>
+      </div> -->
     </div>
     <div class="tab-container">
       <div class="tools control-group">
@@ -172,7 +172,7 @@
           @click="handleScale"
           :style="{ marginLeft: posttap.auth.value ? '' : 'auto' }"
         >
-          口
+          <svg-icon iconClass="fullscreen"></svg-icon>
         </MyButton>
         <MyButton class="close_btn" @click="handleClose">
           <span>×</span>
@@ -200,6 +200,9 @@ import { ArticleAPI } from '@/api/api'
 import SvgIcon from './SvgIcon.vue'
 import { getAuth } from '@/api/user'
 import type Background from './background.vue'
+import { elasticEase, elasticEase2 } from '@/utils/utils'
+gsap.registerEase('myEase', elasticEase)
+gsap.registerEase('myEase2', elasticEase2)
 const appStore = useAppStore()
 
 const _title = ref('')
@@ -264,9 +267,9 @@ const posttap = {
       .timeline()
       .to(this.container, {
         scale: 1,
-        opacity: 1,
-        duration: 0.5,
-        ease: 'power3.out',
+        opacity: 0.8,
+        duration: 0.8,
+        ease: 'myEase2',
         onComplete: () => {
           appStore.show_post?.()
         },
@@ -281,7 +284,7 @@ const posttap = {
           onComplete: () => {
             gsap.timeline().to(document.querySelectorAll('.tag'), {
               x: 0,
-              opacity: 1,
+              opacity: 0.8,
               duration: 0.2,
               stagger: 0.05,
               ease: 'power1.out',
@@ -647,10 +650,10 @@ onMounted(() => {
     background-color: #61616161;
     border-radius: 1rem;
     box-shadow: inset 1px 1px var(--white);
-    background: #191919;
+    background: #424242;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: stretch;
     flex-direction: column;
 
     .tab-title {
@@ -741,16 +744,13 @@ onMounted(() => {
         color: #ccc;
       }
     }
-
     .tab-content {
       cursor: pointer;
       position: relative;
-      width: 100%;
-      flex: 1 1 auto;
-      background-color: transparent;
-      margin-bottom: 1rem;
+      flex-grow: 1;
+      background-color: #121212;
+      margin: 1rem;
       border-radius: 0.8rem;
-      margin-top: auto;
       overflow: auto;
     }
 

@@ -154,7 +154,6 @@ const diagram = {
     const offet_y = (y - diagram.mouse_pos.value[1]) / document.body.offsetHeight
     diagram.offset_per.value[0] = offet_x * 100
     diagram.offset_per.value[1] = offet_y * 100
-    // if (diagram.offset_per.value[0]) console.log(diagram.offset_per.value)
     if (diagram.posts.value) {
       diagram.posts.value.forEach((p, idx) => {
         if (this.moving[idx] != undefined && this.moving[idx].isActive()) this.moving[idx].kill()
@@ -163,13 +162,6 @@ const diagram = {
         let new_left = old_left + Math.min(diagram.offset_per.value[0] * 20, 100)
         let new_top = old_top + Math.min(diagram.offset_per.value[1] * 20, 100)
         const width = 300
-        if (idx == 0)
-          console.log(
-            new_left.toFixed(2),
-            new_top.toFixed(2),
-            old_left.toFixed(2),
-            old_top.toFixed(2),
-          )
         let flag = false
         this.moving[idx] = gsap.to(p, {
           left: new_left + '%',
@@ -186,7 +178,6 @@ const diagram = {
         }
         if (new_top < 50 - width / 2) {
           new_top += width
-          console.log(width, new_top)
           flag = true
         } else if (new_top > width / 2 + 50) {
           new_top -= width

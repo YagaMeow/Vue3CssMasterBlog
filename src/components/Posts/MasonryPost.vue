@@ -1,8 +1,12 @@
 <template>
   <div class="masonry-post-container _fullscreen" v-show="masonry.if_visible.value">
     <div v-for="i in cols" :key="'col-' + i" class="masonry-post-col">
-      <MasPost v-for="item in masonry.colList.value[i - 1]" :key="`masonry-post-${item.id}`" :data="item"
-        class="masonry-post"></MasPost>
+      <MasPost
+        v-for="item in masonry.colList.value[i - 1]"
+        :key="`masonry-post-${item.id}`"
+        :data="item"
+        class="masonry-post"
+      ></MasPost>
     </div>
   </div>
 </template>
@@ -31,7 +35,7 @@ const masonry = {
   height: new Map<number, number>(),
   current_height: new Map<number, number>(),
   h_queue: <number[]>[],
-  resizeId: () => { },
+  resizeId: () => {},
 
   cmp(a: number, b: number): number {
     if (!masonry.current_height.has(a)) masonry.current_height.set(a, 0)
@@ -51,16 +55,16 @@ const masonry = {
   },
   loadImage(url: string) {
     return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.setAttribute('crossOrigin', 'anonymous');
-      img.src = url;
+      const img = new Image()
+      img.setAttribute('crossOrigin', 'anonymous')
+      img.src = url
       img.onload = () => {
-        resolve(img);
-      };
+        resolve(img)
+      }
       img.onerror = () => {
-        reject(new Error('图像加载失败'));
-      };
-    });
+        reject(new Error('图像加载失败'))
+      }
+    })
   },
   async show() {
     await ArticleAPI.getList({ page: 1, limit: 10 })
@@ -85,21 +89,17 @@ const masonry = {
           // } else
           {
             const randomheight = range(32, 50)
-            if(p.cover && p.cover.height && p.cover.width && p.cover?.width != 0){
-              const scale = p.cover.height /p.cover.width
-              console.log(p.id,scale)
-              this.height.set(p.id,scale)
-            }
-            else {
-              this.height.set(p.id,1)
+            if (p.cover && p.cover.height && p.cover.width && p.cover?.width != 0) {
+              const scale = p.cover.height / p.cover.width
+              this.height.set(p.id, scale)
+            } else {
+              this.height.set(p.id, 1)
             }
           }
-
 
           // const cid = idx
           // p.id = idx
           // p.title = p.title + idx.toString()
-
         })
         this.calc()
       })
