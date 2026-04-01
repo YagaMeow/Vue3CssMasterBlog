@@ -10,25 +10,14 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import gsap from 'gsap'
 
 defineOptions({
   name: 'BackGround',
 })
 
-interface Background {
-  balls: NodeListOf<Element>
-  mouse_x: number
-  mouse_y: number
-  distance_x: number
-  distance_y: number
-  init: () => void
-  move: (x: number, y: number) => void
-  reset: () => void
-}
-
-const background: Background = {
+const background = {
   balls: document.querySelectorAll('.bg-ball'),
   mouse_x: 0,
   mouse_y: 0,
@@ -36,18 +25,10 @@ const background: Background = {
   distance_y: 0,
   init: () => {
     background.balls = document.querySelectorAll('.bg-ball')
-    document.addEventListener('mousemove', (e) => {
-      background.move(e.x, e.y)
-    })
-    document.addEventListener('mouseleave', (e) => {
-      background.reset()
-    })
-    document.addEventListener('touchmove', (e) => {
-      background.move(e.touches[0].clientX, e.touches[0].clientY)
-    })
-    document.addEventListener('touchend', (e) => {
-      background.reset()
-    })
+    document.addEventListener('mousemove', background.handleMove)
+    document.addEventListener('mouseleave', background.reset)
+    document.addEventListener('touchmove', background.handleMoveMobile)
+    document.addEventListener('touchend', background.reset)
     gsap.timeline().fromTo(
       document.querySelector('.bg-ball-container'),
       {
@@ -59,6 +40,12 @@ const background: Background = {
         ease: 'power3.out',
       },
     )
+  },
+  handleMove(e: MouseEvent) {
+    background.move(e.x, e.y)
+  },
+  handleMoveMobile(e: TouchEvent) {
+    background.move(e.touches[0].clientX, e.touches[0].clientY)
   },
   move: (x: number, y: number) => {
     if (background.mouse_x === 0 && background.mouse_y === 0) {
@@ -91,6 +78,12 @@ const background: Background = {
 }
 
 onMounted(() => background.init())
+onUnmounted(() => {
+  document.removeEventListener('mousemove', background.handleMove)
+  document.removeEventListener('mouseleave', background.reset)
+  document.removeEventListener('touchmove', background.handleMoveMobile)
+  document.removeEventListener('touchend', background.reset)
+})
 </script>
 <style lang="scss" scoped>
 .bg {

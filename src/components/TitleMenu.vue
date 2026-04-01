@@ -5,34 +5,34 @@
       ref="container"
       @mouseenter="appStore.audio_controller.entermenubutton.play()"
     >
-      <svg class="middle_line _null" viewBox="0 0 50 50">
-        <circle class="_dashed" cx="25" cy="25" r="25" vector-effect="non-scaling-stroke"></circle>
-      </svg>
-      <svg class="out_line _null" viewBox="0 0 50 50">
-        <!-- <circle class="orbit" cx="25" cy="25" r="25"></circle> -->
-        <circle class="_dashed" cx="25" cy="25" r="25" vector-effect="non-scaling-stroke"></circle>
-      </svg>
+      <!-- <svg class="middle_line _null" viewBox="0 0 50 50"> -->
+      <!-- <circle class="_dashed" cx="25" cy="25" r="25" vector-effect="non-scaling-stroke"></circle> -->
+      <!-- </svg> -->
+      <!-- <svg class="out_line _null" viewBox="0 0 50 50"> -->
+      <!-- <circle class="orbit" cx="25" cy="25" r="25"></circle> -->
+      <!-- <circle class="_dashed" cx="25" cy="25" r="25" vector-effect="non-scaling-stroke"></circle> -->
+      <!-- </svg> -->
       <div
         @mouseleave="titleMenu.mouseout"
-        class="title_menu_button"
+        class="title_menu_button active"
         @click="appStore.menus_to_posts()"
       >
         <div class="live">live now</div>
         Articles
       </div>
-      <div @mouseleave="titleMenu.mouseout" class="title_menu_button"
-      @click="appStore.menus_to_scroll_page()">
+      <div
+        @mouseleave="titleMenu.mouseout"
+        class="title_menu_button"
+        @click="appStore.menus_to_scroll_page()"
+      >
         Scroll Trigger
       </div>
-      <div @mouseleave="titleMenu.mouseout" class="title_menu_button">
-        Fun Stuffs
-      </div>
-      <div @mouseleave="titleMenu.mouseout" class="title_menu_button"
-      @click="appStore.menus_to_game_page()">
+      <div
+        @mouseleave="titleMenu.mouseout"
+        class="title_menu_button"
+        @click="appStore.menus_to_game_page()"
+      >
         Game
-      </div>
-      <div @mouseleave="titleMenu.mouseout" class="title_menu_button">
-        Nothing
       </div>
     </div>
   </div>
@@ -83,7 +83,7 @@ const titleMenu = {
           scale: 1,
           delay: 0.6,
           onComplete: () => {
-            console.log('complete')
+            console.log('[TitleMenu] animation complete')
           },
           ease: 'power4.out',
           // clipPath: 'circle(100%)',
@@ -96,8 +96,8 @@ const titleMenu = {
           opacity: 0,
         },
         {
-          scale: 1,
-          opacity: 1,
+          scale: 0.98,
+          opacity: 0.8,
           stagger: 0.2,
           duration: 0.6,
           ease: 'power4.out',
@@ -112,6 +112,9 @@ const titleMenu = {
         {
           scale: 1,
           duration: 2,
+          onComplete: () => {
+            document.addEventListener('keydown', titleMenu.arrowKey)
+          },
         },
         '<-0.2',
       )
@@ -126,12 +129,13 @@ const titleMenu = {
         duration: 0,
       })
       .to(buttons.value, {
-        opacity: 1,
+        opacity: 0.8,
         duration: 0.2,
         stagger: 0.05,
         ease: 'power3.out',
         onComplete: () => {
           no_audio = false
+          document.addEventListener('keydown', titleMenu.arrowKey)
         },
       })
   },
@@ -140,6 +144,7 @@ const titleMenu = {
       return
     }
     no_audio = true
+    document.removeEventListener('keydown', titleMenu.arrowKey)
     if (immediate) immediate()
     this.animator = gsap
       .timeline()
@@ -160,12 +165,32 @@ const titleMenu = {
   mouseout() {
     if (!no_audio) appStore.audio_controller.leavemenubutton.play()
   },
+  arrowKey(e: KeyboardEvent) {
+    let currentAcitveIndex = 0
+    const buttons = document.querySelectorAll('.title_menu_button')
+    buttons.forEach((b, i) => {
+      if (b.classList.contains('active')) {
+        currentAcitveIndex = i
+        return
+      }
+    })
+    if (e.code == 'ArrowDown') {
+      buttons[currentAcitveIndex].classList.remove('active')
+      buttons[(currentAcitveIndex + 1) % buttons.length].classList.add('active')
+      appStore.audio_controller.entermenubutton.play()
+    } else if (e.code == 'ArrowUp') {
+      buttons[currentAcitveIndex].classList.remove('active')
+      buttons[(currentAcitveIndex - 1 + buttons.length) % buttons.length].classList.add('active')
+      appStore.audio_controller.entermenubutton.play()
+    } else if (e.code == 'Enter') {
+      ;(buttons[currentAcitveIndex] as HTMLElement).click()
+    }
+  },
 }
 appStore.show_menus = titleMenu.show.bind(titleMenu)
 appStore.hide_menus = titleMenu.hide.bind(titleMenu)
 onMounted(() => {
   titleMenu.init()
-  console.log(container.value)
 })
 </script>
 <style lang="scss" scoped>
@@ -183,13 +208,23 @@ onMounted(() => {
   align-items: center;
 
   .title_menu_button {
-    transform-origin: 50% 0;
+    &.active {
+      background-color: #454545;
+      opacity: 1 !important;
+      transform: scale(1) !important;
+      transition:
+        opacity 0.2s ease,
+        height cubic-bezier(0, 0, 0.8, 1.2) 0.1s;
+    }
+    transform-origin: center center;
     width: calc(var(--scale) * 60rem);
     height: calc(var(--scale) * 16rem);
     overflow: hidden;
 
     margin: 0.3rem 0;
-    transition: height cubic-bezier(0, 0, 0.8, 1.2) 0.1s;
+    transition:
+      opacity 0.1s ease,
+      height cubic-bezier(0, 0, 0.8, 1.2) 0.1s;
     background-color: #616161;
     border-radius: 1rem;
     box-shadow: inset 0.1rem 0.1rem #fff;

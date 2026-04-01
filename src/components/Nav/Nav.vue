@@ -152,6 +152,9 @@ const nav = {
           y: 0,
           duration: 0.2,
           ease: 'power3.out',
+          onComplete: () => {
+            document.addEventListener('keydown', nav.backSpace)
+          },
         },
         '<',
       )
@@ -184,20 +187,17 @@ const nav = {
           duration: 0.2,
           ease: 'power3.in',
           onComplete: () => {
-            // nav.if_visible.value = false
+            document.removeEventListener('keydown', nav.backSpace)
           },
         },
         '<',
       )
   },
   handle_back() {
-    if (appStore.current_page == "articles")
-      appStore.posts_to_menus()
-    else if (appStore.current_page == "scroll")
-      appStore.scroll_page_to_menus()
-    else if (appStore.current_page == "game")
-      appStore.game_to_menus_page()
-    else console.log("[error] page not found")
+    if (appStore.current_page == 'articles') appStore.posts_to_menus()
+    else if (appStore.current_page == 'scroll') appStore.scroll_page_to_menus()
+    else if (appStore.current_page == 'game') appStore.game_to_menus_page()
+    else console.log('[error] page not found')
   },
   switch(type: number) {
     const change = type !== nav.layout_type
@@ -221,13 +221,22 @@ const nav = {
     appStore.audio_controller.stopAll()
     appStore.audio_controller.switchlayout.play()
   },
+  backSpace(e: KeyboardEvent) {
+    console.log(e)
+    if (e.code == 'Backspace') {
+      const back = document.querySelector('#discover')
+      ;(back as HTMLElement).click()
+    }
+  },
   handleCollect() {
-    getAuth().then(() => {
-      appStore.edit_mode = true
-      appStore.show_tab?.()
-    }).catch((e) => {
-      appStore.notify?.(e.message)
-    })
+    getAuth()
+      .then(() => {
+        appStore.edit_mode = true
+        appStore.show_tab?.()
+      })
+      .catch((e) => {
+        appStore.notify?.(e.message)
+      })
   },
   handleTypeFilter() {
     if (nav.type?.classList.contains('expand')) {
@@ -580,11 +589,14 @@ onUnmounted(() => {
   transform: translateY(-0.1em);
 }
 
-@media screen and (max-aspect-ratio: 1.7/1) {}
+@media screen and (max-aspect-ratio: 1.7/1) {
+}
 
-@media screen and (max-aspect-ratio: 1.4/1) {}
+@media screen and (max-aspect-ratio: 1.4/1) {
+}
 
-@media screen and (max-aspect-ratio: 1/1) {}
+@media screen and (max-aspect-ratio: 1/1) {
+}
 
 @media screen and (max-aspect-ratio: 0.8/1) {
   * {
@@ -608,7 +620,6 @@ onUnmounted(() => {
       height: 8rem;
 
       .button-content {
-
         &::before,
         &::after {
           font-size: 5rem !important;
