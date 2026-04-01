@@ -222,7 +222,7 @@ const nav = {
     appStore.audio_controller.switchlayout.play()
   },
   backSpace(e: KeyboardEvent) {
-    console.log(e)
+    if (appStore.show_detail) return
     if (e.code == 'Backspace') {
       const back = document.querySelector('#discover')
       ;(back as HTMLElement).click()

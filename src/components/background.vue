@@ -11,7 +11,7 @@
 </template>
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue'
-import gsap from 'gsap'
+import gsap, { random } from 'gsap'
 
 defineOptions({
   name: 'BackGround',
@@ -38,6 +38,7 @@ const background = {
         z: 0,
         duration: 15,
         ease: 'power3.out',
+        onComplete: () => {},
       },
     )
   },
@@ -46,6 +47,16 @@ const background = {
   },
   handleMoveMobile(e: TouchEvent) {
     background.move(e.touches[0].clientX, e.touches[0].clientY)
+  },
+  swing() {
+    setInterval(() => {
+      this.balls.forEach((ball) => {
+        gsap.to(ball, {
+          x: (Math.random() - 0.5) * 10,
+          y: (Math.random() - 0.5) * 10,
+        })
+      })
+    }, 500)
   },
   move: (x: number, y: number) => {
     if (background.mouse_x === 0 && background.mouse_y === 0) {
