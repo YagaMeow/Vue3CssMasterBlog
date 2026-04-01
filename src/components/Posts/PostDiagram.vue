@@ -1,8 +1,23 @@
 <template>
-  <div class="posts-diagram-container _fullscreen" v-show="diagram.if_visible.value" @dragover="dragOver">
-    <Post v-for="(item, index) in diagram.postList.value" :key="index" :data="item" :class="{
-      dragging: dragData.activeUri === item.uri,
-    }" draggable="true" @dragstart="dragStart" @dragend="dragEnd" @drag="onDrag" :uri="item.uri" class="diagram-post">
+  <div
+    class="posts-diagram-container _fullscreen"
+    v-show="diagram.if_visible.value"
+    @dragover="dragOver"
+  >
+    <Post
+      v-for="(item, index) in diagram.postList.value"
+      :key="index"
+      :data="item"
+      :class="{
+        dragging: dragData.activeUri === item.uri,
+      }"
+      draggable="true"
+      @dragstart="dragStart"
+      @dragend="dragEnd"
+      @drag="onDrag"
+      :uri="item.uri"
+      class="diagram-post"
+    >
     </Post>
   </div>
 </template>
@@ -26,7 +41,8 @@ const router = useRouter()
 
 function handleInter(entries: IntersectionObserverEntry[]) {
   entries.map((entry) => {
-    (entry.target as HTMLElement).style.backgroundImage = (entry.target as HTMLElement).dataset.bg || ''
+    ;(entry.target as HTMLElement).style.backgroundImage =
+      (entry.target as HTMLElement).dataset.bg || ''
     entry.target.classList.remove('lazy-load')
     observer.unobserve(entry.target)
   })
@@ -67,10 +83,6 @@ const diagram = {
         diagram.mouse_pos.value = [e.x, e.y]
         return
       }
-      if (diagram.timer) return
-      diagram.timer = setTimeout(() => {
-        diagram.timer = 0
-      }, 10)
       if (diagram.mouse_pos.value[0] !== 0 || diagram.mouse_pos.value[1] !== 0)
         diagram.move(e.x, e.y)
       diagram.mouse_pos.value = [e.x, e.y]
@@ -97,7 +109,7 @@ const diagram = {
         this.postList.value = response.data
         nextTick(() => {
           const images = document.querySelectorAll('.lazyload')
-          images.forEach(img => observer.observe(img))
+          images.forEach((img) => observer.observe(img))
         })
       })
       .catch((error) => {
@@ -105,17 +117,15 @@ const diagram = {
       })
     this.if_visible.value = true
     this.posts.value = document.querySelectorAll('.diagram-post')
-    this.animator = gsap
-      .timeline()
-      .to(this.posts.value, {
-        opacity: 1,
-        scale: 1,
-        duration: 0.2,
-        stagger: 0.1,
-        ease: 'power3.out',
-        x: 'var(--x) + "px"',
-        y: 'var(--y) + "px"',
-      })
+    this.animator = gsap.timeline().to(this.posts.value, {
+      opacity: 1,
+      scale: 1,
+      duration: 0.2,
+      stagger: 0.1,
+      ease: 'power3.out',
+      x: 'var(--x) + "px"',
+      y: 'var(--y) + "px"',
+    })
     // this.posts?.forEach((p) => {
     //   p.classList.add('glitch')
     // })
@@ -144,25 +154,44 @@ const diagram = {
     const offet_y = (y - diagram.mouse_pos.value[1]) / document.body.offsetHeight
     diagram.offset_per.value[0] = offet_x * 100
     diagram.offset_per.value[1] = offet_y * 100
-    // if (diagram.offset_per.value[0]) console.log(diagram.offset_per.value)
     if (diagram.posts.value) {
       diagram.posts.value.forEach((p, idx) => {
-        let new_left = parseFloat(p.style.left) + diagram.offset_per.value[0] * 10
-        let new_top = parseFloat(p.style.top) + diagram.offset_per.value[1] * 10
-        let _duration = 0
-        const width = 500
-        if (new_left < 50 - width / 2) new_left += width
-        else if (new_left > width / 2 + 50) new_left -= width
-        else if (new_top < 50 - width / 2) new_top += width
-        else if (new_top > width / 2 + 50) new_top -= width
-        else _duration = 0.5
         if (this.moving[idx] != undefined && this.moving[idx].isActive()) this.moving[idx].kill()
+        const old_left = parseFloat(p.style.left)
+        const old_top = parseFloat(p.style.top)
+        let new_left = old_left + Math.min(diagram.offset_per.value[0] * 20, 100)
+        let new_top = old_top + Math.min(diagram.offset_per.value[1] * 20, 100)
+        const width = 300
+        let flag = false
         this.moving[idx] = gsap.to(p, {
           left: new_left + '%',
           top: new_top + '%',
-          duration: _duration,
-          ease: 'power4.out',
+          duration: 0.5,
         })
+
+        if (new_left < 50 - width / 2) {
+          new_left += width
+          flag = true
+        } else if (new_left > width / 2 + 50) {
+          new_left -= width
+          flag = true
+        }
+        if (new_top < 50 - width / 2) {
+          new_top += width
+          flag = true
+        } else if (new_top > width / 2 + 50) {
+          new_top -= width
+          flag = true
+        }
+
+        if (flag) {
+          gsap.to(p, {
+            left: new_left + '%',
+            top: new_top + '%',
+            duration: 0,
+            ease: 'power1.out',
+          })
+        }
       })
     }
   },
@@ -174,7 +203,7 @@ const diagram = {
   },
   addPost(a: Article) {
     this.postList.value.push(a)
-  }
+  },
 }
 
 appStore.update_diagram = diagram.addPost.bind(diagram)
@@ -252,11 +281,11 @@ function onDrag(event: DragEvent) {
         // } else if (offsetX + width + left > windowWidth - 5) {
         //   offsetX = windowWidth - width - left - 5
         // }
-        target.style.setProperty('--x',offsetX.toString())
-        target.style.setProperty('--y',offsetY.toString())
-        gsap.to(target,{
+        target.style.setProperty('--x', offsetX.toString())
+        target.style.setProperty('--y', offsetY.toString())
+        gsap.to(target, {
           x: 'var(--x) + "px"',
-          y: 'var(--y) + "px"'
+          y: 'var(--y) + "px"',
         })
       }
     }

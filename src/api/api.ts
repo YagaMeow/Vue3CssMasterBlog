@@ -27,7 +27,7 @@ export const ArticleAPI = {
   },
   create(data: Article) {
     return service({
-      url: '/api/articles',
+      url: '/api/articles/',
       method: 'POST',
       data: {
         title: data.title,
@@ -89,7 +89,7 @@ export const ArticleAPI = {
   uploadCover(data: { uri: string; file: string | Blob }) {
     const formData = new FormData()
     formData.append('file', data.file)
-    formData.append('uri',data.uri)
+    formData.append('uri', data.uri)
     return service({
       url: '/api/articles/cover',
       method: 'POST',
