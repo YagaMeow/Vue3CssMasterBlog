@@ -48,6 +48,13 @@ export const useAppStore = defineStore('app', () => {
   //游戏页面
   const show_game_page = ref<(() => void) | null>(null)
   const hide_game_page = ref<((im: () => void, nx: () => void) => void) | null>(null)
+  //日历页面
+  const show_calendar = ref<(() => void) | null>(null)
+  const hide_calendar = ref<((im: () => void, nx: () => void) => void) | null>(null)
+  //日记页面
+  const show_diary = ref<(() => void) | null>(null)
+  const hide_diary = ref<((im: () => void, nx: () => void) => void) | null>(null)
+
   //加载完成
   const show_loading = ref<(() => void) | null>(null)
 
@@ -347,9 +354,63 @@ export const useAppStore = defineStore('app', () => {
     )
   }
 
+  function menus_to_calendar_page() {
+    hide_menus.value?.(
+      () => {},
+      () => {
+        show_calendar.value?.()
+        show_nav.value?.()
+      },
+    )
+  }
+
+  function calendar_to_menus_page() {
+    hide_calendar.value?.(
+      () => {},
+      () => {
+        show_menus.value?.()
+        hide_nav.value?.(
+          () => {},
+          () => {},
+        )
+      },
+    )
+  }
+
+  function menus_to_diary_page() {
+    hide_menus.value?.(
+      () => {},
+      () => {
+        show_diary.value?.()
+        show_nav.value?.()
+      },
+    )
+  }
+
+  function diary_to_menus_page() {
+    hide_diary.value?.(
+      () => {},
+      () => {
+        show_menus.value?.()
+        hide_nav.value?.(
+          () => {},
+          () => {},
+        )
+      },
+    )
+  }
+
   const update_list = ref<(() => void) | null>(null)
 
   return {
+    menus_to_calendar_page,
+    calendar_to_menus_page,
+    diary_to_menus_page,
+    menus_to_diary_page,
+    show_diary,
+    hide_diary,
+    show_calendar,
+    hide_calendar,
     update_list,
     menus_to_game_page,
     game_to_menus_page,

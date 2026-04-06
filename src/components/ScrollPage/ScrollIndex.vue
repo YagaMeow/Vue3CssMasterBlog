@@ -3,65 +3,57 @@
     <pre class="asciibox"></pre>
     <div class="first_screen _screen">
       <div class="title-container">
-        <div class="split svg-container">
-          memento mori
-        </div>
+        <div class="split svg-container">memento mori</div>
       </div>
     </div>
     <div class="second_screen _screen">
       <div class="row">
         <div class="text-container">
           <div>
-            <h1 class="split">
-              Introduction
-            </h1>
+            <h1 class="split">Introduction</h1>
             <p>
-              <span>港区の人工島ポートアイランドにある月光館学園高等部に編入した主人公の少年は、怪物の襲撃をきっかけに「ペルソナ」という心の力に目覚める。</span>
-
+              <span
+                >港区の人工島ポートアイランドにある月光館学園高等部に編入した主人公の少年は、怪物の襲撃をきっかけに「ペルソナ」という心の力に目覚める。</span
+              >
             </p>
             <p>
-              <span>彼は特別課外活動部（S.E.E.S.）に加入し、仲間と共に「影時間」に現れる謎の怪物「シャドウ」を討伐するため戦い続ける。</span>
+              <span
+                >彼は特別課外活動部（S.E.E.S.）に加入し、仲間と共に「影時間」に現れる謎の怪物「シャドウ」を討伐するため戦い続ける。</span
+              >
             </p>
             <p>
               <span>果たして彼を待ち受ける運命とは…</span>
             </p>
           </div>
+        </div>
+        <div class="img-container"></div>
 
-        </div>
-        <div class="img-container">
-        </div>
-
-        <div class="bowl rgb" style="--color:#71dcf7;">
+        <div class="bowl rgb" style="--color: #71dcf7">
           <div class="liquid"></div>
         </div>
-        <div class="bowl" style="--color:#ffa832;">
+        <div class="bowl" style="--color: #ffa832">
           <div class="liquid"></div>
         </div>
-        <div class="bowl rgb" style="--color:#71dcf7;">
+        <div class="bowl rgb" style="--color: #71dcf7">
           <div class="liquid"></div>
         </div>
-        <div class="bowl" style="--color:#71dcf7;">
+        <div class="bowl" style="--color: #71dcf7">
           <div class="liquid"></div>
         </div>
-        <div class="bowl rgb" style="--color:#71dcf7;">
+        <div class="bowl rgb" style="--color: #71dcf7">
           <div class="liquid"></div>
         </div>
-        <div class="bowl" style="--color:#71dcf7;">
+        <div class="bowl" style="--color: #71dcf7">
           <div class="liquid"></div>
         </div>
       </div>
-
     </div>
     <div class="third_screen _screen">
       <div class="row">
-
-        <div class="img-container">
-        </div>
+        <div class="img-container"></div>
         <div class="text-container">
           <div>
-            <h1 class="split">
-              Features
-            </h1>
+            <h1 class="split">Features</h1>
             <p>
               <span>操作性の向上、インターフェースを含むゲーム全体が</span>
             </p>
@@ -72,7 +64,6 @@
               <span>最新機種でより鮮明に、”あの感動”が蘇る！</span>
             </p>
           </div>
-
         </div>
       </div>
     </div>
@@ -82,7 +73,6 @@
           <span>{{ i }}</span>
         </div>
       </div>
-
     </div>
     <div class="end_screen _screen"></div>
   </div>
@@ -117,10 +107,10 @@
   </svg>
 </template>
 <script lang="ts" setup>
-import { useAppStore } from '@/pinia';
-import { onMounted, ref } from 'vue';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useAppStore } from '@/pinia'
+import { onMounted, ref } from 'vue'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Worker from './gif-worker?worker'
 gsap.registerPlugin(ScrollTrigger)
 
@@ -137,12 +127,12 @@ const scroll = {
   animationId: null as null | number,
   animate_status: 0,
   splitText() {
-    const doms = document.querySelectorAll(".split")
-    doms.forEach(d => {
-      const text = (d as HTMLElement).innerText;
-      (d as HTMLElement).innerText = ""
+    const doms = document.querySelectorAll('.split')
+    doms.forEach((d) => {
+      const text = (d as HTMLElement).innerText
+      ;(d as HTMLElement).innerText = ''
       for (let i = 0; i < text.length; ++i) {
-        const newh1 = document.createElement("span")
+        const newh1 = document.createElement('span')
         newh1.innerText = text[i]
         d?.appendChild(newh1)
       }
@@ -157,7 +147,7 @@ const scroll = {
     const img1 = screen2.querySelector('.img-container') as HTMLElement
     const img2 = screen3.querySelector('.img-container') as HTMLElement
 
-    const scrollTop = container.scrollTop;
+    const scrollTop = container.scrollTop
     const imgdata1 = {
       height: img1.offsetHeight,
       top: img1.offsetTop,
@@ -166,7 +156,7 @@ const scroll = {
     const imgdata2 = {
       height: img2.offsetHeight,
       top: img2.offsetTop,
-      target: img2
+      target: img2,
     }
 
     // console.log(scrollTop,screen1.offsetHeight,imgdata.top)
@@ -175,81 +165,121 @@ const scroll = {
       // console.log(imgdata.target)
       // imgdata.target.style.setProperty('--height', `${100 - scrollTop * 100 / 500}%`)
       if (!imgdata1.target.classList.contains('show')) {
-        imgdata1.target.classList.add("show")
-        gsap.timeline().fromTo(screen2.querySelectorAll('h1 span'), {
-          top: '5rem',
-          opacity: 0
-        }, {
-          top: 0,
-          opacity: 1,
-          duration: 1.5,
-          stagger: .03,
-          ease: "power1.out"
-        }).fromTo(screen2.querySelectorAll('p span'), {
-          top: '5rem',
-          opacity: 0,
-        }, {
-          top: 0,
-          opacity: 1,
-          duration: 1,
-          stagger: .25,
-          ease: "power1.out"
-        }, "<+0.5")
+        imgdata1.target.classList.add('show')
+        gsap
+          .timeline()
+          .fromTo(
+            screen2.querySelectorAll('h1 span'),
+            {
+              top: '5rem',
+              opacity: 0,
+            },
+            {
+              top: 0,
+              opacity: 1,
+              duration: 1.5,
+              stagger: 0.03,
+              ease: 'power1.out',
+            },
+          )
+          .fromTo(
+            screen2.querySelectorAll('p span'),
+            {
+              top: '5rem',
+              opacity: 0,
+            },
+            {
+              top: 0,
+              opacity: 1,
+              duration: 1,
+              stagger: 0.25,
+              ease: 'power1.out',
+            },
+            '<+0.5',
+          )
       }
-
     }
 
     if (scrollTop + screen1.offsetHeight > imgdata2.top + imgdata2.height / 2) {
       if (!imgdata2.target.classList.contains('show')) {
         imgdata2.target.classList.add('show')
         // console.log(screen3.querySelectorAll('h1 span'))
-        gsap.timeline().fromTo(screen3.querySelectorAll('h1 span'), {
-          top: '100%',
-          opacity: 0
-        }, {
-          top: 0,
-          opacity: 1,
-          duration: 1.5,
-          stagger: .03,
-          ease: "power1.out"
-        }).fromTo(screen3.querySelectorAll('p span'), {
-          opacity: 0,
-          top: '5rem'
-        }, {
-          top: 0,
-          opacity: 1,
-          duration: 1,
-          stagger: .25,
-          ease: "power1.out"
-        }, "<+0.5")
+        gsap
+          .timeline()
+          .fromTo(
+            screen3.querySelectorAll('h1 span'),
+            {
+              top: '100%',
+              opacity: 0,
+            },
+            {
+              top: 0,
+              opacity: 1,
+              duration: 1.5,
+              stagger: 0.03,
+              ease: 'power1.out',
+            },
+          )
+          .fromTo(
+            screen3.querySelectorAll('p span'),
+            {
+              opacity: 0,
+              top: '5rem',
+            },
+            {
+              top: 0,
+              opacity: 1,
+              duration: 1,
+              stagger: 0.25,
+              ease: 'power1.out',
+            },
+            '<+0.5',
+          )
       }
     }
   },
-  init() {
-    if (document.querySelector(".page_container")) {
-      document.querySelector(".page_container")?.addEventListener("scroll", () => {
+  async init() {
+    if (document.querySelector('.page_container')) {
+      document.querySelector('.page_container')?.addEventListener('scroll', () => {
         this.showImgText()
       })
     }
     this.splitText()
+
+    const gifTasks = [
+      { url: '/img/p3r_4.gif', id: 1 },
+      { url: '/img/p3r_9.gif', id: 0 },
+    ]
+
+    const frameCounts = await Promise.all(gifTasks.map((task) => this.getTotalSteps(task.url)))
+
+    let res = 0
+
+    for (const count of frameCounts) {
+      res += count
+    }
+    appStore.total_steps = res
     // this.animate("/img/p3r_4.gif")
-    this.solveGif('/img/p3r_4.gif', 1)
-    this.solveGif('/img/p3r_9.gif', 0)
+    for (let i = 0; i < gifTasks.length; ++i) {
+      this.solveGif(gifTasks[i].url, gifTasks[i].id)
+    }
   },
   solveGif(url: string, id: number) {
     const worker = new Worker()
     fetch(url)
-      .then(resp => resp.arrayBuffer())
-      .then(buff => worker.postMessage({
-        buff: buff,
-        workId: id
-      }))
+      .then((resp) => resp.arrayBuffer())
+      .then((buff) =>
+        worker.postMessage({
+          buff: buff,
+          workId: id,
+        }),
+      )
 
     appStore.add_global_progress({
       current: 0,
       total: 0,
       label: '加载资源: ',
-      complete: false
+      complete: false,
     })
     worker.onmessage = (e) => {
       const data = e.data
@@ -258,7 +288,7 @@ const scroll = {
           current: data.current,
           total: data.total,
           label: '加载资源: ',
-          complete: false
+          complete: false,
         }
         appStore.update_global_progress()
         // update progress
@@ -269,7 +299,7 @@ const scroll = {
           current: 0,
           total: 0,
           label: 'Completed!',
-          complete: true
+          complete: true,
         }
         worker.terminate()
       } else if (data.type == 'info') {
@@ -277,24 +307,79 @@ const scroll = {
       }
     }
   },
+  async getTotalSteps(url: string) {
+    const resp = await fetch(url)
+    const buffer = await resp.arrayBuffer()
+    const data = new Uint8Array(buffer)
+    let pos = 0
+
+    // GIF 签名 "GIF87a" 或 "GIF89a"
+    if (data[pos] !== 0x47 || data[pos + 1] !== 0x49 || data[pos + 2] !== 0x46) {
+      throw new Error('Invalid GIF')
+    }
+    pos += 6
+
+    // 跳过逻辑屏幕描述符 (7 bytes)
+    pos += 7
+
+    let frameCount = 0
+    while (pos < data.length) {
+      const blockType = data[pos]
+      if (blockType === 0x2c) {
+        // 图像描述符
+        frameCount++
+        pos += 1
+        // 跳过图像描述符的 9 bytes (Left, Top, Width, Height, Packed)
+        pos += 9
+        // 跳过 LZW 最小码字大小 (1 byte)
+        pos += 1
+        // 跳过图像数据块
+        while (pos < data.length) {
+          const blockSize = data[pos]
+          if (blockSize === 0) break
+          pos += blockSize + 1
+        }
+        pos += 1 // 跳过块结束符 0x00
+      } else if (blockType === 0x21) {
+        // 扩展块
+        pos += 1
+        const label = data[pos]
+        pos += 1
+        // 跳过扩展块数据
+        while (pos < data.length) {
+          const blockSize = data[pos]
+          if (blockSize === 0) break
+          pos += blockSize + 1
+        }
+        pos += 1
+      } else if (blockType === 0x3b) {
+        // 文件结束符
+        break
+      } else {
+        // 非法块，退出
+        break
+      }
+    }
+    return frameCount
+  },
   startUpdating() {
-    let lastTime = 0;
+    let lastTime = 0
     const update = (time: number) => {
       if (!this.if_visible.value && this.animationId) {
         cancelAnimationFrame(this.animationId)
         this.animationId = null
-        return;
+        return
       }
-      if (!lastTime) lastTime = time;
-      const delta = time - lastTime;
+      if (!lastTime) lastTime = time
+      const delta = time - lastTime
       if (delta > 100) {
-        const asciibox = document.querySelector(".asciibox")
+        const asciibox = document.querySelector('.asciibox')
         if (asciibox)
           (asciibox as HTMLElement).innerText = this.texts[this.animate_status][this.current_idx]
         lastTime = time
-        this.current_idx = (this.current_idx + 1) % this.texts[this.animate_status].length;
+        this.current_idx = (this.current_idx + 1) % this.texts[this.animate_status].length
         if (this.current_idx == 0 && this.animate_status == 0) {
-          this.animate_status++;
+          this.animate_status++
         }
       }
       this.animationId = requestAnimationFrame(update)
@@ -306,52 +391,77 @@ const scroll = {
     this.if_visible.value = true
     this.startUpdating()
 
-    this.animator = gsap.timeline().to(document.querySelectorAll('.page_container'), {
-      opacity: 1,
-      clipPath: 'circle(100%)',
-      duration: .5,
-      ease: 'power3.in'
-    }).to(document.querySelector('.title-container'), {
-      opacity: 1,
-      duration: .3,
-      ease: 'power3.out'
-    }, "<+0.2").to(document.querySelector('pre'), {
-      opacity: 1,
-      duration: .5,
-      ease: 'power1.in'
-    }, "<")
-    gsap.timeline().fromTo(document.querySelectorAll('.svg-container span'), {
-      top: "15rem",
-      opacity: 0,
-    }, {
-      top: 0,
-      opacity: 1,
-      duration: 2,
-      stagger: .03,
-      delay: 1.5,
-      ease: "power3.out"
-    })
+    this.animator = gsap
+      .timeline()
+      .to(document.querySelectorAll('.page_container'), {
+        opacity: 1,
+        clipPath: 'circle(100%)',
+        duration: 0.5,
+        ease: 'power3.in',
+      })
+      .to(
+        document.querySelector('.title-container'),
+        {
+          opacity: 1,
+          duration: 0.3,
+          ease: 'power3.out',
+        },
+        '<+0.2',
+      )
+      .to(
+        document.querySelector('pre'),
+        {
+          opacity: 1,
+          duration: 0.5,
+          ease: 'power1.in',
+        },
+        '<',
+      )
+    gsap.timeline().fromTo(
+      document.querySelectorAll('.svg-container span'),
+      {
+        top: '15rem',
+        opacity: 0,
+      },
+      {
+        top: 0,
+        opacity: 1,
+        duration: 2,
+        stagger: 0.03,
+        delay: 1.5,
+        ease: 'power3.out',
+      },
+    )
     //横向滑动
-    const rowScroll = gsap.timeline({
-      scrollTrigger: {
-        scroller: document.querySelector('.page_container'),
-        trigger: document.querySelector('.row_scroll'),
-        start: "top 0%",
-        end: "bottom 100%",
-        scrub: true
-      }
-    }).to(document.querySelector('.row_unit'), {
-      x: '-700vw',
-      ease: 'none',
-      onComplete: () => {
-        (document.querySelector('.row-unit') as HTMLElement).style.setProperty('position', 'absolute')
-      }
-    }).to(document.querySelector('.row_unit'), {
-      filter: 'hue-rotate(360deg)'
-    }, "<")
+    const rowScroll = gsap
+      .timeline({
+        scrollTrigger: {
+          scroller: document.querySelector('.page_container'),
+          trigger: document.querySelector('.row_scroll'),
+          start: 'top 0%',
+          end: 'bottom 100%',
+          scrub: true,
+        },
+      })
+      .to(document.querySelector('.row_unit'), {
+        x: '-700vw',
+        ease: 'none',
+        onComplete: () => {
+          ;(document.querySelector('.row-unit') as HTMLElement).style.setProperty(
+            'position',
+            'absolute',
+          )
+        },
+      })
+      .to(
+        document.querySelector('.row_unit'),
+        {
+          filter: 'hue-rotate(360deg)',
+        },
+        '<',
+      )
     //screen1
     // document.addEventListener('scroll',this.showImgText)
-
   },
   hide(immediate: () => void, next: () => void) {
     if (this.animator?.isActive()) return
@@ -359,18 +469,16 @@ const scroll = {
     this.animator = gsap.timeline().to(document.querySelector('.page_container'), {
       opacity: 0,
       clipPath: 'circle(0%)',
-      duration: .5,
+      duration: 0.5,
       ease: 'power3.out',
       onComplete: () => {
         this.if_visible.value = false
         if (next) next()
-        if (this.animationId)
-          cancelAnimationFrame(this.animationId)
+        if (this.animationId) cancelAnimationFrame(this.animationId)
         this.animate_status = 0
         this.current_idx = 0
-      }
+      },
     })
-
   },
 }
 appStore.show_scroll_page = scroll.show.bind(scroll)
@@ -379,7 +487,6 @@ appStore.hide_scroll_page = scroll.hide.bind(scroll)
 onMounted(() => {
   scroll.init()
 })
-
 </script>
 <style lang="scss" scoped>
 ._screen {
@@ -429,7 +536,6 @@ onMounted(() => {
 
   100% {
     filter: hue-rotate(360deg);
-
   }
 }
 
@@ -478,16 +584,15 @@ onMounted(() => {
       p span {
         position: relative;
         opacity: 0;
-        text-shadow: 0 0 2rem #71dcf7,
+        text-shadow:
+          0 0 2rem #71dcf7,
           0 0 1rem #fff,
           0 0 5rem rgb(72, 72, 251);
       }
-
-
     }
 
     .img-container {
-      background-image: url("https://p3re.jp/resources/img/top/ss_introduction_ccbbd0e83f473acf4647f51baab6867f.png");
+      background-image: url('https://p3re.jp/resources/img/top/ss_introduction_ccbbd0e83f473acf4647f51baab6867f.png');
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -518,15 +623,13 @@ onMounted(() => {
           height: 0;
           transition: height 1s 0.5s ease-in-out;
         }
-
       }
     }
   }
 
-
   .bowl {
     display: none;
-    background-color: rgba($color: #fff, $alpha: .1);
+    background-color: rgba($color: #fff, $alpha: 0.1);
     width: 20rem;
     height: 20rem;
     border-radius: 50%;
@@ -542,14 +645,14 @@ onMounted(() => {
       transform: translateX(-50%);
       position: absolute;
       border-radius: 50%;
-      box-shadow: 0 .5rem #222;
+      box-shadow: 0 0.5rem #222;
     }
 
     &::after {
       content: '';
       width: 10rem;
       height: 5rem;
-      background-color: rgba($color: #000000, $alpha: .05);
+      background-color: rgba($color: #000000, $alpha: 0.05);
       position: absolute;
       left: 50%;
       top: 40%;
@@ -593,7 +696,7 @@ onMounted(() => {
 
   .row_unit {
     background-color: #71dcf7;
-    opacity: .2;
+    opacity: 0.2;
     position: sticky;
     display: flex;
     width: 800vw;
@@ -670,7 +773,8 @@ onMounted(() => {
     color: #fff;
     font-size: 10rem;
     font-weight: bold;
-    text-shadow: 0 0 2rem #71dcf7,
+    text-shadow:
+      0 0 2rem #71dcf7,
       0 0 1rem #fff,
       0 0 5rem rgb(72, 72, 251);
     padding-bottom: 5rem;
@@ -695,13 +799,11 @@ onMounted(() => {
 }
 
 @media screen and (max-aspect-ratio: 0.8/1) {
-
   .second_screen,
   .third_screen {
     .row h1.split span {
       font-size: 8rem !important;
     }
   }
-
 }
 </style>

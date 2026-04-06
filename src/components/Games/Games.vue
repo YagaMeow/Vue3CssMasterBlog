@@ -1,13 +1,34 @@
 <template>
   <div class="game-container _fullscreen" v-show="games.if_visible.value">
-    <div class="cards-a player-area" @click="(e) => { games.handleSelect(e) }"
-      :style="{ 'border': games.round.value != 'A' ? '.5rem solid transparent' : '' }">
-      <Card v-for="(c, idx) in games.data.A.value" :data="c" :key="`card-a-${idx}`" :group="'A'" :name="c.name" team="A"
-        :id="c.id">
+    <div
+      class="cards-a player-area"
+      @click="
+        (e) => {
+          games.handleSelect(e)
+        }
+      "
+      :style="{ border: games.round.value != 'A' ? '.5rem solid transparent' : '' }"
+    >
+      <Card
+        v-for="(c, idx) in games.data.A.value"
+        :data="c"
+        :key="`card-a-${idx}`"
+        :group="'A'"
+        :name="c.name"
+        team="A"
+        :id="c.id"
+      >
       </Card>
     </div>
     <div class="table-container">
-      <div class="table" @click="(e) => { games.handleDrop(e) }">
+      <div
+        class="table"
+        @click="
+          (e) => {
+            games.handleDrop(e)
+          }
+        "
+      >
         <div class="slot" id="slot11" col="1" row="1"></div>
         <div class="slot" id="slot12" col="2" row="1"></div>
         <div class="slot" id="slot13" col="3" row="1"></div>
@@ -19,28 +40,42 @@
         <div class="slot" id="slot33" col="3" row="3"></div>
       </div>
     </div>
-    <div class="cards-b player-area" @click="(e) => { games.handleSelect(e) }"
-      :style="{ 'border': games.round.value != 'B' ? '.5rem solid transparent' : '' }">
-      <Card v-for="(c, idx) in games.data.B.value" :data="c" :key="`card-a-${idx}`" :group="'B'" :name="c.name" team="B"
-        :id="c.id">
+    <div
+      class="cards-b player-area"
+      @click="
+        (e) => {
+          games.handleSelect(e)
+        }
+      "
+      :style="{ border: games.round.value != 'B' ? '.5rem solid transparent' : '' }"
+    >
+      <Card
+        v-for="(c, idx) in games.data.B.value"
+        :data="c"
+        :key="`card-a-${idx}`"
+        :group="'B'"
+        :name="c.name"
+        team="B"
+        :id="c.id"
+      >
       </Card>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { useAppStore } from '@/pinia';
-import { onMounted, ref } from 'vue';
-import Card from './Card.vue';
-import { range } from '@/utils/utils';
-import gsap, { toArray } from 'gsap';
-import { da } from 'element-plus/es/locales.mjs';
+import { useAppStore } from '@/pinia'
+import { onMounted, ref } from 'vue'
+import Card from './Card.vue'
+import { range } from '@/utils/utils'
+import gsap, { toArray } from 'gsap'
+import { da } from 'element-plus/es/locales.mjs'
 defineOptions({
-  name: "CardGame"
+  name: 'CardGame',
 })
 
 interface CardData {
-  id: string,
-  name: string,
+  id: string
+  name: string
   attack: number[]
 }
 const games = {
@@ -48,7 +83,7 @@ const games = {
   target: null as null | HTMLElement,
   data: {
     A: ref([] as CardData[]),
-    B: ref([] as CardData[])
+    B: ref([] as CardData[]),
   },
   round: ref('A'),
   generateCard(rare: number) {
@@ -107,13 +142,13 @@ const games = {
     for (let i = 0; i < 5; ++i) {
       A.push({
         id: 'A' + i,
-        name: "RandomGuy",
-        attack: this.generateCard(i)
+        name: 'RandomGuy',
+        attack: this.generateCard(i),
       })
       B.push({
         id: 'B' + i,
-        name: "RandomGuy",
-        attack: this.generateCard(i)
+        name: 'RandomGuy',
+        attack: this.generateCard(i),
       })
     }
     this.data.A.value = A
@@ -123,47 +158,58 @@ const games = {
     this.if_visible.value = true
     setTimeout(() => {
       appStore.notify?.(this.round.value == 'A' ? '白方先手' : '黑方先手')
-    }, 500);
+    }, 500)
   },
   hide(immediate: () => void, next: () => void) {
     if (immediate) immediate()
     this.if_visible.value = false
     if (next) next()
   },
-  handleSelect(e: PointerEvent) {
-    if (!(e.target as HTMLElement).classList.contains('card-container') || (e.target as HTMLElement).getAttribute('team') != this.round.value) return
-    if (this.target)
-      (this.target as HTMLElement).style.outline = '0.2rem solid var(--front)'
-        ; (e.target as HTMLElement).style.outline = '.5rem solid orange'
+  handleSelect(e: MouseEvent) {
+    if (
+      !(e.target as HTMLElement).classList.contains('card-container') ||
+      (e.target as HTMLElement).getAttribute('team') != this.round.value
+    )
+      return
+    if (this.target) (this.target as HTMLElement).style.outline = '0.2rem solid var(--front)'
+    ;(e.target as HTMLElement).style.outline = '.5rem solid orange'
     this.target = e.target as HTMLElement
   },
-  handleDrop(e: PointerEvent) {
+  handleDrop(e: MouseEvent) {
     if (this.target === null) return
     this.move(this.target, e.target as HTMLElement)
     if (this.round.value == 'A') this.round.value = 'B'
     else this.round.value = 'A'
-      ; (this.target as HTMLElement).style.outline = '0.2rem solid var(--front)'
+    ;(this.target as HTMLElement).style.outline = '0.2rem solid var(--front)'
     this.target = null
   },
-  flipCard(show: NodeListOf<HTMLElement>,hide: NodeListOf<HTMLElement>) {
-    gsap.timeline().to(show,{
-      rotateY: '180deg'
-    }).to(hide,{
-      rotateY: 0
-    })
+  flipCard(show: NodeListOf<HTMLElement>, hide: NodeListOf<HTMLElement>) {
+    gsap
+      .timeline()
+      .to(show, {
+        rotateY: '180deg',
+      })
+      .to(hide, {
+        rotateY: 0,
+      })
   },
   move(from: HTMLElement, to: HTMLElement) {
     to.appendChild(from)
-    const col = parseInt(to.getAttribute("col") as string)
-    const row = parseInt(to.getAttribute("row") as string)
+    const col = parseInt(to.getAttribute('col') as string)
+    const row = parseInt(to.getAttribute('row') as string)
     this.judge(col, row)
   },
   judge(x: number, y: number) {
     const challenger = document.querySelector(`#slot${y}${x} .card-container`) as HTMLElement
     const c_id = parseInt(challenger.id.slice(1))
-    const c_team = challenger.getAttribute("team")
+    const c_team = challenger.getAttribute('team')
 
-    const dir = [[1, 0], [-1, 0], [0, 1], [0, -1]]
+    const dir = [
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+    ]
     for (let i = 0; i < dir.length; ++i) {
       const dx = x + dir[i][0]
       const dy = y + dir[i][1]
@@ -171,9 +217,10 @@ const games = {
       const master = document.querySelector(`#slot${dy}${dx} .card-container`) as HTMLElement
       if (master == null) continue
       const m_id = parseInt(master.id.slice(1))
-      const m_team = master.getAttribute("team")
+      const m_team = master.getAttribute('team')
       if (m_team == c_team) continue
-      let c_idx = 0, m_idx = 0
+      let c_idx = 0,
+        m_idx = 0
       if (dir[i][0] == 1 && dir[i][1] == 0) {
         c_idx = 1
         m_idx = 3
@@ -187,7 +234,8 @@ const games = {
         c_idx = 0
         m_idx = 2
       }
-      let c_data = 0, m_data = 0
+      let c_data = 0,
+        m_data = 0
       console.log(c_id, m_id)
       console.log(c_idx, m_idx)
       c_data = eval(`this.data.${challenger.id.slice(0, 1)}.value[c_id].attack[c_idx]`)
@@ -198,31 +246,40 @@ const games = {
     }
   },
   flip(card: HTMLElement) {
-    const back = card.style.getPropertyValue("--back")
-    const front = card.style.getPropertyValue("--front")
-    const team = card.getAttribute("team")
+    const back = card.style.getPropertyValue('--back')
+    const front = card.style.getPropertyValue('--front')
+    const team = card.getAttribute('team')
     console.log(card)
-    gsap.timeline().to(
-      card, {
-      z: '5rem',
-      duration: .2
-    }).to(card, {
-      rotateY: '360deg',
-      duration: .5
-    }).to(card, {
-      '--back': front,
-      '--front': back,
-      duration: .25
-    }, "<+.25").to(card, {
-      z: 0,
-      duration: .25
-    }).to(card, {
-      rotateY: 0,
-      duration: 0
-    })
-    if (team == 'A') card.setAttribute("team", "B")
-    else card.setAttribute("team", "A")
-  }
+    gsap
+      .timeline()
+      .to(card, {
+        z: '5rem',
+        duration: 0.2,
+      })
+      .to(card, {
+        rotateY: '360deg',
+        duration: 0.5,
+      })
+      .to(
+        card,
+        {
+          '--back': front,
+          '--front': back,
+          duration: 0.25,
+        },
+        '<+.25',
+      )
+      .to(card, {
+        z: 0,
+        duration: 0.25,
+      })
+      .to(card, {
+        rotateY: 0,
+        duration: 0,
+      })
+    if (team == 'A') card.setAttribute('team', 'B')
+    else card.setAttribute('team', 'A')
+  },
 }
 
 onMounted(() => {
@@ -232,7 +289,6 @@ onMounted(() => {
 const appStore = useAppStore()
 appStore.show_game_page = games.show.bind(games)
 appStore.hide_game_page = games.hide.bind(games)
-
 </script>
 <style lang="scss" scoped>
 .game-container {
@@ -252,7 +308,7 @@ appStore.hide_game_page = games.hide.bind(games)
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(3, 1fr);
-      outline: .3rem solid #000;
+      outline: 0.3rem solid #000;
       border-radius: 1rem;
 
       .slot {
@@ -265,22 +321,20 @@ appStore.hide_game_page = games.hide.bind(games)
         justify-content: center;
       }
     }
-
   }
 
   .player-area {
     border-radius: 1rem;
-    border: .5rem solid #000;
+    border: 0.5rem solid #000;
     height: calc(100dvh - 1rem);
-    margin: .5rem;
+    margin: 0.5rem;
 
     .card {
-      transition: transform .5s ease;
+      transition: transform 0.5s ease;
       // &.hide {
       //   transform: rotate3d(0, 1, 0, 180deg);
       // }
     }
-
   }
 
   .cards-a,
