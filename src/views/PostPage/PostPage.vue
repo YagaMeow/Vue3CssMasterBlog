@@ -8,14 +8,24 @@
       </drag-handle>
     </div> -->
     <div class="loading" v-show="myeditor.is_loading.value">Loading...</div>
-    <div :class="{
-      'character-count': true,
-      'character-count--warning': editor.storage.characterCount.characters() === limit,
-    }">
+    <div
+      :class="{
+        'character-count': true,
+        'character-count--warning': editor.storage.characterCount.characters() === limit,
+      }"
+    >
       <svg height="20" width="20" viewBox="0 0 20 20">
         <circle r="10" cx="10" cy="10" fill="#c1e3f7" />
-        <circle r="5" cx="10" cy="10" fill="transparent" stroke="#68c3f7" stroke-width="10"
-          :stroke-dasharray="`calc(${percentage} * 31.4 / 100) 31.4`" transform="rotate(-90) translate(-20)" />
+        <circle
+          r="5"
+          cx="10"
+          cy="10"
+          fill="transparent"
+          stroke="#68c3f7"
+          stroke-width="10"
+          :stroke-dasharray="`calc(${percentage} * 31.4 / 100) 31.4`"
+          transform="rotate(-90) translate(-20)"
+        />
         <circle r="6" cx="10" cy="10" fill="rgb(232, 231, 231)" />
       </svg>
 
@@ -38,7 +48,16 @@ import Typography from '@tiptap/extension-typography'
 import Placeholder from '@tiptap/extension-placeholder'
 import StarterKit from '@tiptap/starter-kit'
 import { Editor, EditorContent } from '@tiptap/vue-3'
-import { ref, computed, onMounted, onUnmounted, onUpdated, onBeforeUpdate, nextTick, type ImgHTMLAttributes } from 'vue'
+import {
+  ref,
+  computed,
+  onMounted,
+  onUnmounted,
+  onUpdated,
+  onBeforeUpdate,
+  nextTick,
+  type ImgHTMLAttributes,
+} from 'vue'
 import { DragHandle } from '@tiptap-pro/extension-drag-handle-vue-3'
 import NodeRange from '@tiptap-pro/extension-node-range'
 import '@/assets/editor.scss'
@@ -82,7 +101,7 @@ const myeditor = {
   if_scaler_visible: false,
   image: null as null | HTMLElement,
   init() {
-    this.container = document.querySelector(".editor-container")
+    this.container = document.querySelector('.editor-container')
   },
   async show() {
     if (appStore.edit_mode) this.is_loading.value = false
@@ -104,22 +123,21 @@ const myeditor = {
     if (myeditor.image) {
       const width = myeditor.image.offsetWidth
       const heigt = myeditor.image.offsetHeight
-      const old_p = myeditor.image.getAttribute("s")
-      myeditor.image.style.width = (width / parseInt(old_p as string) * p).toString() + 'px'
-      myeditor.image.style.height = (heigt / parseInt(old_p as string) * p).toString() + 'px'
-      myeditor.image.setAttribute("s", p.toString())
+      const old_p = myeditor.image.getAttribute('s')
+      myeditor.image.style.width = ((width / parseInt(old_p as string)) * p).toString() + 'px'
+      myeditor.image.style.height = ((heigt / parseInt(old_p as string)) * p).toString() + 'px'
+      myeditor.image.setAttribute('s', p.toString())
     }
   },
-  handleProxy(e: PointerEvent) {
+  handleProxy(e: MouseEvent) {
     if ((e.target as HTMLElement).nodeName == 'IMG' && !myeditor.if_scaler_visible) {
       myeditor.if_scaler_visible = true
       myeditor.image = e.target as HTMLElement
-      myeditor.image.style.transformOrigin = "top left"
+      myeditor.image.style.transformOrigin = 'top left'
       // const reg = /(?<=\()(.+?)(?=\))/g
       // console.log(myeditor.image.style.transform.match(reg))
-      const sp = myeditor.image.getAttribute("s")
-      if (!myeditor.image.hasAttribute("s"))
-        myeditor.image.setAttribute("s", "1")
+      const sp = myeditor.image.getAttribute('s')
+      if (!myeditor.image.hasAttribute('s')) myeditor.image.setAttribute('s', '1')
       appStore.show_scaler?.({ x: e.x, y: e.y }, parseInt(sp as string))
       // appStore.show_scaler?.({ x: dom.offsetWidth + dom.offsetLeft, y: dom.offsetHeight + dom.offsetTop})
     } else if (myeditor.if_scaler_visible) {
@@ -252,6 +270,7 @@ defineExpose({
 <style lang="scss" scoped>
 .editor-container {
   padding: 0;
+  padding-top: 1rem;
   position: relative;
   height: 100%;
   width: 100%;
@@ -287,10 +306,10 @@ defineExpose({
 }
 
 .character-count {
-  background-color: rgba($color: #fff, $alpha: .4);
+  background-color: rgba($color: #fff, $alpha: 0.4);
   padding: 1rem;
   border-radius: 1rem;
-  backdrop-filter: blur(.1rem);
+  backdrop-filter: blur(0.1rem);
   z-index: 10;
   position: fixed;
   bottom: 1rem;
@@ -317,13 +336,13 @@ defineExpose({
   &:hover {
     svg {
       opacity: 0;
-      transition: all ease .2s;
+      transition: all ease 0.2s;
     }
 
-    background-color: rgba($color: #fff, $alpha: .05);
+    background-color: rgba($color: #fff, $alpha: 0.05);
     backdrop-filter: blur(0);
     color: transparent;
-    transition: all ease .2s;
+    transition: all ease 0.2s;
   }
 }
 

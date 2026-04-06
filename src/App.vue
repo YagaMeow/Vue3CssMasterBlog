@@ -25,7 +25,7 @@ function check_loading() {
   }, 300)
 }
 
-document.title = "Brand new Day"
+document.title = 'Brand new Days'
 
 onMounted(() => {
   // const container = document.querySelector('.index-container')
@@ -39,5 +39,4 @@ onMounted(() => {
   document.head.appendChild(viewportMeta)
 })
 </script>
-<style scoped>
-</style>
+<style scoped></style>

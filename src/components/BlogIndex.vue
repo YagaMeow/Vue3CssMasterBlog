@@ -11,12 +11,14 @@
     <Loading></Loading>
     <ScrollIndex></ScrollIndex>
     <ImgScaler></ImgScaler>
-    <Games></Games>
+    <CalendarSchedule></CalendarSchedule>
+    <!-- <Games></Games> -->
     <MyNotify></MyNotify>
   </div>
   <Progress></Progress>
 </template>
 <script setup lang="ts">
+import CalendarSchedule from './Calendar/Calendar.vue'
 import Games from './Games/Games.vue'
 import ImgScaler from './ImgScaler.vue'
 import Progress from './ui/progress.vue'

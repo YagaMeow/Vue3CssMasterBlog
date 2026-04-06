@@ -20,20 +20,22 @@
         <div class="live">live now</div>
         Articles
       </div>
-      <div
+      <!-- <div
         @mouseleave="titleMenu.mouseout"
         class="title_menu_button"
         @click="appStore.menus_to_scroll_page()"
       >
         Scroll Trigger
-      </div>
-      <div
+      </div> -->
+      <div class="title_menu_button" @click="appStore.menus_to_calendar_page">Calendar</div>
+      <div class="title_menu_button">Diary</div>
+      <!-- <div
         @mouseleave="titleMenu.mouseout"
         class="title_menu_button"
         @click="appStore.menus_to_game_page()"
       >
         Game
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
