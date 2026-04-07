@@ -183,6 +183,7 @@ const titleMenu = {
       buttons[(currentAcitveIndex - 1 + buttons.length) % buttons.length].classList.add('active')
       appStore.audio_controller.entermenubutton.play()
     } else if (e.code == 'Enter') {
+      if(appStore.login_tab)return
       ;(buttons[currentAcitveIndex] as HTMLElement).click()
     }
   },
