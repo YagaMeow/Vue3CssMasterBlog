@@ -194,7 +194,7 @@ const nav = {
       )
   },
   handleButtonClick(nx: (() => void) | null) {
-    if(nx)nx()
+    if (nx) nx()
   },
   handle_back() {
     if (appStore.current_page == 'articles') appStore.posts_to_menus()
@@ -228,7 +228,7 @@ const nav = {
     if (appStore.show_detail) return
     if (e.code == 'Backspace') {
       const back = document.querySelector('#discover')
-      ;(back as HTMLElement).click()
+        ; (back as HTMLElement).click()
     }
   },
   handleCollect() {
@@ -402,15 +402,23 @@ onUnmounted(() => {
       border-raduis .2s cubic-bezier(0.25, 1.12, 0.75, 1.34),
       scale .2s cubic-bezier(0.25, 1.12, 0.75, 1.34);
 
+    &#sound,
+    &#login,
+    &#info {
+      &:hover {
+        scale: 1.1;
+      }
+    }
+
+    &#sound:active,
     &#login:active,
-    &#info:active
-    {
+    &#info:active {
       scale: .9;
       transform-origin: center center;
       transition:
         border-raduis 1s cubic-bezier(0.25, 1.12, 0.75, 1.34),
         scale .2s cubic-bezier(0.25, 1.12, 0.75, 1.34),
-        background-color 1s ease;
+        background-color .2s ease;
       border-radius: 20%;
       background-color: rgba($color: #000, $alpha: 0.7);
     }
@@ -422,6 +430,7 @@ onUnmounted(() => {
     &#discover,
     &#collect {
       transform: translateY(-9rem);
+
       &:hover {
         filter: brightness(2);
       }
@@ -612,14 +621,11 @@ onUnmounted(() => {
   transform: translateY(-0.1em);
 }
 
-@media screen and (max-aspect-ratio: 1.7/1) {
-}
+@media screen and (max-aspect-ratio: 1.7/1) {}
 
-@media screen and (max-aspect-ratio: 1.4/1) {
-}
+@media screen and (max-aspect-ratio: 1.4/1) {}
 
-@media screen and (max-aspect-ratio: 1/1) {
-}
+@media screen and (max-aspect-ratio: 1/1) {}
 
 @media screen and (max-aspect-ratio: 0.8/1) {
   * {
@@ -643,6 +649,7 @@ onUnmounted(() => {
       height: 8rem;
 
       .button-content {
+
         &::before,
         &::after {
           font-size: 5rem !important;

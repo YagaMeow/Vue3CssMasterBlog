@@ -40,30 +40,36 @@ const login = {
   is_visible: ref(false),
   animator: null as null | gsap.core.Timeline,
   container: null as HTMLElement | null,
+  content: null as HTMLElement | null,
   username: ref(''),
   password: ref(''),
   init() {
-    this.container = document.querySelector('.login-content')
+    this.content = document.querySelector('.login-content')
+    // this.container = document.querySelector('.login-container')
   },
   show() {
     if (this.animator?.isActive()) {
       return
     }
+    this.content?.classList.add("show")
     appStore.login_tab = true
     this.is_visible.value = true
     this.animator = gsap
       .timeline()
-      .to(this.container, {
+      .to(this.content, {
         x: 0,
         duration: .5,
         ease: 'power1.out'
       })
       .to(
-        this.container,
+        this.content,
         {
           rotate: 5,
           duration: 1.5,
-          ease: 'power4.out'
+          ease: 'power4.out',
+          onComplete: () => {
+            this.content?.classList.remove("show")
+          }
         },
         '<0.1',
       )
@@ -75,17 +81,17 @@ const login = {
     console.log('hide login')
     this.animator = gsap
       .timeline()
-      .to(this.container, {
-        x: '100rem',
+      .to(this.content, {
+        x: '100vw',
         rotate: -5,
         duration: 0.5,
-        ease: 'power4.in',
+        ease: 'power1.in',
         onComplete: () => {
           this.is_visible.value = false
         },
       })
-      .to(this.container, {
-        x: '-100rem',
+      .to(this.content, {
+        x: '-100vw',
         rotate: 15,
         duration: 0,
         onComplete: () => {
@@ -120,18 +126,30 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
 
+  @keyframes myrotate {
+    0% {
+      transform: rotate(0);
+    }
+    100% {
+      transform: rotate(10deg);
+    }
+  }
+
   .login-content {
+    &.show::after {
+      animation: myrotate 1s ease-in-out forwards;
+    }
     transform: translateX(-100rem) rotate(15deg);
     width: 50rem;
     height: 30rem;
 
-    &::before {
+    &::before,
+    &::after {
       content: "";
       width: 50rem;
       height: 30rem;
       display: block;
       position: absolute;
-      background: #000;
       top: 0;
       left: 0;
       transition:
@@ -140,13 +158,40 @@ onMounted(() => {
       box-shadow: 0.1rem 0.1rem inset #fff;
     }
 
+    &::before {
+      background-color: rgba($color: #000000, $alpha: .9);
+    }
+
+    &::after {
+      z-index: -1;
+      background-color: #eee;
+      transform: rotate(10deg);
+      transition: transform .2s ease;
+    }
+
+    @keyframes elastic {
+      0% {
+        scale: 1;
+      }
+
+      50% {
+        scale: 1.02;
+      }
+
+      100% {
+        scale: 1;
+      }
+    }
+
     &:hover::before {
-      width: 52.5rem;
-      height: 31.5rem;
-      left: -1.25rem;
-      top: -0.75rem;
-      transition:
-        all .2s cubic-bezier(0.175, 1, 0.5, 1.5);
+      width: 50rem;
+      height: 30rem;
+      animation: elastic .4s cubic-bezier(0.175, 1, 0.5, 1.5);
+    }
+
+    &:hover::after {
+      transform: rotate(13deg);
+      transition: transform .5s ease;
     }
 
     // background: #000;
