@@ -49,20 +49,21 @@ const login = {
     if (this.animator?.isActive()) {
       return
     }
+    appStore.login_tab = true
     this.is_visible.value = true
     this.animator = gsap
       .timeline()
       .to(this.container, {
         x: 0,
-        duration: 1,
-        ease: 'power3.out',
+        duration: .5,
+        ease: 'power1.out'
       })
       .to(
         this.container,
         {
           rotate: 5,
           duration: 1.5,
-          ease: 'power4.out',
+          ease: 'power4.out'
         },
         '<0.1',
       )
@@ -87,6 +88,9 @@ const login = {
         x: '-100rem',
         rotate: 15,
         duration: 0,
+        onComplete: () => {
+          appStore.login_tab = false
+        }
       })
   },
   async login() {
@@ -97,9 +101,10 @@ const login = {
       })
       .then(() => {
         login.hide()
+        login.password.value = ''
       }).catch(e => {
-        if(appStore.notify)
-        appStore.notify(e.message)
+        if (appStore.notify)
+          appStore.notify(e.message)
       })
   },
 }
@@ -119,9 +124,32 @@ onMounted(() => {
     transform: translateX(-100rem) rotate(15deg);
     width: 50rem;
     height: 30rem;
-    border-radius: 2rem;
-    box-shadow: 0.1rem 0.1rem inset #fff;
-    background: #000;
+
+    &::before {
+      content: "";
+      width: 50rem;
+      height: 30rem;
+      display: block;
+      position: absolute;
+      background: #000;
+      top: 0;
+      left: 0;
+      transition:
+        all .1s ease-out;
+      border-radius: 2rem;
+      box-shadow: 0.1rem 0.1rem inset #fff;
+    }
+
+    &:hover::before {
+      width: 52.5rem;
+      height: 31.5rem;
+      left: -1.25rem;
+      top: -0.75rem;
+      transition:
+        all .2s cubic-bezier(0.175, 1, 0.5, 1.5);
+    }
+
+    // background: #000;
     display: grid;
     grid-template-rows: repeat(3, minmax(0, 1fr));
     padding: 1rem 0;
@@ -157,7 +185,7 @@ onMounted(() => {
       align-items: center;
       grid-template-columns: 1fr minmax(0, 2.5fr);
 
-      > div {
+      >div {
         position: relative;
         margin-left: 1rem;
 

@@ -193,6 +193,9 @@ const nav = {
         '<',
       )
   },
+  handleButtonClick(nx: (() => void) | null) {
+    if(nx)nx()
+  },
   handle_back() {
     if (appStore.current_page == 'articles') appStore.posts_to_menus()
     else if (appStore.current_page == 'scroll') appStore.scroll_page_to_menus()
@@ -394,6 +397,23 @@ onUnmounted(() => {
 
   .mybutton {
     color: var(--white);
+    scale: 1;
+    transition:
+      border-raduis .2s cubic-bezier(0.25, 1.12, 0.75, 1.34),
+      scale .2s cubic-bezier(0.25, 1.12, 0.75, 1.34);
+
+    &#login:active,
+    &#info:active
+    {
+      scale: .9;
+      transform-origin: center center;
+      transition:
+        border-raduis 1s cubic-bezier(0.25, 1.12, 0.75, 1.34),
+        scale .2s cubic-bezier(0.25, 1.12, 0.75, 1.34),
+        background-color 1s ease;
+      border-radius: 20%;
+      background-color: rgba($color: #000, $alpha: 0.7);
+    }
 
     &#sound {
       margin-left: auto;
@@ -402,6 +422,9 @@ onUnmounted(() => {
     &#discover,
     &#collect {
       transform: translateY(-9rem);
+      &:hover {
+        filter: brightness(2);
+      }
     }
 
     .button-content {
