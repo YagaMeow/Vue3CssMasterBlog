@@ -1,11 +1,11 @@
 <template>
   <div class="calendar-container _fullscreen" v-show="calendar.if_visible.value">
-    <div class="calendar-header">
+    <div class="calendar-header card">
       <div class="card month">
         <span>{{ formatMonth(new Date().getMonth()) }}</span>
       </div>
     </div>
-    <div class="days-container">
+    <div class="days-container card">
       <SingleDay v-for="i in 42" :key="i" :date="i"></SingleDay>
     </div>
   </div>
@@ -14,7 +14,8 @@
 import { useAppStore } from '@/pinia'
 import { onMounted, onUnmounted, ref } from 'vue'
 import SingleDay from './SingleDay.vue'
-
+import gsap, { Cubic } from 'gsap'
+import { elasticEase } from '@/utils/utils'
 defineOptions({
   name: 'CalendarSchedule',
 })
@@ -44,12 +45,33 @@ const calendar = {
   container: null as HTMLElement | null,
   svg: null as null | SVGSVGElement,
   line: null as null | SVGLineElement,
+  card: null as null | NodeListOf<HTMLElement>,
+  animator: null as null | gsap.core.Timeline,
   init() {
     this.container = document.querySelector('.days-container')
+    this.card = document.querySelectorAll('.card')
   },
   show() {
-    this.if_visible.value = true
+    if (this.animator?.isActive()) return
     appStore.current_page = 'calendar'
+    this.if_visible.value = true
+    this.animator = gsap.timeline().fromTo(
+      this.card,
+      {
+        scale: 0.9,
+        // transformOrigin: 'top left',
+        opacity: 0,
+        y: 10,
+      },
+      {
+        stagger: 0.1,
+        scale: 1,
+        duration: 0.3,
+        opacity: 1,
+        y: 0,
+        ease: 'elastic.out(1,0.8)',
+      },
+    )
     document.addEventListener('mousedown', calendar.handle_md)
   },
   hide(im: () => void, nx: () => void) {
