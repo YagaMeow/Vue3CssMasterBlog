@@ -166,7 +166,6 @@ const diagram = {
         this.moving[idx] = gsap.to(p, {
           left: new_left + '%',
           top: new_top + '%',
-          duration: 0.5,
         })
 
         if (new_left < 50 - width / 2) {
@@ -189,7 +188,6 @@ const diagram = {
             left: new_left + '%',
             top: new_top + '%',
             duration: 0,
-            ease: 'power1.out',
           })
         }
       })
