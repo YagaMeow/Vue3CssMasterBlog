@@ -137,12 +137,15 @@ onMounted(() => {
   }
 
   .login-content {
-    &.show::after {
-      animation: myrotate 1s ease-in-out forwards;
-    }
+    display: grid;
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+    padding: 1rem 0;
     transform: translateX(-100rem) rotate(15deg);
     width: 50rem;
     height: 30rem;
+    &.show::after {
+      animation: myrotate 1s ease-in-out forwards;
+    }
 
     &::before,
     &::after {
@@ -195,12 +198,6 @@ onMounted(() => {
     }
 
     // background: #000;
-    display: grid;
-    grid-template-rows: repeat(3, minmax(0, 1fr));
-    padding: 1rem 0;
-    transform: translateX(-100rem) rotate(15deg);
-    width: 50rem;
-    height: 30rem;
 
     &::before,
     &::after {
