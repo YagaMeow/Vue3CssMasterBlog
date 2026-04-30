@@ -228,7 +228,6 @@ const posttap = {
     this.container = document.querySelector('.tab-container')
     this.mask = document.querySelector('.mask-container .mask')
     this.content = document.querySelector('.tab-content')
-    console.log(this.container, this.mask)
   },
   async show() {
     if (this.animator?.isActive()) return
@@ -240,8 +239,6 @@ const posttap = {
         this.auth.value = false
       })
     this.buttons = document.querySelectorAll('.button-group button')
-    console.log(this.tags)
-    console.log(this.lenis)
     appStore.show_detail = true
     if (appStore.edit_mode) {
       posttap.editable.value = true
@@ -323,7 +320,6 @@ const posttap = {
           ease: 'power3.out',
           onComplete: () => {
             this.if_visible.value = false
-            console.log(appStore.hide_post)
             appStore.show_detail = false
             appStore.hide_post?.()
             if (next) next()
@@ -355,7 +351,6 @@ const posttap = {
       content: JSON.stringify(ed.value.editor.getJSON()),
       uri: _uri.value,
     }).then((resp) => {
-      console.log(appStore.update_diagram)
       appStore.update_diagram?.({
         title: resp.data.title,
         uri: resp.data.uri,
@@ -432,7 +427,6 @@ const posttap = {
   async handleRemoveTag(tagname: string) {
     await ArticleAPI.removeTag({ id: appStore.post_data.id, tag: tagname })
     appStore.post_data.tags = appStore.post_data.tags.filter((tag) => tag.name != tagname)
-    console.log(appStore.post_data.tags)
   },
   async handleAddTag() {
     await ArticleAPI.addTag({ id: appStore.post_data.id, tag: posttap.newtag.value })
@@ -546,7 +540,6 @@ async function onCoverSelected(event: Event) {
           `div[uri="${appStore.post_data.uri}"] .post-content`,
         ) as HTMLElement
         at.style.backgroundImage = `url("${coverUrl}")`
-        console.log(at, coverUrl)
         appStore.notify?.('上传成功')
       })
       .catch((e) => {

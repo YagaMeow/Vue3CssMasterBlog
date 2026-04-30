@@ -18,7 +18,10 @@
       <div class="button-content">L</div>
     </MyButton>
   </div>
-  <div class="nav-container footer" v-show="nav.if_visible.value">
+  <div
+    class="nav-container footer"
+    v-show="nav.if_visible.value && appStore.current_page == 'articles'"
+  >
     <div id="type" style="">
       <div class="type-list">
         <div class="type-list-items">
@@ -201,6 +204,7 @@ const nav = {
     else if (appStore.current_page == 'scroll') appStore.scroll_page_to_menus()
     else if (appStore.current_page == 'game') appStore.game_to_menus_page()
     else if (appStore.current_page == 'calendar') appStore.calendar_to_menus_page()
+    else if (appStore.current_page == 'diary') appStore.diary_to_menus_page()
     else console.log('[error] page not found')
   },
   switch(type: number) {
@@ -229,7 +233,7 @@ const nav = {
     if (appStore.show_detail) return
     if (e.code == 'Backspace') {
       const back = document.querySelector('#discover')
-        ; (back as HTMLElement).click()
+      ;(back as HTMLElement).click()
     }
   },
   handleCollect() {
@@ -375,7 +379,6 @@ async function handleLogout() {
 
 onMounted(() => {
   nav.init()
-  console.log(nav.type)
   nav.type?.addEventListener('click', nav.handleTypeFilter)
   nav.date?.addEventListener('click', nav.handleDateFilter)
 })
@@ -400,8 +403,8 @@ onUnmounted(() => {
     color: var(--white);
     scale: 1;
     transition:
-      border-raduis .2s cubic-bezier(0.25, 1.12, 0.75, 1.34),
-      scale .2s cubic-bezier(0.25, 1.12, 0.75, 1.34);
+      border-raduis 0.2s cubic-bezier(0.25, 1.12, 0.75, 1.34),
+      scale 0.2s cubic-bezier(0.25, 1.12, 0.75, 1.34);
 
     &#sound,
     &#login,
@@ -414,12 +417,12 @@ onUnmounted(() => {
     &#sound:active,
     &#login:active,
     &#info:active {
-      scale: .9;
+      scale: 0.9;
       transform-origin: center center;
       transition:
         border-raduis 1s cubic-bezier(0.25, 1.12, 0.75, 1.34),
-        scale .2s cubic-bezier(0.25, 1.12, 0.75, 1.34),
-        background-color .2s ease;
+        scale 0.2s cubic-bezier(0.25, 1.12, 0.75, 1.34),
+        background-color 0.2s ease;
       border-radius: 20%;
       background-color: rgba($color: #000, $alpha: 0.7);
     }
@@ -622,11 +625,14 @@ onUnmounted(() => {
   transform: translateY(-0.1em);
 }
 
-@media screen and (max-aspect-ratio: 1.7/1) {}
+@media screen and (max-aspect-ratio: 1.7/1) {
+}
 
-@media screen and (max-aspect-ratio: 1.4/1) {}
+@media screen and (max-aspect-ratio: 1.4/1) {
+}
 
-@media screen and (max-aspect-ratio: 1/1) {}
+@media screen and (max-aspect-ratio: 1/1) {
+}
 
 @media screen and (max-aspect-ratio: 0.8/1) {
   * {
@@ -650,7 +656,6 @@ onUnmounted(() => {
       height: 8rem;
 
       .button-content {
-
         &::before,
         &::after {
           font-size: 5rem !important;

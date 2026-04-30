@@ -1,6 +1,6 @@
 <template>
   <div class="bg _fullscreen">
-    <div class="bg-ball-container _fullscreen">
+    <div class="bg-ball-container _fullscreen _null">
       <div class="bg-ball" style="--x: 0; --y: 0; --s: 2; --o: 0.9"></div>
       <div class="bg-ball" style="--x: 0.8; --y: 0.1; --s: 1; --o: 0.8"></div>
       <div class="bg-ball" style="--x: 0.3; --y: 0.3; --s: 0.8; --o: 0.2"></div>
@@ -18,12 +18,15 @@ defineOptions({
 })
 
 const background = {
+  container: null as null | HTMLElement,
   balls: document.querySelectorAll('.bg-ball'),
   mouse_x: 0,
   mouse_y: 0,
   distance_x: 0,
   distance_y: 0,
-  init: () => {
+  animator: null as null | gsap.core.Timeline,
+  init() {
+    this.container = document.querySelector('.bg')
     background.balls = document.querySelectorAll('.bg-ball')
     document.addEventListener('mousemove', background.handleMove)
     document.addEventListener('mouseleave', background.reset)
@@ -41,6 +44,7 @@ const background = {
         onComplete: () => {},
       },
     )
+    // this.swing()
   },
   handleMove(e: MouseEvent) {
     background.move(e.x, e.y)
@@ -49,14 +53,22 @@ const background = {
     background.move(e.touches[0].clientX, e.touches[0].clientY)
   },
   swing() {
-    setInterval(() => {
-      this.balls.forEach((ball) => {
-        gsap.to(ball, {
-          x: (Math.random() - 0.5) * 10,
-          y: (Math.random() - 0.5) * 10,
-        })
-      })
-    }, 500)
+    if (!this.container) return
+    this.animator = gsap.timeline().fromTo(
+      this.container,
+      {
+        background:
+          'linear-gradient(0deg,rgba(0,0,0,.6),transparent),linear-gradient(-30deg,rgb(0, 106, 182),rgb(156, 212, 251) 95%)',
+      },
+      {
+        background:
+          'linear-gradient(0deg,rgba(0,0,0,.8),transparent),linear-gradient(30deg,rgb(0, 106, 182),rgb(156, 212, 251) 95%)',
+        repeat: -1,
+        duration: 3,
+        yoyo: true,
+        ease: 'none',
+      },
+    )
   },
   move: (x: number, y: number) => {
     if (background.mouse_x === 0 && background.mouse_y === 0) {
@@ -98,10 +110,11 @@ onUnmounted(() => {
 </script>
 <style lang="scss" scoped>
 .bg {
+  filter: blur(1rem) brightness(0.8);
+  background: linear-gradient(0deg, #d5edff 70%, #fff 70%);
   user-select: none;
   pointer-events: none;
   --scale: 1;
-  background-color: #fff;
 
   .bg-ball-container {
     transform: perspective(500rem);
@@ -110,7 +123,7 @@ onUnmounted(() => {
   .bg-ball {
     width: 30rem;
     height: 30rem;
-    background-color: #000;
+    background-color: rgb(156, 212, 251);
     position: absolute;
     border-radius: 50%;
     scale: calc(var(--scale) * var(--s));
