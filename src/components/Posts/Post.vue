@@ -91,8 +91,8 @@ const post = {
   if_visible: ref(true),
   show_info: ref(false),
   init: () => {
-    const top = Math.random() * 100
-    const left = Math.random() * 100
+    const top = range(0,100)
+    const left = range(-200,200)
     post.post = p.value
     post.info = info.value
     post.icon = i.value ? (i.value.$el as HTMLElement) : null

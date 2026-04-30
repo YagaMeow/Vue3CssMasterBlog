@@ -2,6 +2,7 @@
   <div class="login-container _fullscreen" v-show="login.is_visible.value">
     <div class="mask _fullscreen" @click="login.hide"></div>
     <div class="login-content" @keydown.enter="login.login">
+      <!-- <div class="logout-card"></div> -->
       <div class="title"></div>
       <div class="username">
         <div class="label" style="--r: 3deg">
@@ -40,29 +41,36 @@ const login = {
   is_visible: ref(false),
   animator: null as null | gsap.core.Timeline,
   container: null as HTMLElement | null,
+  content: null as HTMLElement | null,
   username: ref(''),
   password: ref(''),
   init() {
-    this.container = document.querySelector('.login-content')
+    this.content = document.querySelector('.login-content')
+    // this.container = document.querySelector('.login-container')
   },
   show() {
     if (this.animator?.isActive()) {
       return
     }
+    this.content?.classList.add('show')
+    appStore.login_tab = true
     this.is_visible.value = true
     this.animator = gsap
       .timeline()
-      .to(this.container, {
+      .to(this.content, {
         x: 0,
-        duration: 1,
-        ease: 'power3.out',
+        duration: 0.5,
+        ease: 'power1.out',
       })
       .to(
-        this.container,
+        this.content,
         {
           rotate: 5,
           duration: 1.5,
           ease: 'power4.out',
+          onComplete: () => {
+            this.content?.classList.remove('show')
+          },
         },
         '<0.1',
       )
@@ -74,19 +82,22 @@ const login = {
     console.log('hide login')
     this.animator = gsap
       .timeline()
-      .to(this.container, {
-        x: '100rem',
+      .to(this.content, {
+        x: '100vw',
         rotate: -5,
         duration: 0.5,
-        ease: 'power4.in',
+        ease: 'power1.in',
         onComplete: () => {
           this.is_visible.value = false
         },
       })
-      .to(this.container, {
-        x: '-100rem',
+      .to(this.content, {
+        x: '-100vw',
         rotate: 15,
         duration: 0,
+        onComplete: () => {
+          appStore.login_tab = false
+        },
       })
   },
   async login() {
@@ -97,9 +108,10 @@ const login = {
       })
       .then(() => {
         login.hide()
-      }).catch(e => {
-        if(appStore.notify)
-        appStore.notify(e.message)
+        login.password.value = ''
+      })
+      .catch((e) => {
+        if (appStore.notify) appStore.notify(e.message)
       })
   },
 }
@@ -115,17 +127,127 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
 
+  @keyframes myrotate {
+    0% {
+      transform: rotate(0);
+    }
+    100% {
+      transform: rotate(10deg);
+    }
+  }
+
   .login-content {
-    transform: translateX(-100rem) rotate(15deg);
-    width: 50rem;
-    height: 30rem;
-    border-radius: 2rem;
-    box-shadow: 0.1rem 0.1rem inset #fff;
-    background: #000;
     display: grid;
     grid-template-rows: repeat(3, minmax(0, 1fr));
     padding: 1rem 0;
+    transform: translateX(-100rem) rotate(15deg);
+    width: 50rem;
+    height: 30rem;
+    &.show::after {
+      animation: myrotate 1s ease-in-out forwards;
+    }
 
+    &::before,
+    &::after {
+      content: '';
+      width: 50rem;
+      height: 30rem;
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: all 0.1s ease-out;
+      border-radius: 2rem;
+      box-shadow: 0.1rem 0.1rem inset #fff;
+    }
+
+    &::before {
+      background-color: rgba($color: #000000, $alpha: 0.9);
+    }
+
+    &::after {
+      z-index: -1;
+      background-color: #eee;
+      transform: rotate(10deg);
+      transition: transform 0.2s ease;
+    }
+
+    @keyframes elastic {
+      0% {
+        scale: 1;
+      }
+
+      50% {
+        scale: 1.02;
+      }
+
+      100% {
+        scale: 1;
+      }
+    }
+
+    &:hover::before {
+      width: 50rem;
+      height: 30rem;
+      animation: elastic 0.4s cubic-bezier(0.175, 1, 0.5, 1.5);
+    }
+
+    &:hover::after {
+      transform: rotate(13deg);
+      transition: transform 0.5s ease;
+    }
+
+    // background: #000;
+
+    &::before,
+    &::after {
+      content: '';
+      width: 50rem;
+      height: 30rem;
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: all 0.1s ease-out;
+      border-radius: 2rem;
+      box-shadow: 0.1rem 0.1rem inset #fff;
+    }
+
+    &::before {
+      background-color: rgba($color: #000000, $alpha: 0.9);
+    }
+
+    &::after {
+      z-index: -1;
+      background-color: #eee;
+      transform: rotate(10deg);
+      transition: transform 0.2s ease;
+    }
+
+    @keyframes elastic {
+      0% {
+        scale: 1;
+      }
+
+      50% {
+        scale: 1.02;
+      }
+
+      100% {
+        scale: 1;
+      }
+    }
+
+    &:hover::before {
+      width: 50rem;
+      height: 30rem;
+      animation: elastic 0.4s cubic-bezier(0.175, 1, 0.5, 1.5);
+    }
+
+    &:hover::after {
+      transform: rotate(13deg);
+      transition: transform 0.5s ease;
+    }
     .title {
       display: flex;
       align-items: center;

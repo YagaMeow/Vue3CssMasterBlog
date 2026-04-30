@@ -1,12 +1,23 @@
 <template>
   <div class="calendar-container _fullscreen" v-show="calendar.if_visible.value">
-    <div class="calendar-header">
+    <div class="calendar-header card">
       <div class="card month">
-        <span>{{ formatMonth(new Date().getMonth()) }}</span>
+        <div class="date">
+          <span>{{ formatMonth(new Date().getMonth()) }}</span>
+          <span>{{ new Date().getDate() }}</span>
+        </div>
+        <hr />
+        <div class="message">Nothing to do. Just waste your life.</div>
       </div>
     </div>
     <div class="days-container">
-      <SingleDay v-for="i in 42" :key="i" :date="i"></SingleDay>
+      <SingleDay
+        v-for="i in calendar.date.value"
+        :key="`date${i}`"
+        :date="i.date"
+        :current="i.current"
+        class="card"
+      ></SingleDay>
     </div>
   </div>
 </template>
@@ -14,7 +25,8 @@
 import { useAppStore } from '@/pinia'
 import { onMounted, onUnmounted, ref } from 'vue'
 import SingleDay from './SingleDay.vue'
-
+import gsap, { Cubic } from 'gsap'
+import { elasticEase } from '@/utils/utils'
 defineOptions({
   name: 'CalendarSchedule',
 })
@@ -34,22 +46,73 @@ function formatMonth(month: number): string {
     'November',
     'December',
   ]
-  return table[month - 1] || 'Null'
+  return table[month] || 'Null'
 }
 
 const calendar = {
   if_visible: ref(false),
   start_line: ref(false),
-  date: ref([]),
+  date: ref([] as { date: number; current: boolean }[]),
   container: null as HTMLElement | null,
   svg: null as null | SVGSVGElement,
   line: null as null | SVGLineElement,
+  card: null as null | NodeListOf<HTMLElement>,
+  animator: null as null | gsap.core.Timeline,
   init() {
     this.container = document.querySelector('.days-container')
+    this.card = document.querySelectorAll('.card')
+    this.initDate()
+  },
+  initDate() {
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = now.getMonth()
+    let pastLastDay = new Date(year, month, 0).getDate()
+    const firstDay = new Date(year, month, 1)
+    const lastDay = new Date(month == 11 ? year + 1 : year, month == 11 ? 1 : month + 1, 0)
+    const days = lastDay.getDate()
+    for (let i = firstDay.getDay(); i > 0; --i) {
+      this.date.value.push({
+        date: pastLastDay--,
+        current: false,
+      })
+    }
+    for (let i = 1; i <= lastDay.getDate(); ++i) {
+      this.date.value.push({
+        date: i,
+        current: true,
+      })
+    }
+
+    for (let i = 1; i <= 42 - firstDay.getDay() - lastDay.getDate(); ++i) {
+      this.date.value.push({
+        date: i,
+        current: false,
+      })
+    }
   },
   show() {
-    this.if_visible.value = true
+    this.card = document.querySelectorAll('.card')
+    if (this.animator?.isActive()) return
     appStore.current_page = 'calendar'
+    this.if_visible.value = true
+    this.animator = gsap.timeline().fromTo(
+      this.card,
+      {
+        scale: 0.9,
+        // transformOrigin: 'top left',
+        opacity: 0,
+        y: 10,
+      },
+      {
+        stagger: 0.01,
+        scale: 1,
+        duration: 0.3,
+        opacity: 1,
+        y: 0,
+        ease: 'elastic.out(1,0.8)',
+      },
+    )
     document.addEventListener('mousedown', calendar.handle_md)
   },
   hide(im: () => void, nx: () => void) {
@@ -160,28 +223,31 @@ appStore.hide_calendar = calendar.hide.bind(calendar)
   // align-items: stretch;
   // background-color: red;
   padding: 1rem;
+  padding-top: 7rem;
   gap: 1rem;
   justify-content: space-around;
   .calendar-header {
     flex-shrink: 0;
-    background-color: rgba($color: #000, $alpha: 0.8);
-    backdrop-filter: blur(3rem);
+    // background-color: rgba($color: #000, $alpha: 0.8);
+    // backdrop-filter: blur(3rem);
     height: 20vh;
     border-radius: 2rem;
     .card {
       background-color: #eee;
       border-radius: 2rem;
-      box-shadow:
-        inset 0.5rem 0rem 1rem #eee,
-        inset -0.5rem 0rem 1rem #eee,
-        inset 1rem 0rem 1rem #636363,
-        inset -1rem 0 1rem #636363,
-        inset 0 -0.5rem 1rem rgba($color: #000000, $alpha: 0.8);
+      // box-shadow:
+      //   inset 0.5rem 0rem 1rem #eee,
+      //   inset -0.5rem 0rem 1rem #eee,
+      //   inset 1rem 0rem 1rem #636363,
+      //   inset -1rem 0 1rem #636363,
+      //   inset 0 -0.5rem 1rem rgba($color: #000000, $alpha: 0.8);
+      padding: 1rem;
     }
     .month {
-      width: 30vw;
-      height: 50%;
-      display: none;
+      height: 100%;
+      aspect-ratio: 2;
+      // height: 50%;
+      // display: none;
       flex-direction: column;
       justify-content: center;
       padding-left: 1.5rem;
@@ -194,13 +260,12 @@ appStore.hide_calendar = calendar.hide.bind(calendar)
   .days-container {
     position: relative;
     overflow-y: scroll;
-    background-color: rgba($color: #000, $alpha: 0.8);
+    // background-color: rgba($color: #000, $alpha: 0.8);
     flex-grow: 1;
     border-radius: 2rem;
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 5rem;
-    padding: 2rem;
+    gap: 1rem;
     justify-content: flex-start;
   }
 }

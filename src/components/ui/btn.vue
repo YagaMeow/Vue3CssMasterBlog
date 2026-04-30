@@ -23,7 +23,6 @@ defineOptions({
   justify-content: center;
   align-items: center;
   &:hover {
-    filter: brightness(2);
   }
 }
 </style>

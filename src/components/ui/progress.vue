@@ -1,18 +1,38 @@
 <template>
   <div class="progress-n-welcome _fullscreen">
-    <div class="progress-text"
-      :class="(appStore.total_steps != 0 && appStore.total_steps == appStore.completed_steps) ? ['complete'] : []">
+    <div
+      class="progress-text"
+      :class="
+        appStore.total_steps != 0 && appStore.total_steps == appStore.completed_steps
+          ? ['complete']
+          : []
+      "
+    >
       <p>
         <span>Welcome</span>
       </p>
     </div>
-    <div class="progress-bar"
-      :class="(appStore.total_steps != 0 && appStore.total_steps == appStore.completed_steps) ? ['complete'] : []"
-      :style="{ '--progress': appStore.total_steps == 0 ? 0 : appStore.completed_steps / appStore.total_steps }">
+    <div
+      class="progress-bar"
+      :class="
+        appStore.total_steps != 0 && appStore.total_steps == appStore.completed_steps
+          ? ['complete']
+          : []
+      "
+      :style="{
+        '--progress':
+          appStore.total_steps == 0 ? 0 : appStore.completed_steps / appStore.total_steps,
+      }"
+    >
       <!-- <p>{{ appStore.completed_steps }}/{{ appStore.total_steps }}</p> -->
     </div>
     <div class="progress-container">
-      <div :class="p.complete ? ['hide'] : []" class="progress" v-for="p in appStore.progress">
+      <div
+        :class="p.complete ? ['hide'] : []"
+        class="progress"
+        v-for="(p, i) in appStore.progress"
+        :key="`progress${i}`"
+      >
         <p v-if="!p.complete">{{ p.label }}{{ p.current }}/{{ p.total }}</p>
         <p v-else>{{ p.label }}</p>
       </div>
@@ -20,35 +40,47 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { useAppStore } from '@/pinia';
-import { nextTick, onMounted, ref } from 'vue';
+defineOptions({
+  name: 'MyProgress',
+})
+import { useAppStore } from '@/pinia'
+import { nextTick, onMounted, ref } from 'vue'
 import { watch } from 'vue'
-import gsap from 'gsap';
+import gsap from 'gsap'
 
 const appStore = useAppStore()
 const progress = {
-  init() { }
+  init() {},
 }
 
-watch(() => appStore.completed_steps, (val) => {
-  if (appStore.total_steps != 0 && appStore.total_steps == appStore.completed_steps) {
-    gsap.timeline().to(document.querySelector('.progress-text'), {
-      x: '8rem',
-      duration: 2,
-      ease: 'power3.out',
-      delay: .6
-    }).to(document.querySelector('.progress-text'), {
-      opacity: 0,
-      duration: .5,
-      ease: 'power1.out',
-      delay: .6
-    }, "<")
-    setTimeout(() => {
-      if (appStore.show_loading)
-        appStore?.show_loading()
-    }, 1300);
-  }
-})
+watch(
+  () => appStore.completed_steps,
+  (val) => {
+    if (appStore.total_steps != 0 && appStore.total_steps == appStore.completed_steps) {
+      gsap
+        .timeline()
+        .to(document.querySelector('.progress-text'), {
+          x: '8rem',
+          duration: 2,
+          ease: 'power3.out',
+          delay: 0.6,
+        })
+        .to(
+          document.querySelector('.progress-text'),
+          {
+            opacity: 0,
+            duration: 0.5,
+            ease: 'power1.out',
+            delay: 0.6,
+          },
+          '<',
+        )
+      setTimeout(() => {
+        if (appStore.show_loading) appStore?.show_loading()
+      }, 1300)
+    }
+  },
+)
 </script>
 <style lang="scss" scoped>
 .progress-container {
@@ -141,7 +173,7 @@ watch(() => appStore.completed_steps, (val) => {
 
   &.complete {
     transform: scaleX(1) scaleY(0.1);
-    animation: shrinkright .3s .7s linear forwards;
+    animation: shrinkright 0.3s 0.7s linear forwards;
     transition: transform 0.5s ease-in;
   }
 }
@@ -152,7 +184,7 @@ watch(() => appStore.completed_steps, (val) => {
   }
 
   100% {
-    transform: scaleX(0) scaleY(.1);
+    transform: scaleX(0) scaleY(0.1);
   }
 }
 

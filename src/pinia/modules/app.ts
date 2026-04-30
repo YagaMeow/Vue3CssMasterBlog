@@ -126,6 +126,8 @@ export const useAppStore = defineStore('app', () => {
 
   const hajime = ref(true)
 
+  const login_tab = ref(false)
+
   const current_page = ref('')
 
   const progress = ref([] as Progress[])
@@ -403,6 +405,7 @@ export const useAppStore = defineStore('app', () => {
   const update_list = ref<(() => void) | null>(null)
 
   return {
+    login_tab,
     menus_to_calendar_page,
     calendar_to_menus_page,
     diary_to_menus_page,

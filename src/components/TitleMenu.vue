@@ -27,8 +27,20 @@
       >
         Scroll Trigger
       </div> -->
-      <div class="title_menu_button" @click="appStore.menus_to_calendar_page">Calendar</div>
-      <div class="title_menu_button">Diary</div>
+      <div
+        class="title_menu_button"
+        @mouseleave="titleMenu.mouseout"
+        @click="appStore.menus_to_calendar_page"
+      >
+        Calendar
+      </div>
+      <div
+        class="title_menu_button"
+        @mouseleave="titleMenu.mouseout"
+        @click="appStore.menus_to_diary_page"
+      >
+        Diary
+      </div>
       <!-- <div
         @mouseleave="titleMenu.mouseout"
         class="title_menu_button"
@@ -54,24 +66,22 @@ const titleMenu = {
   if_visible: ref(true),
   init() {
     buttons.value = document.querySelectorAll('.title_menu_button')
-    gsap
-      .timeline()
-      .to(document.querySelector('.middle_line'), {
-        rotate: '360deg',
-        duration: 40,
-        repeat: -1,
-        ease: 'none',
-      })
-      .to(
-        document.querySelector('.out_line'),
-        {
-          rotate: '-360deg',
-          duration: 30,
-          repeat: -1,
-          ease: 'none',
-        },
-        '<',
-      )
+    // gsap.timeline().to(document.querySelector('.middle_line'), {
+    //   rotate: '360deg',
+    //   duration: 40,
+    //   repeat: -1,
+    //   ease: 'none',
+    // })
+    // .to(
+    //   document.querySelector('.out_line'),
+    //   {
+    //     rotate: '-360deg',
+    //     duration: 30,
+    //     repeat: -1,
+    //     ease: 'none',
+    //   },
+    //   '<',
+    // )
     this.animator = gsap
       .timeline()
       .fromTo(
@@ -106,20 +116,20 @@ const titleMenu = {
         },
         '<+0.3',
       )
-      .fromTo(
-        document.querySelector('.middle_line'),
-        {
-          scale: 0,
-        },
-        {
-          scale: 1,
-          duration: 2,
-          onComplete: () => {
-            document.addEventListener('keydown', titleMenu.arrowKey)
-          },
-        },
-        '<-0.2',
-      )
+    // .fromTo(
+    //   document.querySelector('.middle_line'),
+    //   {
+    //     scale: 0,
+    //   },
+    //   {
+    //     scale: 1,
+    //     duration: 2,
+    //     onComplete: () => {
+    //       document.addEventListener('keydown', titleMenu.arrowKey)
+    //     },
+    //   },
+    //   '<-0.2',
+    // )
   },
   show() {
     if (this.animator?.isActive()) return
@@ -185,6 +195,7 @@ const titleMenu = {
       buttons[(currentAcitveIndex - 1 + buttons.length) % buttons.length].classList.add('active')
       appStore.audio_controller.entermenubutton.play()
     } else if (e.code == 'Enter') {
+      if (appStore.login_tab) return
       ;(buttons[currentAcitveIndex] as HTMLElement).click()
     }
   },
@@ -208,7 +219,7 @@ onMounted(() => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
+  gap: 1rem;
   .title_menu_button {
     &.active {
       background-color: #454545;
@@ -226,10 +237,13 @@ onMounted(() => {
     margin: 0.3rem 0;
     transition:
       opacity 0.1s ease,
-      height cubic-bezier(0, 0, 0.8, 1.2) 0.1s;
+      height cubic-bezier(0.11, 0.73, 0.37, 1.23) 0.1s;
     background-color: #616161;
     border-radius: 1rem;
-    box-shadow: inset 0.1rem 0.1rem #fff;
+    box-shadow:
+      0 0 10px #fff,
+      0 0 20px #eee,
+      0 0 30px #666;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -244,7 +258,7 @@ onMounted(() => {
 
     &:hover {
       height: calc(var(--scale) * 32rem);
-      transition: height cubic-bezier(0, 0, 0.8, 1.2) 0.2s;
+      transition: height cubic-bezier(0.11, 0.73, 0.37, 1.23) 0.2s;
       background-color: rgba(0, 0, 0, 0.1);
 
       &:nth-child(1) {

@@ -18,7 +18,10 @@
       <div class="button-content">L</div>
     </MyButton>
   </div>
-  <div class="nav-container footer" v-show="nav.if_visible.value">
+  <div
+    class="nav-container footer"
+    v-show="nav.if_visible.value && appStore.current_page == 'articles'"
+  >
     <div id="type" style="">
       <div class="type-list">
         <div class="type-list-items">
@@ -193,11 +196,15 @@ const nav = {
         '<',
       )
   },
+  handleButtonClick(nx: (() => void) | null) {
+    if (nx) nx()
+  },
   handle_back() {
     if (appStore.current_page == 'articles') appStore.posts_to_menus()
     else if (appStore.current_page == 'scroll') appStore.scroll_page_to_menus()
     else if (appStore.current_page == 'game') appStore.game_to_menus_page()
     else if (appStore.current_page == 'calendar') appStore.calendar_to_menus_page()
+    else if (appStore.current_page == 'diary') appStore.diary_to_menus_page()
     else console.log('[error] page not found')
   },
   switch(type: number) {
@@ -372,7 +379,6 @@ async function handleLogout() {
 
 onMounted(() => {
   nav.init()
-  console.log(nav.type)
   nav.type?.addEventListener('click', nav.handleTypeFilter)
   nav.date?.addEventListener('click', nav.handleDateFilter)
 })
@@ -395,6 +401,31 @@ onUnmounted(() => {
 
   .mybutton {
     color: var(--white);
+    scale: 1;
+    transition:
+      border-raduis 0.2s cubic-bezier(0.25, 1.12, 0.75, 1.34),
+      scale 0.2s cubic-bezier(0.25, 1.12, 0.75, 1.34);
+
+    &#sound,
+    &#login,
+    &#info {
+      &:hover {
+        scale: 1.1;
+      }
+    }
+
+    &#sound:active,
+    &#login:active,
+    &#info:active {
+      scale: 0.9;
+      transform-origin: center center;
+      transition:
+        border-raduis 1s cubic-bezier(0.25, 1.12, 0.75, 1.34),
+        scale 0.2s cubic-bezier(0.25, 1.12, 0.75, 1.34),
+        background-color 0.2s ease;
+      border-radius: 20%;
+      background-color: rgba($color: #000, $alpha: 0.7);
+    }
 
     &#sound {
       margin-left: auto;
@@ -403,6 +434,10 @@ onUnmounted(() => {
     &#discover,
     &#collect {
       transform: translateY(-9rem);
+
+      &:hover {
+        filter: brightness(2);
+      }
     }
 
     .button-content {

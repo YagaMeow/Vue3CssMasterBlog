@@ -1,8 +1,8 @@
 <template>
-  <div class="day">
+  <div class="day" :class="[props.current ? 'current' : '']">
     <div class="content">
       <div class="date">{{ props.date }}</div>
-      <div class=""></div>
+      <div class="week"></div>
     </div>
   </div>
 </template>
@@ -12,17 +12,28 @@ const props = defineProps({
     type: Number,
     default: null,
   },
+  current: {
+    type: Boolean,
+    default: true,
+  },
 })
 </script>
 <style lang="scss" scoped>
 .day {
   // background-color: rgba($color: #000000, $alpha: 0.3);
+  background-color: rgba($color: #696969, $alpha: 0.8);
+  &.current {
+    background-color: rgba($color: #000, $alpha: 0.8);
+  }
   border-radius: 1rem;
   // min-width: 20vh;
   // height: auto;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  backdrop-filter: blur(3rem);
+  box-shadow: inset 0.1rem 0.1rem 0.2rem #fff;
+  padding: 1rem;
   .content {
     z-index: 1;
     cursor: pointer;

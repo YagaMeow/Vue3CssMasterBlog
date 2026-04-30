@@ -13,11 +13,13 @@
     <ImgScaler></ImgScaler>
     <CalendarSchedule></CalendarSchedule>
     <!-- <Games></Games> -->
+    <Diary></Diary>
     <MyNotify></MyNotify>
   </div>
   <Progress></Progress>
 </template>
 <script setup lang="ts">
+import Diary from './Diary/Diary.vue'
 import CalendarSchedule from './Calendar/Calendar.vue'
 import Games from './Games/Games.vue'
 import ImgScaler from './ImgScaler.vue'

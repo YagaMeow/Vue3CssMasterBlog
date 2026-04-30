@@ -58,7 +58,9 @@ const diagram = {
   posts: ref<NodeListOf<HTMLElement> | null>(null),
   draggable: ref(false),
   mouse_pos: ref([0, 0]),
-  moving: [] as gsap.core.Tween[],
+  moving: [] as gsap.core.Timeline[],
+  lock: new Map<number, boolean>(),
+  position: [] as { x: number; y: number }[],
   offset_per: ref([0, 0]),
   timer: null as null | number,
   init: () => {
@@ -117,6 +119,12 @@ const diagram = {
       })
     this.if_visible.value = true
     this.posts.value = document.querySelectorAll('.diagram-post')
+    this.posts.value.forEach((p) => {
+      this.position.push({
+        x: parseFloat(p.style.getPropertyValue('left')),
+        y: parseFloat(p.style.getPropertyValue('top')),
+      })
+    })
     this.animator = gsap.timeline().to(this.posts.value, {
       opacity: 1,
       scale: 1,
@@ -144,6 +152,7 @@ const diagram = {
         onComplete: () => {
           diagram.if_visible.value = false
           diagram.reset()
+          diagram.position = []
           if (next) next()
         },
       })
@@ -155,33 +164,41 @@ const diagram = {
     diagram.offset_per.value[0] = offet_x * 100
     diagram.offset_per.value[1] = offet_y * 100
     if (diagram.posts.value) {
+      console.log(diagram.posts.value.length, diagram.position.length)
       diagram.posts.value.forEach((p, idx) => {
+        // if (this.lock.has(idx) && this.lock.get(idx) == true) return
         if (this.moving[idx] != undefined && this.moving[idx].isActive()) this.moving[idx].kill()
-        const old_left = parseFloat(p.style.left)
-        const old_top = parseFloat(p.style.top)
-        let new_left = old_left + Math.min(diagram.offset_per.value[0] * 20, 100)
-        let new_top = old_top + Math.min(diagram.offset_per.value[1] * 20, 100)
+        diagram.position[idx].x = diagram.position[idx].x + diagram.offset_per.value[0]
+        diagram.position[idx].y = diagram.position[idx].y + diagram.offset_per.value[1]
+        let new_left = diagram.position[idx].x
+        let new_top = diagram.position[idx].y
         const width = 300
         let flag = false
-        this.moving[idx] = gsap.to(p, {
-          left: new_left + '%',
-          top: new_top + '%',
-        })
 
         if (new_left < 50 - width / 2) {
+          this.lock.set(idx, true)
           new_left += width
           flag = true
         } else if (new_left > width / 2 + 50) {
+          // this.lock.set(idx, true)
           new_left -= width
           flag = true
         }
         if (new_top < 50 - width / 2) {
+          // this.lock.set(idx, true)
           new_top += width
           flag = true
         } else if (new_top > width / 2 + 50) {
+          // this.lock.set(idx, true)
           new_top -= width
           flag = true
         }
+
+        this.moving[idx] = gsap.timeline().to(p, {
+          left: new_left + '%',
+          top: new_top + '%',
+          duration: 1,
+        })
 
         if (flag) {
           gsap.to(p, {
@@ -190,6 +207,9 @@ const diagram = {
             duration: 0,
           })
         }
+
+        diagram.position[idx].x = new_left
+        diagram.position[idx].y = new_top
       })
     }
   },
