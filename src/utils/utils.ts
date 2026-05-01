@@ -1,12 +1,21 @@
 interface Progress {
-  current: number,
-  total: number,
-  label: string,
+  current: number
+  total: number
+  label: string
   complete: boolean
 }
 
 function range(a: number, b: number) {
   return Math.random() * (b - a) + a
+}
+
+function normalRange(a: number, b: number) {
+  let u = 0,
+    v = 0
+  while (u === 0) u = Math.random() // 排除随机数为0的情况
+  while (v === 0) v = Math.random()
+  const num = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v)
+  return a + num * b
 }
 
 function formatDate(date: string): string {
@@ -19,10 +28,10 @@ interface Article {
   id: number
   created_at: String
   cover?: {
-    cover_url: String,
-    width: number,
-    height: number,
-  },
+    cover_url: String
+    width: number
+    height: number
+  }
   tags: { name: string }[]
 }
 
@@ -49,4 +58,4 @@ function elasticEase2(progress: number) {
     1
   )
 }
-export { type Progress, range, formatDate, type Article, elasticEase, elasticEase2 }
+export { type Progress, range, formatDate, type Article, elasticEase, elasticEase2, normalRange }

@@ -1,4 +1,5 @@
 <template>
+  <!-- <Loading></Loading> -->
   <div class="index-container _fullscreen">
     <BackGround></BackGround>
     <Nav></Nav>
@@ -8,13 +9,13 @@
     <TitleMenu></TitleMenu>
     <PostTab></PostTab>
     <Login></Login>
-    <Loading></Loading>
     <ScrollIndex></ScrollIndex>
     <ImgScaler></ImgScaler>
     <CalendarSchedule></CalendarSchedule>
     <!-- <Games></Games> -->
     <Diary></Diary>
     <MyNotify></MyNotify>
+    <div class="hue-mask _fullscreen"></div>
   </div>
   <Progress></Progress>
 </template>
@@ -44,20 +45,49 @@ const appStore = useAppStore()
 const index = {
   container: null as null | HTMLElement,
   animator: null as null | gsap.core.Timeline,
+  hue: null as null | HTMLElement,
   init() {
     this.container = document.querySelector('.index-container')
+    this.hue = document.querySelector('.hue-mask')
   },
   show() {
     if (appStore.hajime) {
       appStore.hajime = false
-      this.animator = gsap.timeline().to(this.container, {
-        // clipPath: 'polygon(-100% 50%, 100% 50%, -100% 50%)',
-        // clipPath: 'circle(100%)',
-        clipPath: 'polygon(0 0, 100% 0,100% 100%,0 100%)',
-        duration: 1,
-        force3D: true,
-        ease: 'power1.out',
-      })
+      this.animator = gsap
+        .timeline()
+        .to(this.container, {
+          // clipPath: 'polygon(-100% 50%, 100% 50%, -100% 50%)',
+          // clipPath: 'circle(100%)',
+          clipPath: 'polygon(0 0, 100% 0,100% 100%,0 100%)',
+          duration: 1,
+          force3D: true,
+          ease: 'power1.out',
+        })
+        .fromTo(
+          this.hue,
+          {
+            clipPath: 'polygon(0 0, 100% 0,100% 100%,0 100%)',
+          },
+          {
+            clipPath: 'polygon(100% 0, 100% 0,100% 100%,100% 100%)',
+            ease: 'power1.out',
+            duration: 1,
+          },
+          '<+0.2',
+        )
+        .fromTo(
+          this.container,
+          {
+            borderRadius: '5rem',
+            scale: 0.9,
+          },
+          {
+            borderRadius: 0,
+            scale: 1,
+            duration: 0.8,
+          },
+          '<-0.2',
+        )
     }
   },
 }
@@ -76,6 +106,14 @@ onMounted(() => {
 // requestAnimationFrame(raf)
 </script>
 <style lang="scss" scoped>
+.hue-mask {
+  user-select: none;
+  pointer-events: none;
+  background-color: #fff;
+  backdrop-filter: hue-rotate(240deg);
+  // filter: contrast(1.5) saturate(2);
+  mix-blend-mode: difference;
+}
 .index-container {
   /* background: linear-gradient(110deg, rgba(74, 47, 95, 0.5) 10%, #fff 50%),
     linear-gradient(
