@@ -1,13 +1,17 @@
 <template>
   <div class="post post-container" ref="p" v-show="post.if_visible.value">
-    <div class="post-info" ref="info" @dragover="
-      (e: DragEvent) => {
-        e.preventDefault()
-        if (e.dataTransfer) {
-          e.dataTransfer.dropEffect = 'move'
+    <div
+      class="post-info"
+      ref="info"
+      @dragover="
+        (e: DragEvent) => {
+          e.preventDefault()
+          if (e.dataTransfer) {
+            e.dataTransfer.dropEffect = 'move'
+          }
         }
-      }
-    ">
+      "
+    >
       <div class="myform col">
         <div class="row">
           <div class="text">Title</div>
@@ -41,7 +45,10 @@
       <p class="abstract"></p>
       <p class="post-footer">
         <MyButton @click.stop="post.switchInfo" class="icon" ref="i">i</MyButton>
-        <MyButton style="margin-right:auto;margin-left: 1rem" @click.stop="handleDelete(data.uri)">
+        <MyButton
+          style="margin-right: auto; margin-left: 1rem"
+          @click.stop="handleDelete(data.uri)"
+        >
           <svg-icon iconClass="bin"></svg-icon>
         </MyButton>
         <span class="date _null">{{ formatDate(data.created_at) }}</span>
@@ -51,7 +58,7 @@
 </template>
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
-import { range } from '@/utils/utils'
+import { normalRange, range } from '@/utils/utils'
 import MyButton from '@/components/ui/btn.vue'
 import gsap from 'gsap'
 import type { ComponentPublicInstance } from 'vue'
@@ -91,24 +98,27 @@ const post = {
   if_visible: ref(true),
   show_info: ref(false),
   init: () => {
-    const top = range(0,100)
-    const left = range(-200,200)
+    const top = normalRange(50, 25)
+    const left = normalRange(50, 50)
     post.post = p.value
     post.info = info.value
     post.icon = i.value ? (i.value.$el as HTMLElement) : null
-      ; (post.post as HTMLElement).style.left = `${left}%`
-      ; (post.post as HTMLElement).style.top = `${top}%`
+    ;(post.post as HTMLElement).style.left = `${left}%`
+    ;(post.post as HTMLElement).style.top = `${top}%`
     const bgcontainer = post.post?.querySelector('.post-content')
     const bgstyle = range(1, 7)
     const colorstyle = range(1, 9)
     console.log(props.data.cover)
     if (props.data.cover.cover_url) {
-      let curl = (props.data.cover.cover_url as string).replace("covers", "covers/webp")
-      curl = curl.slice(0, curl.lastIndexOf('.')) + '-400w.webp';
+      let curl = (props.data.cover.cover_url as string).replace('covers', 'covers/webp')
+      curl = curl.slice(0, curl.lastIndexOf('.')) + '-400w.webp'
       const coverUrl = import.meta.env.VITE_BASE_API + '/api' + curl
-        ; (bgcontainer as HTMLElement).setAttribute('data-bg', `url("${coverUrl}")`)
+      ;(bgcontainer as HTMLElement).setAttribute('data-bg', `url("${coverUrl}")`)
     } else {
-      ; (bgcontainer as HTMLElement).setAttribute('data-bg', `url("/img/music${Math.floor(bgstyle)}.jpg")`)
+      ;(bgcontainer as HTMLElement).setAttribute(
+        'data-bg',
+        `url("/img/music${Math.floor(bgstyle)}.jpg")`,
+      )
     }
 
     bgcontainer?.setAttribute('bgstyle', Math.floor(bgstyle).toString())
@@ -125,28 +135,28 @@ const post = {
           const y = Math.random() * 100
           const w = Math.random() * 50 + 50
           const h = Math.random() * 10 + 40
-            ; (post.post as HTMLElement).style.clipPath =
-              `polygon(${x}% ${y}%, ${x + w}% ${y}%,${x + w}% ${y + h}%,${x}% ${y + h}%)`
-            ; (post.post as HTMLElement).style.left = `${left}%`
-            ; (post.post as HTMLElement).style.top = `${top}%`
+          ;(post.post as HTMLElement).style.clipPath =
+            `polygon(${x}% ${y}%, ${x + w}% ${y}%,${x + w}% ${y + h}%,${x}% ${y + h}%)`
+          ;(post.post as HTMLElement).style.left = `${left}%`
+          ;(post.post as HTMLElement).style.top = `${top}%`
         }, 30)
-          // post.if_visible.value = true
-          ; (post.post as HTMLElement).style.opacity = '1'
+        // post.if_visible.value = true
+        ;(post.post as HTMLElement).style.opacity = '1'
         setTimeout(post.reset, 800)
       },
       range(0, 500),
     )
   },
   reset: () => {
-    ; (post.post as HTMLElement).style.clipPath = ``
-      ; (post.post as HTMLElement).classList.remove('glitch')
+    ;(post.post as HTMLElement).style.clipPath = ``
+    ;(post.post as HTMLElement).classList.remove('glitch')
     clearInterval(post.timer as number)
   },
   switchInfo() {
     if (post.show_info.value === false) {
       post.show_info.value = true
-        ; (post.info as HTMLElement).style.pointerEvents = 'auto'
-        ; (post.icon as HTMLElement).textContent = '×'
+      ;(post.info as HTMLElement).style.pointerEvents = 'auto'
+      ;(post.icon as HTMLElement).textContent = '×'
       gsap.timeline().to(post.info, {
         opacity: 1,
         duration: 0.2,
@@ -157,8 +167,8 @@ const post = {
       })
     } else {
       post.show_info.value = false
-        ; (post.info as HTMLElement).style.pointerEvents = 'none'
-        ; (post.icon as HTMLElement).textContent = 'i'
+      ;(post.info as HTMLElement).style.pointerEvents = 'none'
+      ;(post.icon as HTMLElement).textContent = 'i'
       gsap.timeline().to(post.info, {
         opacity: 0,
         duration: 0.2,
@@ -224,7 +234,6 @@ onUnmounted(() => {
   --x: 0;
   --y: 0;
 
-
   &:hover {
     z-index: 998;
     filter: brightness(0.9);
@@ -232,7 +241,7 @@ onUnmounted(() => {
 
     .blur {
       backdrop-filter: none !important;
-      transition: backdrop-filter ease-in .2s;
+      transition: backdrop-filter ease-in 0.2s;
     }
 
     .post-title,

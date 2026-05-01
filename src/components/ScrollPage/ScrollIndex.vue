@@ -112,6 +112,7 @@ import { onMounted, ref } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Worker from './gif-worker?worker'
+import { da } from 'element-plus/es/locales.mjs'
 gsap.registerPlugin(ScrollTrigger)
 
 const color = ref(['#fff', '#bcd', '#cde', '#def', '#fed', '#edc', '#dcb', '#cba'])
@@ -247,21 +248,85 @@ const scroll = {
     this.splitText()
 
     const gifTasks = [
-      { url: '/img/p3r_4.gif', id: 1 },
-      { url: '/img/p3r_9.gif', id: 0 },
+      { url: '/img/p3r_4.gif', id: 1, type: 'gif' },
+      { url: '/img/p3r_9.gif', id: 0, type: 'gif' },
     ]
 
-    const frameCounts = await Promise.all(gifTasks.map((task) => this.getTotalSteps(task.url)))
+    const fetchTasks = [
+      {
+        url: '/fonts/SweiB2SerifCJKsc-Regular.woff2',
+        type: 'font',
+        format: 'woff2',
+        family: 'Swei',
+      },
+      { url: '/fonts/NotoSansJP-Regular.otf', type: 'font', format: 'otf', family: 'Noto Sans JP' },
+      { url: '/fonts/Syncopate-Bold.ttf', type: 'font', format: 'ttf', family: 'Syncopate' },
+      {
+        url: '/fonts/Urbanist-VariableFont_wght.ttf',
+        type: 'font',
+        format: 'ttf',
+        family: 'Urbanist',
+      },
+      { url: '/img/music1.jpg', type: 'img', fomat: 'jpg' },
+      { url: '/img/music2.jpg', type: 'img', fomat: 'jpg' },
+      { url: '/img/music3.jpg', type: 'img', fomat: 'jpg' },
+      { url: '/img/music4.jpg', type: 'img', fomat: 'jpg' },
+      { url: '/img/music5.jpg', type: 'img', fomat: 'jpg' },
+      { url: '/img/music6.jpg', type: 'img', fomat: 'jpg' },
+    ]
+
+    const tasks = [...gifTasks, ...fetchTasks]
+    const frameCounts = await Promise.all(
+      tasks.map((task) => {
+        if (task.type == 'gif') return this.getTotalSteps(task.url)
+        else return this.getFetchSteps(task.url)
+      }),
+    )
 
     let res = 0
 
     for (const count of frameCounts) {
       res += count
     }
+
     appStore.total_steps = res
+
     // this.animate("/img/p3r_4.gif")
     for (let i = 0; i < gifTasks.length; ++i) {
       this.solveGif(gifTasks[i].url, gifTasks[i].id)
+    }
+    for (let i = 0; i < fetchTasks.length; ++i) {
+      if (fetchTasks[i].type == 'font') {
+        this.preloadFont(
+          fetchTasks[i].family || 'f',
+          fetchTasks[i].url,
+          fetchTasks[i].fomat || 'woff2',
+        )
+      } else {
+        this.preloadImage(fetchTasks[i].url).then(() => {
+          appStore.completed_steps += 10
+        })
+      }
+    }
+  },
+  preloadImage(url: string) {
+    const promise = new Promise((resolve, reject) => {
+      const img = new Image()
+      img.onload = () => resolve(url)
+      img.onerror = reject
+      img.src = url
+    })
+    return promise
+  },
+  async preloadFont(family: string, url: string, format: string) {
+    const font = new FontFace(family, `url(${url}) format('${format}')`)
+    try {
+      await font.load()
+      document.fonts.add(font)
+      appStore.completed_steps += 10
+      return
+    } catch (e) {
+      throw new Error(`字体预加载失败: ${url}`)
     }
   },
   solveGif(url: string, id: number) {
@@ -307,6 +372,9 @@ const scroll = {
       }
     }
   },
+  async getFetchSteps(url: string) {
+    return 10
+  },
   async getTotalSteps(url: string) {
     const resp = await fetch(url)
     const buffer = await resp.arrayBuffer()
@@ -319,8 +387,17 @@ const scroll = {
     }
     pos += 6
 
-    // 跳过逻辑屏幕描述符 (7 bytes)
-    pos += 7
+    // --- 逻辑屏幕描述符 + 全局颜色表 ---
+    const packedScreen = data[pos + 4] // packed 字段（偏移4）
+    const hasGlobalColorTable = (packedScreen & 0x80) !== 0
+    let globalColorTableSize = 0
+    if (hasGlobalColorTable) {
+      const colorTableBits = packedScreen & 0x07 // 低3位表示 2^(n+1) 个颜色
+      const colorCount = 2 << colorTableBits // 颜色数量 = 2^(n+1)
+      globalColorTableSize = 3 * colorCount // 每个颜色3字节
+    }
+    pos += 7 // 跳过屏幕描述符
+    pos += globalColorTableSize // 跳过全局颜色表（若有）
 
     let frameCount = 0
     while (pos < data.length) {
@@ -328,35 +405,48 @@ const scroll = {
       if (blockType === 0x2c) {
         // 图像描述符
         frameCount++
+        pos += 1 // 跳过 0x2c
+
+        // --- 解析图像描述符 + 局部颜色表 ---
+        const packedImage = data[pos + 8] // packed 字段（9字节中的第9个，偏移8）
+        const hasLocalColorTable = (packedImage & 0x80) !== 0
+        let localColorTableSize = 0
+        if (hasLocalColorTable) {
+          const colorTableBits = packedImage & 0x07
+          const colorCount = 2 << colorTableBits
+          localColorTableSize = 3 * colorCount
+        }
+        pos += 9 // 跳过图像描述符的9字节
+        pos += localColorTableSize // 跳过局部颜色表（若有）
+
+        // --- LZW 最小码字大小 ---
+        const lzwCodeSize = data[pos]
         pos += 1
-        // 跳过图像描述符的 9 bytes (Left, Top, Width, Height, Packed)
-        pos += 9
-        // 跳过 LZW 最小码字大小 (1 byte)
-        pos += 1
-        // 跳过图像数据块
+
+        // --- 跳过图像数据块（子块结构）---
         while (pos < data.length) {
           const blockSize = data[pos]
           if (blockSize === 0) break
           pos += blockSize + 1
         }
-        pos += 1 // 跳过块结束符 0x00
+        pos += 1 // 跳过子块结束符 0x00
       } else if (blockType === 0x21) {
         // 扩展块
-        pos += 1
+        pos += 1 // 跳过 0x21
         const label = data[pos]
-        pos += 1
-        // 跳过扩展块数据
+        pos += 1 // 跳过 label
+        // 跳过扩展块的子块数据
         while (pos < data.length) {
           const blockSize = data[pos]
           if (blockSize === 0) break
           pos += blockSize + 1
         }
-        pos += 1
+        pos += 1 // 跳过子块结束符 0x00
       } else if (blockType === 0x3b) {
         // 文件结束符
         break
       } else {
-        // 非法块，退出
+        // 非法块，提前终止
         break
       }
     }
