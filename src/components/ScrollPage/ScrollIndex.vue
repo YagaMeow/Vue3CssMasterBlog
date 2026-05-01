@@ -112,6 +112,7 @@ import { onMounted, ref } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Worker from './gif-worker?worker'
+import { da } from 'element-plus/es/locales.mjs'
 gsap.registerPlugin(ScrollTrigger)
 
 const color = ref(['#fff', '#bcd', '#cde', '#def', '#fed', '#edc', '#dcb', '#cba'])
@@ -252,16 +253,26 @@ const scroll = {
     ]
 
     const fetchTasks = [
-      { url: '/fonts/SweiB2SerifCJKsc-Regular.woff2', type: 'font' },
-      { url: '/fonts/NotoSansJP-Regular.otf', type: 'font' },
-      { url: '/fonts/Syncopate-Bold.ttf', type: 'font' },
-      { url: '/fonts/Urbanist-VariableFont_wght.ttf', type: 'font' },
-      { url: '/img/music1.jpg', type: 'img' },
-      { url: '/img/music2.jpg', type: 'img' },
-      { url: '/img/music3.jpg', type: 'img' },
-      { url: '/img/music4.jpg', type: 'img' },
-      { url: '/img/music5.jpg', type: 'img' },
-      { url: '/img/music6.jpg', type: 'img' },
+      {
+        url: '/fonts/SweiB2SerifCJKsc-Regular.woff2',
+        type: 'font',
+        format: 'woff2',
+        family: 'Swei',
+      },
+      { url: '/fonts/NotoSansJP-Regular.otf', type: 'font', format: 'otf', family: 'Noto Sans JP' },
+      { url: '/fonts/Syncopate-Bold.ttf', type: 'font', format: 'ttf', family: 'Syncopate' },
+      {
+        url: '/fonts/Urbanist-VariableFont_wght.ttf',
+        type: 'font',
+        format: 'ttf',
+        family: 'Urbanist',
+      },
+      { url: '/img/music1.jpg', type: 'img', fomat: 'jpg' },
+      { url: '/img/music2.jpg', type: 'img', fomat: 'jpg' },
+      { url: '/img/music3.jpg', type: 'img', fomat: 'jpg' },
+      { url: '/img/music4.jpg', type: 'img', fomat: 'jpg' },
+      { url: '/img/music5.jpg', type: 'img', fomat: 'jpg' },
+      { url: '/img/music6.jpg', type: 'img', fomat: 'jpg' },
     ]
 
     const tasks = [...gifTasks, ...fetchTasks]
@@ -285,13 +296,38 @@ const scroll = {
       this.solveGif(gifTasks[i].url, gifTasks[i].id)
     }
     for (let i = 0; i < fetchTasks.length; ++i) {
-      this.solveFetch(fetchTasks[i].url)
+      if (fetchTasks[i].type == 'font') {
+        this.preloadFont(
+          fetchTasks[i].family || 'f',
+          fetchTasks[i].url,
+          fetchTasks[i].fomat || 'woff2',
+        )
+      } else {
+        this.preloadImage(fetchTasks[i].url).then(() => {
+          appStore.completed_steps += 10
+        })
+      }
     }
   },
-  solveFetch(url: string) {
-    fetch(url).then(() => {
-      appStore.completed_steps += 10
+  preloadImage(url: string) {
+    const promise = new Promise((resolve, reject) => {
+      const img = new Image()
+      img.onload = () => resolve(url)
+      img.onerror = reject
+      img.src = url
     })
+    return promise
+  },
+  async preloadFont(family: string, url: string, format: string) {
+    const font = new FontFace(family, `url(${url}) format('${format}')`)
+    try {
+      await font.load()
+      document.fonts.add(font)
+      appStore.completed_steps += 10
+      return
+    } catch (e) {
+      throw new Error(`字体预加载失败: ${url}`)
+    }
   },
   solveGif(url: string, id: number) {
     const worker = new Worker()
