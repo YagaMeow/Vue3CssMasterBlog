@@ -1,5 +1,8 @@
 <template>
   <div class="calendar-container _fullscreen" v-show="calendar.if_visible.value">
+    <div class="pre-input" v-show="calendar.show_input.value">
+      <input v-model="calendar.inputText.value" type="text" />
+    </div>
     <div class="calendar-header card">
       <div class="card month">
         <div class="date">
@@ -11,22 +14,22 @@
       </div>
     </div>
     <div class="days-container">
-      <SingleDay
-        v-for="i in calendar.date.value"
-        :key="`date${i}`"
-        :date="i.date"
-        :current="i.current"
-        class="card"
-      ></SingleDay>
+      <SingleDay v-for="i in calendar.date.value" :key="`date${i}`" :date="i.date" :current="i.current" :week="i.week"
+        class="card" @pre-input="calendar.preInput" @close-input="calendar.closeInput">
+      </SingleDay>
+      <div class="light-plate-container">
+        <div class="light-plate"></div>
+      </div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 import { useAppStore } from '@/pinia'
-import { onMounted, onUnmounted, ref } from 'vue'
+import { nextTick, onMounted, onUnmounted, ref } from 'vue'
 import SingleDay from './SingleDay.vue'
 import gsap, { Cubic } from 'gsap'
 import { elasticEase } from '@/utils/utils'
+import { ca } from 'element-plus/es/locales.mjs'
 defineOptions({
   name: 'CalendarSchedule',
 })
@@ -50,44 +53,108 @@ function formatMonth(month: number): string {
 }
 
 const calendar = {
+  inputText: ref(""),
   if_visible: ref(false),
   start_line: ref(false),
-  date: ref([] as { date: number; current: boolean }[]),
+  date: ref([] as { date: number; current: boolean, week: string }[]),
   container: null as HTMLElement | null,
   svg: null as null | SVGSVGElement,
   line: null as null | SVGLineElement,
+  plate: null as null | HTMLElement,
   card: null as null | NodeListOf<HTMLElement>,
   animator: null as null | gsap.core.Timeline,
+  input: null as null | HTMLElement,
+  show_input: ref(false),
   init() {
     this.container = document.querySelector('.days-container')
     this.card = document.querySelectorAll('.card')
+    this.plate = document.querySelector(".light-plate")
     this.initDate()
+    this.container?.addEventListener('mousemove', calendar.handlePlateMove)
+    this.container?.addEventListener('mouseenter', calendar.handlePlateEnter)
+    this.container?.addEventListener('mouseleave', calendar.handlePlateLeave)
+    this.input = document.querySelector(".pre-input input")
+  },
+  preInput() {
+    calendar.show_input.value = true
+    nextTick(() => {
+      if (calendar.input)
+        calendar.input.focus()
+    })
+  },
+  closeInput() {
+    if (calendar.input) {
+      calendar.show_input.value = false
+      calendar.inputText.value = ""
+    }
+  },
+  handlePlateEnter(e: MouseEvent) {
+
+    if (calendar.plate) {
+      if (calendar.animator?.isActive()) calendar.animator.kill()
+      calendar.animator = gsap.timeline().to(calendar.plate, {
+        opacity: 1
+      })
+    }
+  },
+  handlePlateLeave(e: MouseEvent) {
+    if (calendar.plate) {
+      if (calendar.animator?.isActive()) calendar.animator.kill()
+      calendar.animator = gsap.timeline().to(calendar.plate, {
+        opacity: 0
+      })
+    }
+  },
+  handlePlateMove(e: MouseEvent) {
+    const container = document.querySelector(".light-plate-container") as HTMLElement
+    if (calendar.plate && container) {
+      calendar.plate.style.setProperty("top", e.pageY - container.getBoundingClientRect().top + 'px')
+      calendar.plate.style.setProperty("left", e.pageX - container.getBoundingClientRect().left + 'px')
+    }
+  },
+  formatWeek(week: number) {
+    const table = [
+      "周日",
+      "周一",
+      "周二",
+      "周三",
+      "周四",
+      "周五",
+      "周六",
+
+    ]
+    return table[week % 7]
   },
   initDate() {
     const now = new Date()
     const year = now.getFullYear()
     const month = now.getMonth()
-    let pastLastDay = new Date(year, month, 0).getDate()
+    const pastLast = new Date(year, month, 0)
+    const pastLastDay = pastLast.getDate()
+    const pastLastWeek = pastLast.getDay()
     const firstDay = new Date(year, month, 1)
     const lastDay = new Date(month == 11 ? year + 1 : year, month == 11 ? 1 : month + 1, 0)
-    const days = lastDay.getDate()
-    for (let i = firstDay.getDay(); i > 0; --i) {
+    let currentWeek = firstDay.getDay()
+    for (let i = firstDay.getDay() - 2; i >= 0; --i) {
       this.date.value.push({
-        date: pastLastDay--,
+        date: pastLastDay - i,
         current: false,
+        week: this.formatWeek(pastLastWeek - i)
       })
     }
     for (let i = 1; i <= lastDay.getDate(); ++i) {
       this.date.value.push({
         date: i,
         current: true,
+        week: this.formatWeek(currentWeek++)
       })
     }
 
-    for (let i = 1; i <= 42 - firstDay.getDay() - lastDay.getDate(); ++i) {
+    for (let i = 1; i <= 43 - firstDay.getDay() - lastDay.getDate(); ++i) {
       this.date.value.push({
         date: i,
         current: false,
+        week: this.formatWeek(currentWeek++)
       })
     }
   },
@@ -97,7 +164,7 @@ const calendar = {
     appStore.current_page = 'calendar'
     this.if_visible.value = true
     this.animator = gsap.timeline().fromTo(
-      this.card,
+      Array.from(this.card).sort((a, b) => Math.random() - 0.5),
       {
         scale: 0.9,
         // transformOrigin: 'top left',
@@ -125,9 +192,10 @@ const calendar = {
     calendar.start_line.value = true
     const rect = (e.target as HTMLElement).getBoundingClientRect()
     const target = e.target as HTMLElement
-    console.log(target)
+    console.log(target, target.offsetLeft, target.offsetTop)
     const startX = target.offsetLeft + target.offsetWidth / 2
     const startY = target.offsetTop + target.offsetHeight / 2
+    console.log(startX, startY)
     document.addEventListener('mousemove', this.handle_mv)
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
     svg.setAttribute(
@@ -140,7 +208,7 @@ const calendar = {
       height: 100%;
       pointer-events:none;
       animation: roll infinite .2s linear;
-      z-indx: -1
+      z-index: 20
       `,
     )
 
@@ -165,7 +233,7 @@ const calendar = {
     document.addEventListener('mouseup', calendar.handle_mu)
 
     e.preventDefault()
-    e.stopPropagation()
+    // e.stopPropagation()
   },
   handle_mv(e: MouseEvent) {
     if (!calendar.container || !calendar.line) return
@@ -196,6 +264,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  document.removeEventListener('mousemove', calendar.handlePlateMove)
   document.removeEventListener('mousedown', calendar.handle_md)
   document.removeEventListener('mousemove', calendar.handle_mv)
   document.removeEventListener('mouseup', calendar.handle_mu)
@@ -211,6 +280,7 @@ appStore.hide_calendar = calendar.hide.bind(calendar)
   0% {
     stroke-dashoffset: 0;
   }
+
   100% {
     stroke-dashoffset: -30;
   }
@@ -226,14 +296,44 @@ appStore.hide_calendar = calendar.hide.bind(calendar)
   padding-top: 7rem;
   gap: 1rem;
   justify-content: space-around;
+
+  .pre-input {
+    position: absolute;
+    width: 40vw;
+    left: 50%;
+    top: 20%;
+    transform: translate(-50%, -50%);
+    z-index: 30;
+    // background-color: red;
+    display: flex;
+
+    input {
+      flex-grow: 1;
+      display: block;
+      font-size: 3rem;
+      padding: 1rem 2rem;
+      outline: none;
+      border-radius: 3.5rem;
+      border: none;
+      background-color: #333;
+      color: #eee;
+
+      // width: 0;
+      // height: 0;
+      // opacity: 0;
+    }
+  }
+
   .calendar-header {
     flex-shrink: 0;
     // background-color: rgba($color: #000, $alpha: 0.8);
     // backdrop-filter: blur(3rem);
     height: 20vh;
     border-radius: 2rem;
+
     .card {
-      background-color: #eee;
+      background-color: rgba($color: #eee, $alpha: .8);
+      backdrop-filter: blur(5px);
       border-radius: 2rem;
       // box-shadow:
       //   inset 0.5rem 0rem 1rem #eee,
@@ -243,6 +343,7 @@ appStore.hide_calendar = calendar.hide.bind(calendar)
       //   inset 0 -0.5rem 1rem rgba($color: #000000, $alpha: 0.8);
       padding: 1rem;
     }
+
     .month {
       height: 100%;
       aspect-ratio: 2;
@@ -251,22 +352,63 @@ appStore.hide_calendar = calendar.hide.bind(calendar)
       flex-direction: column;
       justify-content: center;
       padding-left: 1.5rem;
+
       span {
-        font-size: 5rem;
+        font-size: 4rem;
         font-weight: bold;
+      }
+
+      .date {
+        padding: 1rem 0;
+      }
+
+      .message {
+        padding: 1rem 0;
+        font-size: medium;
+
+        * {
+          font-size: medium;
+        }
       }
     }
   }
+
   .days-container {
     position: relative;
-    overflow-y: scroll;
     // background-color: rgba($color: #000, $alpha: 0.8);
     flex-grow: 1;
     border-radius: 2rem;
     display: grid;
     grid-template-columns: repeat(7, 1fr);
+    // grid-template-rows: repeat(6,1fr);
     gap: 1rem;
     justify-content: flex-start;
+
+    .light-plate-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      user-select: none;
+      pointer-events: none;
+      border-radius: 1rem;
+
+      .light-plate {
+        opacity: 0;
+        transform: translate(-50%, -50%);
+        width: 50rem;
+        height: 50rem;
+        border-radius: 50%;
+        position: absolute;
+        // backdrop-filter: brightness(2);
+        background: #fff;
+        mix-blend-mode: soft-light;
+        mask: radial-gradient(#000 0%, transparent 70%);
+        user-select: none;
+        pointer-events: none;
+
+      }
+    }
   }
 }
 </style>

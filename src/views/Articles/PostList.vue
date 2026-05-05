@@ -145,7 +145,7 @@ onMounted(() => {
   .post-list-head,
   .post-list-item {
     display: grid;
-    grid-template-columns: 10fr auto 8fr 4fr auto;
+    grid-template-columns: repeat(4,1fr) minmax(0,5rem);
     grid-gap: 1rem;
   }
   .post-list-item-container {

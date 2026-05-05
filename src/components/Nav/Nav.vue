@@ -205,6 +205,7 @@ const nav = {
     else if (appStore.current_page == 'game') appStore.game_to_menus_page()
     else if (appStore.current_page == 'calendar') appStore.calendar_to_menus_page()
     else if (appStore.current_page == 'diary') appStore.diary_to_menus_page()
+    else if(appStore.current_page == "demo")appStore.demo_to_menus_page()
     else console.log('[error] page not found')
   },
   switch(type: number) {
@@ -231,6 +232,7 @@ const nav = {
   },
   backSpace(e: KeyboardEvent) {
     if (appStore.show_detail) return
+    if (appStore.current_page == "calendar")return
     if (e.code == 'Backspace') {
       const back = document.querySelector('#discover')
       ;(back as HTMLElement).click()
