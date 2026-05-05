@@ -14,14 +14,18 @@
     <CalendarSchedule></CalendarSchedule>
     <!-- <Games></Games> -->
     <Diary></Diary>
+    <NovelPage></NovelPage>
     <MyNotify></MyNotify>
+    <LoadTest />
     <div class="hue-mask _fullscreen"></div>
   </div>
   <Progress></Progress>
 </template>
 <script setup lang="ts">
+import LoadTest from './Feathers.vue'
+import NovelPage from '@/views/Novel/NovelPage.vue'
 import Diary from './Diary/Diary.vue'
-import CalendarSchedule from './Calendar/Calendar.vue'
+import CalendarSchedule from '@/views/Calendar/Calendar.vue'
 import Games from './Games/Games.vue'
 import ImgScaler from './ImgScaler.vue'
 import Progress from './ui/progress.vue'
@@ -73,7 +77,7 @@ const index = {
             ease: 'power1.out',
             duration: 1,
           },
-          '<+0.2',
+          '>-0.3',
         )
         .fromTo(
           this.container,
@@ -86,7 +90,7 @@ const index = {
             scale: 1,
             duration: 0.8,
           },
-          '<-0.2',
+          '<-0.4',
         )
     }
   },
