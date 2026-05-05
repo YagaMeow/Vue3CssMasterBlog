@@ -54,6 +54,10 @@ export const useAppStore = defineStore('app', () => {
   //日记页面
   const show_diary = ref<(() => void) | null>(null)
   const hide_diary = ref<((im: () => void, nx: () => void) => void) | null>(null)
+  //demo页面
+ const show_demo = ref<(() => void) | null>(null)
+  const hide_demo = ref<((im: () => void, nx: () => void) => void) | null>(null)
+
 
   //加载完成
   const show_loading = ref<(() => void) | null>(null)
@@ -401,10 +405,36 @@ export const useAppStore = defineStore('app', () => {
       },
     )
   }
+  function menus_to_demo_page() {
+    hide_menus.value?.(
+      () => {},
+      () => {
+        show_demo.value?.()
+        show_nav.value?.()
+      },
+    )
+  }
+
+  function demo_to_menus_page() {
+    hide_demo.value?.(
+      () => {},
+      () => {
+        show_menus.value?.()
+        hide_nav.value?.(
+          () => {},
+          () => {},
+        )
+      },
+    )
+  }
 
   const update_list = ref<(() => void) | null>(null)
 
   return {
+    show_demo,
+    hide_demo,
+    demo_to_menus_page,
+    menus_to_demo_page,
     login_tab,
     menus_to_calendar_page,
     calendar_to_menus_page,

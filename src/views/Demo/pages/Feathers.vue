@@ -1,0 +1,148 @@
+<template>
+  <div class="f-container">
+    <div class="mask"></div>
+
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 50rem;--s:0">
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 50rem;--s:0">
+
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 60rem;--s:0">
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 60rem;--s:0">
+
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 70rem;--s:0">
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 70rem;--s:0">
+
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 80rem;--s:0">
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 80rem;--s:0">
+
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 90rem;--s:0">
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 90rem;--s:0">
+
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 100rem;--s:0">
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 100rem;--s:0">
+
+
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 110rem;--s:0">
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 110rem;--s:0">
+
+
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 40rem;--s:0">
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 40rem;--s:0">
+
+
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 30rem;--s:0">
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 30rem;--s:0">
+
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 20rem;--s:0">
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 20rem;--s:0">
+
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 10rem;--s:0">
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 10rem;--s:0">
+
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 0rem;--s:0">
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 0rem;--s:0">
+
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: -10rem;--s:0">
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: -10rem;--s:0">
+
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: -20rem;--s:0">
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: -20rem;--s:0">
+
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: -30rem;--s:0">
+    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: -30rem;--s:0">
+
+  </div>
+</template>
+<script lang="ts" setup>
+import { normalRange, range } from '@/utils/utils';
+import { onMounted } from 'vue';
+import gsap from 'gsap';
+
+defineOptions({
+  name: "LoadTest"
+})
+
+const feathers = {
+  feathers: null as null | NodeListOf<HTMLElement>,
+  container: null as null | HTMLElement,
+  init() {
+    this.container = document.querySelector(".f-container")
+    this.feathers = document.querySelectorAll(".f-container img")
+    this.feathers.forEach(f => {
+      f.style.setProperty("--d", 3 + 's')
+      f.style.setProperty("--s", range(0.4, 0.6).toString())
+      f.style.setProperty("--rx", range(-1, 1).toString())
+      f.style.setProperty("--ry", range(-1, 1).toString())
+      f.style.setProperty("--rz", range(-1, 1).toString())
+      f.style.setProperty("--ra", range(0, 360) + "deg")
+      f.style.setProperty("--v", range(1,2) + 's')
+      const x = range(-20, 150)
+      const y = normalRange(x, 10)
+      f.style.setProperty("--x", `calc(${x}vw - 100%)`)
+      f.style.setProperty("--y", y + 'vh')
+    })
+    gsap.timeline().to(this.container, {
+      "--p": "100%",
+      delay: 3.8,
+      duration: 0.6
+    }).to(
+      this.container, {
+      "--tp": "100%",
+      duration: 1.1
+    },
+      "<"
+    )
+  }
+}
+
+onMounted(() => {
+  feathers.init()
+})
+</script>
+<style lang="scss" scoped>
+@keyframes feather {
+  0% {
+    top: 100%;
+    right: 100%;
+  }
+
+  100% {
+    top: -100%;
+    right: -100%;
+  }
+}
+
+@keyframes mask {
+  0% {
+    mask: linear-gradient(45deg, transparent 0%, #fff 0%);
+  }
+
+  100% {
+    mask: linear-gradient(45deg, transparent 100%, #fff 100%);
+  }
+}
+
+.f-container {
+  --p: 0%;
+  --tp: 0%;
+  pointer-events: none;
+
+  img {
+    position: absolute;
+    transform: translate3d(var(--x), var(--y), var(--z)) rotate3d(var(--rx), var(--ry), var(--rz), var(--ra));
+    scale: var(--s);
+    animation: feather var(--v) ease-in var(--d) forwards;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .mask {
+    pointer-events: none;
+    user-select: none;
+    mix-blend-mode: darken;
+    width: 100%;
+    height: 100%;
+    background-color: rgba($color: #000000, $alpha: 1);
+    mask: radial-gradient(circle at left bottom, transparent var(--tp) , #fff var(--p));
+  }
+}
+</style>

@@ -75,7 +75,7 @@ const feathers = {
       f.style.setProperty("--ry", range(-1, 1).toString())
       f.style.setProperty("--rz", range(-1, 1).toString())
       f.style.setProperty("--ra", range(0, 360) + "deg")
-      f.style.setProperty("--v", range(1,2) + 's')
+      f.style.setProperty("--v", range(1.5,3) + 's')
       const x = range(-20, 150)
       const y = normalRange(x, 10)
       f.style.setProperty("--x", `calc(${x}vw - 100%)`)
@@ -107,8 +107,8 @@ onMounted(() => {
   }
 
   100% {
-    top: -100%;
-    right: -100%;
+    top: -150%;
+    right: -150%;
   }
 }
 

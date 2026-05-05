@@ -17,11 +17,13 @@
     <NovelPage></NovelPage>
     <MyNotify></MyNotify>
     <LoadTest />
+    <DemoPage></DemoPage>
     <div class="hue-mask _fullscreen"></div>
   </div>
   <Progress></Progress>
 </template>
 <script setup lang="ts">
+import DemoPage from '@/views/Demo/DemoPage.vue'
 import LoadTest from './Feathers.vue'
 import NovelPage from '@/views/Novel/NovelPage.vue'
 import Diary from './Diary/Diary.vue'
@@ -34,12 +36,12 @@ import MyNotify from './ui/notofication.vue'
 import Login from './Login.vue'
 import PostTab from './PostTab.vue'
 import Nav from './Nav/Nav.vue'
-import Posts from './Posts/PostDiagram.vue'
+import Posts from '@/views/Articles/PostDiagram.vue'
 import BackGround from './background.vue'
 import Lenis from 'lenis'
 import TitleMenu from './TitleMenu.vue'
-import PostList from './Posts/PostList.vue'
-import MasonryPost from './Posts/MasonryPost.vue'
+import PostList from '@/views/Articles/PostList.vue'
+import MasonryPost from '@/views/Articles/MasonryPost.vue'
 import { useAppStore } from '@/pinia'
 import Loading from './Loading/Circle.vue'
 import { onMounted } from 'vue'

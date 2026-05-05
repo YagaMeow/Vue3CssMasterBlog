@@ -149,6 +149,8 @@ onMounted(() => {
 
     &::before,
     &::after {
+      user-select: none;
+      pointer-events: none;
       content: '';
       width: 50rem;
       height: 30rem;
@@ -197,57 +199,7 @@ onMounted(() => {
       transition: transform 0.5s ease;
     }
 
-    // background: #000;
 
-    &::before,
-    &::after {
-      content: '';
-      width: 50rem;
-      height: 30rem;
-      display: block;
-      position: absolute;
-      top: 0;
-      left: 0;
-      transition: all 0.1s ease-out;
-      border-radius: 2rem;
-      box-shadow: 0.1rem 0.1rem inset #fff;
-    }
-
-    &::before {
-      background-color: rgba($color: #000000, $alpha: 0.9);
-    }
-
-    &::after {
-      z-index: -1;
-      background-color: #eee;
-      transform: rotate(10deg);
-      transition: transform 0.2s ease;
-    }
-
-    @keyframes elastic {
-      0% {
-        scale: 1;
-      }
-
-      50% {
-        scale: 1.02;
-      }
-
-      100% {
-        scale: 1;
-      }
-    }
-
-    &:hover::before {
-      width: 50rem;
-      height: 30rem;
-      animation: elastic 0.4s cubic-bezier(0.175, 1, 0.5, 1.5);
-    }
-
-    &:hover::after {
-      transform: rotate(13deg);
-      transition: transform 0.5s ease;
-    }
     .title {
       display: flex;
       align-items: center;

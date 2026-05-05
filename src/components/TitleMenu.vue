@@ -37,9 +37,9 @@
       <div
         class="title_menu_button"
         @mouseleave="titleMenu.mouseout"
-        @click="appStore.menus_to_diary_page"
+        @click="appStore.menus_to_demo_page"
       >
-        Diary
+        Demo
       </div>
       <!-- <div
         @mouseleave="titleMenu.mouseout"
