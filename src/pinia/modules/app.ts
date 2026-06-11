@@ -74,6 +74,9 @@ export const useAppStore = defineStore('app', () => {
   //调整图片大小
   const resize_image = ref<null | ((proportion: number) => void)>(null)
 
+  const ascii_pause = ref<null | (() => void)>(null)
+  const ascii_resume = ref<null | (() => void)>(null)
+
   const audio_controller = {
     entermenubutton: new Howl({
       src: [a_enter],
@@ -497,5 +500,7 @@ export const useAppStore = defineStore('app', () => {
     masonry_to_diagram,
     masonry_to_list,
     audio_controller,
+    ascii_pause,
+    ascii_resume
   }
 })

@@ -486,8 +486,8 @@ function handleScale() {
   if (posttap.has_scaled) {
     posttap.has_scaled = false
     gsap.to(container, {
-      width: '60rem',
-      height: '80rem',
+      width: '90rem',
+      height: '120rem',
       ease: 'power3.out',
     })
   } else {
@@ -633,9 +633,9 @@ onMounted(() => {
   }
 
   .tab-container {
-    --width: 60;
-    --height: 80;
-    user-select: none;
+    --width: 90;
+    --height: 90;
+    // user-select: none;
     scale: 0.8;
     opacity: 0;
     width: calc(var(--width) * 1rem);
@@ -643,7 +643,7 @@ onMounted(() => {
     background-color: #61616161;
     border-radius: 1rem;
     box-shadow: inset 1px 1px var(--white);
-    background: #424242;
+    // background: #424242;
     display: flex;
     justify-content: center;
     align-items: stretch;
@@ -779,7 +779,7 @@ onMounted(() => {
 @media screen and (max-aspect-ratio: 0.8/1) {
   .mask-container .tab-container {
     width: 90rem;
-    height: 120rem;
+    height: 90rem;
 
     .mybutton {
       width: 8rem !important;

@@ -77,6 +77,7 @@ watch(
         )
       setTimeout(() => {
         if (appStore.show_loading) appStore?.show_loading()
+        appStore.show_scroll_page?.()
       }, 1300)
     }
   },

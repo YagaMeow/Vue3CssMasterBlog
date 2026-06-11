@@ -240,10 +240,10 @@ onMounted(() => {
       height cubic-bezier(0.11, 0.73, 0.37, 1.23) 0.1s;
     background-color: #616161;
     border-radius: 1rem;
-    box-shadow:
-      0 0 10px #fff,
-      0 0 20px #eee,
-      0 0 30px #666;
+    // box-shadow:
+    //   0 0 10px #fff,
+    //   0 0 20px #eee,
+    //   0 0 30px #666;
     display: flex;
     justify-content: center;
     align-items: center;

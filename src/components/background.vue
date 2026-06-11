@@ -1,17 +1,19 @@
 <template>
   <div class="bg _fullscreen">
-    <div class="bg-ball-container _fullscreen _null">
+    <ASCIIbg></ASCIIbg>
+    <!-- <div class="bg-ball-container _fullscreen _null">
       <div class="bg-ball" style="--x: 0; --y: 0; --s: 2; --o: 0.9"></div>
       <div class="bg-ball" style="--x: 0.8; --y: 0.1; --s: 1; --o: 0.8"></div>
       <div class="bg-ball" style="--x: 0.3; --y: 0.3; --s: 0.8; --o: 0.2"></div>
       <div class="bg-ball" style="--x: 0.1; --y: 0.6; --s: 1; --o: 0.9"></div>
       <div class="bg-ball" style="--x: 0.9; --y: 0.7; --s: 2; --o: 0.7"></div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue'
 import gsap, { random } from 'gsap'
+import ASCIIbg from './ScrollPage/ASCIIbg.vue'
 
 defineOptions({
   name: 'BackGround',
@@ -28,10 +30,10 @@ const background = {
   init() {
     this.container = document.querySelector('.bg')
     background.balls = document.querySelectorAll('.bg-ball')
-    document.addEventListener('mousemove', background.handleMove)
-    document.addEventListener('mouseleave', background.reset)
-    document.addEventListener('touchmove', background.handleMoveMobile)
-    document.addEventListener('touchend', background.reset)
+    // document.addEventListener('mousemove', background.handleMove)
+    // document.addEventListener('mouseleave', background.reset)
+    // document.addEventListener('touchmove', background.handleMoveMobile)
+    // document.addEventListener('touchend', background.reset)
     gsap.timeline().fromTo(
       document.querySelector('.bg-ball-container'),
       {
@@ -110,8 +112,8 @@ onUnmounted(() => {
 </script>
 <style lang="scss" scoped>
 .bg {
-  filter: blur(1rem) brightness(0.8);
-  background: linear-gradient(0deg, #d5edff 70%, #fff 70%);
+  // filter: blur(1rem) brightness(0.8);
+  // background: linear-gradient(0deg, #d5edff 70%, #fff 70%);
   user-select: none;
   pointer-events: none;
   --scale: 1;

@@ -32,7 +32,7 @@ const demo = {
         each: 0.1,
         onComplete:() => {
           if(this.demos)
-          this.demos[count++].style = ""
+          this.demos[count++].style.cssText = ""
         }
       },
       duration: .5,

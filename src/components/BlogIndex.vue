@@ -1,5 +1,4 @@
 <template>
-  <!-- <Loading></Loading> -->
   <div class="index-container _fullscreen">
     <BackGround></BackGround>
     <Nav></Nav>
@@ -10,13 +9,9 @@
     <PostTab></PostTab>
     <Login></Login>
     <ScrollIndex></ScrollIndex>
-    <ImgScaler></ImgScaler>
     <CalendarSchedule></CalendarSchedule>
-    <!-- <Games></Games> -->
-    <Diary></Diary>
-    <NovelPage></NovelPage>
     <MyNotify></MyNotify>
-    <LoadTest />
+    <!-- <LoadTest /> -->
     <DemoPage></DemoPage>
     <div class="hue-mask _fullscreen"></div>
   </div>
@@ -24,26 +19,20 @@
 </template>
 <script setup lang="ts">
 import DemoPage from '@/views/Demo/DemoPage.vue'
-import LoadTest from './Feathers.vue'
-import NovelPage from '@/views/Novel/NovelPage.vue'
-import Diary from './Diary/Diary.vue'
+// import LoadTest from './Feathers.vue'
 import CalendarSchedule from '@/views/Calendar/Calendar.vue'
-import Games from './Games/Games.vue'
-import ImgScaler from './ImgScaler.vue'
 import Progress from './ui/progress.vue'
-import ScrollIndex from './ScrollPage/ScrollIndex.vue'
+// import ScrollIndex from './ScrollPage/ScrollIndex.vue'
 import MyNotify from './ui/notofication.vue'
 import Login from './Login.vue'
 import PostTab from './PostTab.vue'
 import Nav from './Nav/Nav.vue'
 import Posts from '@/views/Articles/PostDiagram.vue'
 import BackGround from './background.vue'
-import Lenis from 'lenis'
 import TitleMenu from './TitleMenu.vue'
 import PostList from '@/views/Articles/PostList.vue'
 import MasonryPost from '@/views/Articles/MasonryPost.vue'
 import { useAppStore } from '@/pinia'
-import Loading from './Loading/Circle.vue'
 import { onMounted } from 'vue'
 import gsap from 'gsap'
 
@@ -65,7 +54,7 @@ const index = {
           // clipPath: 'polygon(-100% 50%, 100% 50%, -100% 50%)',
           // clipPath: 'circle(100%)',
           clipPath: 'polygon(0 0, 100% 0,100% 100%,0 100%)',
-          duration: 1,
+          duration: 0.8,
           force3D: true,
           ease: 'power1.out',
         })
@@ -77,22 +66,9 @@ const index = {
           {
             clipPath: 'polygon(100% 0, 100% 0,100% 100%,100% 100%)',
             ease: 'power1.out',
-            duration: 1,
+            duration: 0.5,
           },
           '>-0.3',
-        )
-        .fromTo(
-          this.container,
-          {
-            borderRadius: '5rem',
-            scale: 0.9,
-          },
-          {
-            borderRadius: 0,
-            scale: 1,
-            duration: 0.8,
-          },
-          '<-0.4',
         )
     }
   },
