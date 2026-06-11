@@ -58,4 +58,10 @@ function elasticEase2(progress: number) {
     1
   )
 }
-export { type Progress, range, formatDate, type Article, elasticEase, elasticEase2, normalRange }
+
+function isMobile() {
+  const userAgent = navigator.userAgent.toLowerCase()
+  const mobileReg = /momobile|android|iphone|ipad|ipod|windows phone|phone|webos/i
+  return mobileReg.test(userAgent) ? true : false
+}
+export { type Progress, range, formatDate, type Article, elasticEase, elasticEase2, normalRange,isMobile }

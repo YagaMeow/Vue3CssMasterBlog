@@ -1,7 +1,7 @@
 ﻿<template>
     <div class="loading-text-box">
         <h1>
-            <img src="../../assets/svg/loading_text.svg" alt="">   
+            <img src="../../assets/svg/loading_text.svg" alt="">
         </h1>
         <p class="loading-text">
             Remember, You Will Die.

@@ -145,7 +145,7 @@ onMounted(() => {
   .post-list-head,
   .post-list-item {
     display: grid;
-    grid-template-columns: repeat(4,1fr) minmax(0,5rem);
+    grid-template-columns: repeat(4,minmax(auto,1fr)) minmax(2rem,5rem);
     grid-gap: 1rem;
   }
   .post-list-item-container {
@@ -211,6 +211,7 @@ onMounted(() => {
     margin-top: 11rem;
     .post-list-head,
     .post-list-item {
+      grid-template-columns: repeat(3,minmax(auto,1fr));
       padding: 2rem !important;
       * {
         font-size: 4rem !important;
@@ -221,11 +222,13 @@ onMounted(() => {
       #type {
         width: 0;
         font-size: 0 !important;
+        display: none;
       }
     }
     .post-list-item {
       .id,
       .type {
+        display: none;
         width: 0;
       }
     }

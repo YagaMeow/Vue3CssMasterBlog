@@ -1,23 +1,9 @@
 <template>
-  <div
-    class="posts-diagram-container _fullscreen"
-    v-show="diagram.if_visible.value"
-    @dragover="dragOver"
-  >
-    <Post
-      v-for="(item, index) in diagram.postList.value"
-      :key="index"
-      :data="item"
-      :class="{
-        dragging: dragData.activeUri === item.uri,
-      }"
-      draggable="true"
-      @dragstart="dragStart"
-      @dragend="dragEnd"
-      @drag="onDrag"
-      :uri="item.uri"
-      class="diagram-post"
-    >
+  <div class="posts-diagram-container _fullscreen" v-show="diagram.if_visible.value" @dragover="dragOver">
+    <Post v-for="(item, index) in diagram.postList.value" :key="index" :data="item" :class="{
+      dragging: dragData.activeUri === item.uri,
+    }" draggable="true" @dragstart="dragStart" @dragend="dragEnd" @drag="onDrag" :uri="item.uri"
+      class="diagram-post">
     </Post>
   </div>
 </template>
@@ -41,7 +27,7 @@ const router = useRouter()
 
 function handleInter(entries: IntersectionObserverEntry[]) {
   entries.map((entry) => {
-    ;(entry.target as HTMLElement).style.backgroundImage =
+    ; (entry.target as HTMLElement).style.backgroundImage =
       (entry.target as HTMLElement).dataset.bg || ''
     entry.target.classList.remove('lazy-load')
     observer.unobserve(entry.target)
@@ -194,7 +180,10 @@ const diagram = {
           flag = true
         }
 
-        this.moving[idx] = gsap.timeline().to(p, {
+        this.moving[idx] = gsap.timeline({
+          onStart: () => { appStore.ascii_pause?.() },
+          onComplete: () => { appStore.ascii_resume?.() }
+        }).to(p, {
           left: new_left + '%',
           top: new_top + '%',
           duration: 1,
