@@ -98,6 +98,7 @@ const post = {
   if_visible: ref(true),
   show_info: ref(false),
   init: () => {
+    console.log("init")
     const top = normalRange(50, 25)
     const left = normalRange(50, 50)
     post.post = p.value
@@ -221,7 +222,7 @@ onUnmounted(() => {
 </script>
 <style lang="scss" scoped>
 .post-container {
-  opacity: 0;
+  // opacity: 0;
   scale: 0.8;
   --color1: rgb(112, 219, 246);
   --color2: rgb(0, 0, 0);

@@ -2,8 +2,7 @@
   <div class="posts-diagram-container _fullscreen" v-show="diagram.if_visible.value" @dragover="dragOver">
     <Post v-for="(item, index) in diagram.postList.value" :key="index" :data="item" :class="{
       dragging: dragData.activeUri === item.uri,
-    }" draggable="true" @dragstart="dragStart" @dragend="dragEnd" @drag="onDrag" :uri="item.uri"
-      class="diagram-post">
+    }" draggable="true" @dragstart="dragStart" @dragend="dragEnd" @drag="onDrag" :uri="item.uri" class="diagram-post">
     </Post>
   </div>
 </template>
@@ -27,8 +26,9 @@ const router = useRouter()
 
 function handleInter(entries: IntersectionObserverEntry[]) {
   entries.map((entry) => {
-    ; (entry.target as HTMLElement).style.backgroundImage =
-      (entry.target as HTMLElement).dataset.bg || ''
+    console.log('inter')
+      ; (entry.target as HTMLElement).style.backgroundImage =
+        (entry.target as HTMLElement).dataset.bg || ''
     entry.target.classList.remove('lazy-load')
     observer.unobserve(entry.target)
   })
@@ -111,7 +111,9 @@ const diagram = {
         y: parseFloat(p.style.getPropertyValue('top')),
       })
     })
-    this.animator = gsap.timeline().to(this.posts.value, {
+    this.animator = gsap.timeline().fromTo(this.posts.value, {
+      opacity: 0
+    }, {
       opacity: 1,
       scale: 1,
       duration: 0.2,
@@ -152,7 +154,7 @@ const diagram = {
     if (diagram.posts.value) {
       console.log(diagram.posts.value.length, diagram.position.length)
       diagram.posts.value.forEach((p, idx) => {
-        // if (this.lock.has(idx) && this.lock.get(idx) == true) return
+        if (this.lock.has(idx) && this.lock.get(idx) == true) return
         if (this.moving[idx] != undefined && this.moving[idx].isActive()) this.moving[idx].kill()
         diagram.position[idx].x = diagram.position[idx].x + diagram.offset_per.value[0]
         diagram.position[idx].y = diagram.position[idx].y + diagram.offset_per.value[1]
@@ -190,10 +192,16 @@ const diagram = {
         })
 
         if (flag) {
-          gsap.to(p, {
+          this.lock.set(idx,true)
+          gsap.fromTo(p,{
+            opacity: 0
+          },{
             left: new_left + '%',
             top: new_top + '%',
-            duration: 0,
+            onComplete: () => {
+              p.style.setProperty('opacity','1')
+              this.lock.set(idx,false)
+            }
           })
         }
 
@@ -210,6 +218,18 @@ const diagram = {
   },
   addPost(a: Article) {
     this.postList.value.push(a)
+    nextTick(() => {
+      this.posts.value = document.querySelectorAll('.diagram-post')
+      this.position = []
+      this.posts.value.forEach((p) => {
+        this.position.push({
+          x: parseFloat(p.style.getPropertyValue('left')),
+          y: parseFloat(p.style.getPropertyValue('top')),
+        })
+      })
+      const images = document.querySelectorAll('.lazyload')
+      images.forEach((img) => observer.observe(img))
+    })
   },
 }
 
@@ -309,12 +329,7 @@ function dragOver(e: DragEvent) {
 // 删除逻辑
 function handleDelete(uri: string) {
   ArticleAPI.delete(uri).then(() => {
-    ElNotification({
-      title: '删除成功',
-      message: '文章已删除',
-      type: 'success',
-      duration: 2000,
-    })
+    appStore.notify?.('数据已删除')
     diagram.postList.value = diagram.postList.value.filter((item) => item.uri !== uri)
   })
 }

@@ -65,6 +65,8 @@ export const useAppStore = defineStore('app', () => {
   //TODO:更新视图
   const update_diagram = ref<((a: Article) => void) | null>(null)
 
+  const update_list = ref<((a: Article) => void) | null>(null)
+
   //图片滚动条
   const show_scaler = ref<null | ((pos: { x: number; y: number }, proportion: number) => void)>(
     null,
@@ -136,6 +138,8 @@ export const useAppStore = defineStore('app', () => {
   const login_tab = ref(false)
 
   const current_page = ref('')
+
+  const current_mode = ref('')
 
   const progress = ref([] as Progress[])
 
@@ -245,6 +249,7 @@ export const useAppStore = defineStore('app', () => {
       () => {},
       () => {
         show_list.value?.()
+        current_mode.value = 'list'
       },
     )
   }
@@ -254,6 +259,7 @@ export const useAppStore = defineStore('app', () => {
       () => {},
       () => {
         show_masonry.value?.()
+        current_mode.value = 'masonry'
       },
     )
   }
@@ -263,6 +269,7 @@ export const useAppStore = defineStore('app', () => {
       () => {},
       () => {
         show_diagram.value?.()
+        current_mode.value = 'diagram'
       },
     )
   }
@@ -272,6 +279,7 @@ export const useAppStore = defineStore('app', () => {
       () => {},
       () => {
         show_masonry.value?.()
+        current_mode.value = 'masonry'
       },
     )
   }
@@ -281,6 +289,7 @@ export const useAppStore = defineStore('app', () => {
       () => {},
       () => {
         show_diagram.value?.()
+        current_mode.value = 'diagram'
       },
     )
   }
@@ -290,6 +299,7 @@ export const useAppStore = defineStore('app', () => {
       () => {},
       () => {
         show_list.value?.()
+        current_mode.value = 'list'
       },
     )
   }
@@ -431,9 +441,8 @@ export const useAppStore = defineStore('app', () => {
     )
   }
 
-  const update_list = ref<(() => void) | null>(null)
-
   return {
+    current_mode,
     show_demo,
     hide_demo,
     demo_to_menus_page,

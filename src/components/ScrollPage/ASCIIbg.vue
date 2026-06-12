@@ -338,10 +338,14 @@ const scroll = {
     })
   },
   resize() {
+
     const width = window.innerWidth
     const height = window.innerHeight
     if (width * 169 > 300 * height) {
       scroll.asciibox?.style.setProperty("--scale", (width / 300).toString())
+      // const ascii_height = width * 2.25 * scroll.texts.length / 300
+      // console.log(scroll.texts[0][0].indexOf("<br>") * ascii_height, height)
+      // scroll.asciibox?.style.setProperty("transform", `translateY(${-(ascii_height - height)}px)`)
     }
     else if (width * 169 < 300 * height) {
       scroll.asciibox?.style.setProperty("--scale", (height / 169).toString())
@@ -380,6 +384,8 @@ onUnmounted(() => {
 
 .asciibox {
   position: fixed;
+  bottom: 0;
+  left: 0;
   z-index: -10;
   mask-image: linear-gradient(rgba(0, 0, 0, 1), 99%, transparent);
   opacity: 0;
@@ -390,7 +396,6 @@ onUnmounted(() => {
   letter-spacing: calc(var(--scale) * 1.5px);
   font-size: calc(var(--scale) * 1.5px);
   user-select: none;
-  height: 100dvh;
 
   * {
     font-weight: bolder;
