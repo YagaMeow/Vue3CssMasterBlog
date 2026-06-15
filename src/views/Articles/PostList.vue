@@ -8,13 +8,8 @@
       <div id="id">ID</div>
     </div>
     <div class="post-list-item-container">
-      <div
-        class="post-list-item"
-        @click="postlist.show_details(item)"
-        v-for="item in postlist.postList.value"
-        :key="item.uri.toString()"
-        :uri="item.uri.toString()"
-      >
+      <div class="post-list-item" @click="postlist.show_details(item)" v-for="item in postlist.postList.value"
+        :key="item.uri.toString()" :uri="item.uri.toString()">
         <div class="title">
           <div class="avatar"></div>
           <span>{{ (item as Article).title }}</span>
@@ -28,7 +23,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { nextTick, onMounted, ref } from 'vue'
 import type { Ref } from 'vue'
 import { ArticleAPI } from '@/api/api'
 import type { Article } from '@/utils/utils'
@@ -76,13 +71,15 @@ const postlist = {
     })
     this.animator = gsap
       .timeline()
-      .to(this.container, {
+      .to(this.container,{
         opacity: 1,
         duration: 0.3,
         ease: 'power3.in',
       })
-      .to(
-        this.posts,
+      .fromTo(
+        this.posts,{
+          opacity: 0
+        },
         {
           opacity: 1,
           duration: 0.2,
@@ -115,9 +112,28 @@ const postlist = {
     appStore.post_data = a
     appStore.show_tab?.()
   },
+  addPost(a: Article) {
+    console.log('add post list')
+    postlist.postList.value.unshift(a)
+    nextTick(() => {
+      const origin = document.querySelector(`.diagram-post [uri="${a.uri}"]`)
+      const post = document.querySelector(`.post-list-item[uri="${a.uri}"]`)
+      const avatar = (post as HTMLElement).querySelector('.avatar')
+      console.log('origin',origin)
+      if (origin?.getAttribute('bgstyle')) {
+        const bgstyle = origin.getAttribute('bgstyle')
+        if (avatar)
+          (avatar as HTMLElement).style.backgroundImage = `url("/img/music${bgstyle}.jpg")`
+      } else {
+        if (avatar)
+          (avatar as HTMLElement).style.backgroundImage = `url("/img/music${1}.jpg")`
+      }
+    })
+  }
 }
 appStore.show_list = postlist.show.bind(postlist)
 appStore.hide_list = postlist.hide.bind(postlist)
+appStore.update_list = postlist.addPost.bind(postlist)
 
 onMounted(() => {
   postlist.init()
@@ -145,12 +161,14 @@ onMounted(() => {
   .post-list-head,
   .post-list-item {
     display: grid;
-    grid-template-columns: repeat(4,minmax(auto,1fr)) minmax(2rem,5rem);
+    grid-template-columns: repeat(4, minmax(auto, 1fr)) minmax(2rem, 5rem);
     grid-gap: 1rem;
   }
+
   .post-list-item-container {
     overflow: auto;
   }
+
   .post-list-head {
     flex-shrink: 0;
     padding: 1rem;
@@ -158,13 +176,15 @@ onMounted(() => {
 
     align-items: center;
     justify-content: left;
+
     div {
       font-size: 2rem;
       color: #fff;
     }
   }
+
   .post-list-item {
-    opacity: 0;
+    // opacity: 0;
     cursor: pointer;
     width: 100%;
     padding: 1rem;
@@ -173,12 +193,14 @@ onMounted(() => {
 
     backdrop-filter: blur(1rem);
     border-radius: 1rem;
+
     .title {
       align-items: center;
       gap: 1rem;
       display: flex;
       align-items: center;
       justify-content: left;
+
       .avatar {
         width: 5rem;
         height: 5rem;
@@ -189,6 +211,7 @@ onMounted(() => {
         flex-shrink: 0;
       }
     }
+
     span,
     div {
       white-space: nowrap;
@@ -198,26 +221,33 @@ onMounted(() => {
       font-size: 2rem;
       color: #fff;
     }
+
     &:nth-child(2n) {
       background-color: rgba($color: #000000, $alpha: 0);
     }
+
     &:nth-child(2n-1) {
       background-color: rgba($color: #616161, $alpha: 0.8);
     }
   }
 }
+
 @media screen and (max-aspect-ratio: 0.8/1) {
   .post-list-container {
     margin-top: 11rem;
+
     .post-list-head,
     .post-list-item {
-      grid-template-columns: repeat(3,minmax(auto,1fr));
+      grid-template-columns: repeat(3, minmax(auto, 1fr));
       padding: 2rem !important;
+
       * {
         font-size: 4rem !important;
       }
     }
+
     .post-list-head {
+
       #id,
       #type {
         width: 0;
@@ -225,7 +255,9 @@ onMounted(() => {
         display: none;
       }
     }
+
     .post-list-item {
+
       .id,
       .type {
         display: none;

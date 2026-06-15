@@ -18,10 +18,7 @@
       <div class="button-content">L</div>
     </MyButton>
   </div>
-  <div
-    class="nav-container footer"
-    v-show="nav.if_visible.value && appStore.current_page == 'articles'"
-  >
+  <div class="nav-container footer" v-show="nav.if_visible.value && appStore.current_page == 'articles'">
     <div id="type" style="">
       <div class="type-list">
         <div class="type-list-items">
@@ -205,7 +202,7 @@ const nav = {
     else if (appStore.current_page == 'game') appStore.game_to_menus_page()
     else if (appStore.current_page == 'calendar') appStore.calendar_to_menus_page()
     else if (appStore.current_page == 'diary') appStore.diary_to_menus_page()
-    else if(appStore.current_page == "demo")appStore.demo_to_menus_page()
+    else if (appStore.current_page == "demo") appStore.demo_to_menus_page()
     else console.log('[error] page not found')
   },
   switch(type: number) {
@@ -232,10 +229,11 @@ const nav = {
   },
   backSpace(e: KeyboardEvent) {
     if (appStore.show_detail) return
-    if (appStore.current_page == "calendar")return
+    if (appStore.current_page == "calendar") return
+    if (appStore.login_tab) return
     if (e.code == 'Backspace') {
       const back = document.querySelector('#discover')
-      ;(back as HTMLElement).click()
+        ; (back as HTMLElement).click()
     }
   },
   handleCollect() {
@@ -627,14 +625,11 @@ onUnmounted(() => {
   transform: translateY(-0.1em);
 }
 
-@media screen and (max-aspect-ratio: 1.7/1) {
-}
+@media screen and (max-aspect-ratio: 1.7/1) {}
 
-@media screen and (max-aspect-ratio: 1.4/1) {
-}
+@media screen and (max-aspect-ratio: 1.4/1) {}
 
-@media screen and (max-aspect-ratio: 1/1) {
-}
+@media screen and (max-aspect-ratio: 1/1) {}
 
 @media screen and (max-aspect-ratio: 0.8/1) {
   * {
@@ -658,6 +653,7 @@ onUnmounted(() => {
       height: 8rem;
 
       .button-content {
+
         &::before,
         &::after {
           font-size: 5rem !important;

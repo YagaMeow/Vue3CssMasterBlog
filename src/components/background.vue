@@ -34,18 +34,18 @@ const background = {
     // document.addEventListener('mouseleave', background.reset)
     // document.addEventListener('touchmove', background.handleMoveMobile)
     // document.addEventListener('touchend', background.reset)
-    gsap.timeline().fromTo(
-      document.querySelector('.bg-ball-container'),
-      {
-        z: '-100rem',
-      },
-      {
-        z: 0,
-        duration: 15,
-        ease: 'power3.out',
-        onComplete: () => {},
-      },
-    )
+    // gsap.timeline().fromTo(
+    //   document.querySelector('.bg-ball-container'),
+    //   {
+    //     z: '-100rem',
+    //   },
+    //   {
+    //     z: 0,
+    //     duration: 15,
+    //     ease: 'power3.out',
+    //     onComplete: () => {},
+    //   },
+    // )
     // this.swing()
   },
   handleMove(e: MouseEvent) {

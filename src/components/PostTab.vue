@@ -2,20 +2,12 @@
   <div class="mask-container _fullscreen" v-show="posttap.if_visible.value">
     <div class="mask _fullscreen" @click="handleClose"></div>
     <div class="tag-content">
-      <div
-        class="tag"
-        v-for="(tag, idx) in appStore.post_data.tags || []"
-        :key="'tag' + idx"
-        @click="posttap.handleRemoveTag(tag.name)"
-      >
+      <div class="tag" v-for="(tag, idx) in appStore.post_data.tags || []" :key="'tag' + idx"
+        @click="posttap.handleRemoveTag(tag.name)">
         <span>{{ tag.name }}</span>
         <span class="delete-tag" style="margin-left: auto; margin-right: 1rem">×</span>
       </div>
-      <div
-        v-show="posttap.addtag_visible.value"
-        class="tag input"
-        @keydown.enter="posttap.handleAddTag"
-      >
+      <div v-show="posttap.addtag_visible.value" class="tag input" @keydown.enter="posttap.handleAddTag">
         <input type="text" v-model="posttap.newtag.value" />
       </div>
       <!-- <div class="tag" @click="posttap.showAddTag">
@@ -26,65 +18,46 @@
       <div class="tools control-group">
         <div class="button-group" v-if="ed">
           <!-- <button @click="editor.setEditable(false)">ban</button> -->
-          <button
-            @click="ed.editor.chain().focus().toggleBold().run()"
+          <button @click="ed.editor.chain().focus().toggleBold().run()"
             :disabled="!ed.editor.can().chain().focus().toggleBold().run()"
-            :class="{ 'is-active': ed.editor.isActive('bold') }"
-          >
+            :class="{ 'is-active': ed.editor.isActive('bold') }">
             <svg-icon iconClass="bold"></svg-icon>
           </button>
-          <button
-            @click="ed.editor.chain().focus().toggleItalic().run()"
+          <button @click="ed.editor.chain().focus().toggleItalic().run()"
             :disabled="!ed.editor.can().chain().focus().toggleItalic().run()"
-            :class="{ 'is-active': ed.editor.isActive('italic') }"
-          >
+            :class="{ 'is-active': ed.editor.isActive('italic') }">
             <svg-icon iconClass="italic"></svg-icon>
           </button>
-          <button
-            @click="ed.editor.chain().focus().toggleStrike().run()"
+          <button @click="ed.editor.chain().focus().toggleStrike().run()"
             :disabled="!ed.editor.can().chain().focus().toggleStrike().run()"
-            :class="{ 'is-active': ed.editor.isActive('strike') }"
-          >
+            :class="{ 'is-active': ed.editor.isActive('strike') }">
             <svg-icon iconClass="strikethrough"></svg-icon>
           </button>
-          <button
-            @click="ed.editor.chain().focus().toggleCode().run()"
+          <button @click="ed.editor.chain().focus().toggleCode().run()"
             :disabled="!ed.editor.can().chain().focus().toggleCode().run()"
-            :class="{ 'is-active': ed.editor.isActive('code') }"
-          >
+            :class="{ 'is-active': ed.editor.isActive('code') }">
             <svg-icon iconClass="code"></svg-icon>
           </button>
           <!-- <button @click="editor.chain().focus().unsetAllMarks().run()">Clear marks</button>
         <button @click="editor.chain().focus().clearNodes().run()">Clear nodes</button> -->
-          <button
-            @click="ed.editor.chain().focus().setParagraph().run()"
-            :class="{ 'is-active': ed.editor.isActive('paragraph') }"
-          >
+          <button @click="ed.editor.chain().focus().setParagraph().run()"
+            :class="{ 'is-active': ed.editor.isActive('paragraph') }">
             <svg-icon iconClass="paragraph"></svg-icon>
           </button>
-          <button
-            @click="ed.editor.chain().focus().toggleBulletList().run()"
-            :class="{ 'is-active': ed.editor.isActive('bulletList') }"
-            id="bullet-list"
-          >
+          <button @click="ed.editor.chain().focus().toggleBulletList().run()"
+            :class="{ 'is-active': ed.editor.isActive('bulletList') }" id="bullet-list">
             <svg-icon iconClass="unordered-list"></svg-icon>
           </button>
-          <button
-            @click="ed.editor.chain().focus().toggleOrderedList().run()"
-            :class="{ 'is-active': ed.editor.isActive('orderedList') }"
-          >
+          <button @click="ed.editor.chain().focus().toggleOrderedList().run()"
+            :class="{ 'is-active': ed.editor.isActive('orderedList') }">
             <svg-icon iconClass="ordered-list"></svg-icon>
           </button>
-          <button
-            @click="ed.editor.chain().focus().toggleCodeBlock().run()"
-            :class="{ 'is-active': ed.editor.isActive('codeBlock') }"
-          >
+          <button @click="ed.editor.chain().focus().toggleCodeBlock().run()"
+            :class="{ 'is-active': ed.editor.isActive('codeBlock') }">
             <svg-icon iconClass="code"></svg-icon>
           </button>
-          <button
-            @click="ed.editor.chain().focus().toggleBlockquote().run()"
-            :class="{ 'is-active': ed.editor.isActive('blockquote') }"
-          >
+          <button @click="ed.editor.chain().focus().toggleBlockquote().run()"
+            :class="{ 'is-active': ed.editor.isActive('blockquote') }">
             <svg-icon iconClass="quote"></svg-icon>
           </button>
           <button @click="ed.editor.chain().focus().setHorizontalRule().run()">
@@ -93,46 +66,26 @@
           <button @click="ed.editor.chain().focus().setHardBreak().run()">
             <svg-icon iconClass="text-wrap"></svg-icon>
           </button>
-          <button
-            @click="ed.editor.chain().focus().undo().run()"
-            :disabled="!ed.editor.can().chain().focus().undo().run()"
-            id="undo"
-          >
+          <button @click="ed.editor.chain().focus().undo().run()"
+            :disabled="!ed.editor.can().chain().focus().undo().run()" id="undo">
             <svg-icon iconClass="undo"></svg-icon>
           </button>
-          <button
-            @click="ed.editor.chain().focus().redo().run()"
-            :disabled="!ed.editor.can().chain().focus().redo().run()"
-            id="redo"
-          >
+          <button @click="ed.editor.chain().focus().redo().run()"
+            :disabled="!ed.editor.can().chain().focus().redo().run()" id="redo">
             <svg-icon iconClass="redo"></svg-icon>
           </button>
-          <button
-            @click="ed.editor.chain().focus().setColor('#958DF1').run()"
-            :class="{ 'is-active': ed.editor.isActive('textStyle', { color: '#958DF1' }) }"
-          >
+          <button @click="ed.editor.chain().focus().setColor('#958DF1').run()"
+            :class="{ 'is-active': ed.editor.isActive('textStyle', { color: '#958DF1' }) }">
             <svg-icon iconClass="font-color"></svg-icon>
           </button>
           <button @click="onImageUploadClick">
             <svg-icon iconClass="image"></svg-icon>
           </button>
-          <input
-            id="imageInput"
-            type="file"
-            accept="image/*"
-            style="display: none"
-            @change="onImageSelected"
-          />
+          <input id="imageInput" type="file" accept="image/*" style="display: none" @change="onImageSelected" />
           <button @click="onCoverUploadClick">
             <svg-icon iconClass="image"></svg-icon>
           </button>
-          <input
-            id="coverInput"
-            type="file"
-            accept="image/*"
-            style="display: none"
-            @change="onCoverSelected"
-          />
+          <input id="coverInput" type="file" accept="image/*" style="display: none" @change="onCoverSelected" />
         </div>
       </div>
 
@@ -152,26 +105,13 @@
             {{ formatDate(appStore.post_data.created_at.toString()) }}
           </div>
         </div>
-        <MyButton
-          v-if="appStore.edit_mode"
-          class="confirm_btn"
-          @click="handleHide"
-          :style="{ display: posttap.auth.value ? '' : 'none' }"
-          >√</MyButton
-        >
-        <MyButton
-          v-else
-          class="edit_btn"
-          @click="posttap.handleEdit"
-          :style="{ display: posttap.auth.value ? '' : 'none' }"
-        >
+        <MyButton v-if="appStore.edit_mode" class="confirm_btn" @click="handleHide"
+          :style="{ display: posttap.auth.value ? '' : 'none' }">√</MyButton>
+        <MyButton v-else class="edit_btn" @click="posttap.handleEdit"
+          :style="{ display: posttap.auth.value ? '' : 'none' }">
           <svg-icon :iconClass="posttap.editable.value ? 'no-edit' : 'edit'"></svg-icon>
         </MyButton>
-        <MyButton
-          class="close_btn"
-          @click="handleScale"
-          :style="{ marginLeft: posttap.auth.value ? '' : 'auto' }"
-        >
+        <MyButton class="close_btn" @click="handleScale" :style="{ marginLeft: posttap.auth.value ? '' : 'auto' }">
           <svg-icon iconClass="fullscreen"></svg-icon>
         </MyButton>
         <MyButton class="close_btn" @click="handleClose">
@@ -351,13 +291,25 @@ const posttap = {
       content: JSON.stringify(ed.value.editor.getJSON()),
       uri: _uri.value,
     }).then((resp) => {
-      appStore.update_diagram?.({
-        title: resp.data.title,
-        uri: resp.data.uri,
-        created_at: resp.data.created_at,
-        tags: [],
-        id: resp.data.id,
-      })
+      if (appStore.current_mode == 'diagram')
+        appStore.update_diagram?.({
+          title: resp.data.title,
+          uri: resp.data.uri,
+          created_at: resp.data.created_at,
+          tags: [],
+          id: resp.data.id,
+          cover: { cover_url: '', width: 0, height: 0 }
+        })
+      else if (appStore.current_mode == 'list') {
+        appStore.update_list?.({
+          title: resp.data.title,
+          uri: resp.data.uri,
+          created_at: resp.data.created_at,
+          tags: [],
+          id: resp.data.id,
+          cover: { cover_url: '', width: 0, height: 0 }
+        })
+      }
     })
   },
   handleEdit() {
@@ -383,7 +335,7 @@ const posttap = {
             content: JSON.stringify(ed.value.editor.getJSON()),
             uri: appStore.post_data.uri as string,
           })
-            .then(() => {})
+            .then(() => { })
             .catch((e) => {
               if (appStore.notify) appStore.notify(e.message)
             })
@@ -438,9 +390,10 @@ const posttap = {
 async function handleClose() {
   if (appStore.edit_mode || !posttap.editable.value) {
     appStore.hide_tab?.(
-      () => {},
+      () => { },
       () => {
         posttap.reset()
+        appStore.edit_mode = false
       },
     )
   } else {
@@ -451,7 +404,7 @@ async function handleClose() {
     })
       .then((resp) => {
         appStore.hide_tab?.(
-          () => {},
+          () => { },
           () => {
             posttap.reset()
           },
@@ -469,9 +422,10 @@ async function handleHide() {
       .handleCreate()
       .then(() => {
         appStore.hide_tab?.(
-          () => {},
+          () => { },
           () => {
             posttap.reset()
+            appStore.edit_mode = false
           },
         )
       })
@@ -536,10 +490,10 @@ async function onCoverSelected(event: Event) {
         let curl = (resp.data.cover.cover_url as string).replace('covers', 'covers/webp')
         curl = curl.slice(0, curl.lastIndexOf('.')) + '-400w.webp'
         const coverUrl = import.meta.env.VITE_BASE_API + '/api' + curl
-        const at = document.querySelector(
-          `div[uri="${appStore.post_data.uri}"] .post-content`,
+        const img = document.querySelector(
+          `div[uri="${appStore.post_data.uri}"] .post-content img`,
         ) as HTMLElement
-        at.style.backgroundImage = `url("${coverUrl}")`
+        img.setAttribute("src",coverUrl)
         appStore.notify?.('上传成功')
       })
       .catch((e) => {
@@ -737,6 +691,7 @@ onMounted(() => {
         color: #ccc;
       }
     }
+
     .tab-content {
       cursor: pointer;
       position: relative;
