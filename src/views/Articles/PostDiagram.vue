@@ -29,6 +29,9 @@ function handleInter(entries: IntersectionObserverEntry[]) {
     console.log('inter')
       ; (entry.target as HTMLElement).style.backgroundImage =
         (entry.target as HTMLElement).dataset.bg || ''
+    let dbg = (entry.target as HTMLElement).dataset.bg || ''
+    dbg = dbg.slice(dbg.indexOf('"')+1, dbg.lastIndexOf('"'))
+      ; (entry.target as HTMLElement).querySelector("img")?.setAttribute("src", dbg || '')
     entry.target.classList.remove('lazy-load')
     observer.unobserve(entry.target)
   })
@@ -192,15 +195,15 @@ const diagram = {
         })
 
         if (flag) {
-          this.lock.set(idx,true)
-          gsap.fromTo(p,{
+          this.lock.set(idx, true)
+          gsap.fromTo(p, {
             opacity: 0
-          },{
+          }, {
             left: new_left + '%',
             top: new_top + '%',
             onComplete: () => {
-              p.style.setProperty('opacity','1')
-              this.lock.set(idx,false)
+              p.style.setProperty('opacity', '1')
+              this.lock.set(idx, false)
             }
           })
         }
@@ -445,10 +448,6 @@ function handleDelete(uri: string) {
 }
 
 @media screen and (max-aspect-ratio: 0.8/1) {
-  .diagram-post {
-    width: 48rem;
-    height: 48rem;
-  }
 
   .post {
     :deep(.title) {

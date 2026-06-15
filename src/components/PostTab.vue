@@ -490,10 +490,10 @@ async function onCoverSelected(event: Event) {
         let curl = (resp.data.cover.cover_url as string).replace('covers', 'covers/webp')
         curl = curl.slice(0, curl.lastIndexOf('.')) + '-400w.webp'
         const coverUrl = import.meta.env.VITE_BASE_API + '/api' + curl
-        const at = document.querySelector(
-          `div[uri="${appStore.post_data.uri}"] .post-content`,
+        const img = document.querySelector(
+          `div[uri="${appStore.post_data.uri}"] .post-content img`,
         ) as HTMLElement
-        at.style.backgroundImage = `url("${coverUrl}")`
+        img.setAttribute("src",coverUrl)
         appStore.notify?.('上传成功')
       })
       .catch((e) => {
