@@ -52,6 +52,9 @@ const diagram = {
   position: [] as { x: number; y: number }[],
   offset_per: ref([0, 0]),
   timer: null as null | number,
+  rafId: null as number | null,
+  resetId: null as number | null,
+  // setters: new Map<HTMLElement, { left: gsap.QuickToFunc; top: gsap.QuickToFunc }>(),
   init: () => {
     diagram.container = document.querySelector('.posts-diagram-container')
     document.addEventListener('mousedown', () => {
@@ -62,7 +65,13 @@ const diagram = {
     })
     document.addEventListener('mouseup', () => {
       diagram.draggable.value = false
-      diagram.reset()
+      if (!diagram.resetId) {
+        diagram.resetId = requestAnimationFrame(() => {
+          diagram.reset()
+          diagram.resetId = null
+        })
+      }
+
     })
     document.addEventListener('touchend', () => {
       diagram.draggable.value = false
@@ -70,13 +79,19 @@ const diagram = {
     })
     document.addEventListener('mousemove', (e) => {
       if (!diagram.draggable.value || appStore.show_detail) return
-      if (diagram.mouse_pos.value[0] === 0 || diagram.mouse_pos.value[1] === 0) {
+      if (diagram.mouse_pos.value[0] === 0 && diagram.mouse_pos.value[1] === 0) {
         diagram.mouse_pos.value = [e.x, e.y]
         return
       }
-      if (diagram.mouse_pos.value[0] !== 0 || diagram.mouse_pos.value[1] !== 0)
-        diagram.move(e.x, e.y)
-      diagram.mouse_pos.value = [e.x, e.y]
+      if (!diagram.rafId) {
+        diagram.rafId = requestAnimationFrame(() => {
+          // console.log(diagram.mouse_pos.value)
+          const delta = [e.x - diagram.mouse_pos.value[0], e.y - diagram.mouse_pos.value[1]]
+          diagram.mouse_pos.value = [e.x, e.y]
+          diagram.move(delta[0], delta[1])
+          diagram.rafId = null
+        })
+      }
     })
     document.addEventListener('touchmove', (e) => {
       if (!diagram.draggable.value || appStore.show_detail) return
@@ -106,6 +121,7 @@ const diagram = {
       .catch((error) => {
         console.error('Failed to fetch posts:', error)
       })
+    // this.initSetters()
     this.if_visible.value = true
     this.posts.value = document.querySelectorAll('.diagram-post')
     this.posts.value.forEach((p) => {
@@ -129,6 +145,7 @@ const diagram = {
     //   p.classList.add('glitch')
     // })
   },
+
   hide: (immediate: () => void, next: () => void) => {
     if (diagram.animator?.isActive()) {
       diagram.animator.kill()
@@ -150,40 +167,51 @@ const diagram = {
     } else if (next) next()
   },
   move(x: number, y: number) {
-    const offet_x = (x - diagram.mouse_pos.value[0]) / document.body.offsetWidth
-    const offet_y = (y - diagram.mouse_pos.value[1]) / document.body.offsetHeight
+    const offet_x = x / document.body.offsetWidth
+    const offet_y = y / document.body.offsetHeight
     diagram.offset_per.value[0] = offet_x * 100
     diagram.offset_per.value[1] = offet_y * 100
     if (diagram.posts.value) {
-      console.log(diagram.posts.value.length, diagram.position.length)
       diagram.posts.value.forEach((p, idx) => {
-        if (this.lock.has(idx) && this.lock.get(idx) == true) return
-        if (this.moving[idx] != undefined && this.moving[idx].isActive()) this.moving[idx].kill()
+        if (diagram.lock.get(idx)) return
+        if (this.moving[idx] != undefined && this.moving[idx].isActive()) {
+          this.moving[idx].kill()
+        }
         diagram.position[idx].x = diagram.position[idx].x + diagram.offset_per.value[0]
         diagram.position[idx].y = diagram.position[idx].y + diagram.offset_per.value[1]
-        let new_left = diagram.position[idx].x
-        let new_top = diagram.position[idx].y
+        const out_left = diagram.position[idx].x
+        const out_top = diagram.position[idx].y
         const width = 300
         let flag = false
 
+        let new_left = out_left
+        let new_top = out_top
         if (new_left < 50 - width / 2) {
-          this.lock.set(idx, true)
           new_left += width
           flag = true
         } else if (new_left > width / 2 + 50) {
-          // this.lock.set(idx, true)
           new_left -= width
           flag = true
         }
         if (new_top < 50 - width / 2) {
-          // this.lock.set(idx, true)
           new_top += width
           flag = true
         } else if (new_top > width / 2 + 50) {
-          // this.lock.set(idx, true)
           new_top -= width
           flag = true
         }
+
+        if (flag) {
+          gsap.set(p, {
+            left: new_left + '%',
+            top: new_top + '%',
+          })
+
+          diagram.position[idx].x = new_left
+          diagram.position[idx].y = new_top
+          return
+        }
+        // if (flag) console.log(idx)
 
         this.moving[idx] = gsap.timeline({
           onStart: () => {
@@ -193,27 +221,10 @@ const diagram = {
             // appStore.ascii_resume?.()
           }
         }).to(p, {
-          left: new_left + '%',
-          top: new_top + '%',
+          left: out_left + '%',
+          top: out_top + '%',
           duration: 1,
         })
-
-        if (flag) {
-          this.lock.set(idx, true)
-          gsap.fromTo(p, {
-            opacity: 0
-          }, {
-            left: new_left + '%',
-            top: new_top + '%',
-            onComplete: () => {
-              p.style.setProperty('opacity', '1')
-              this.lock.set(idx, false)
-            }
-          })
-        }
-
-        diagram.position[idx].x = new_left
-        diagram.position[idx].y = new_top
       })
     }
   },
