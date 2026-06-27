@@ -1,38 +1,25 @@
 <template>
   <div class="progress-n-welcome _fullscreen">
-    <div
-      class="progress-text"
-      :class="
-        appStore.total_steps != 0 && appStore.total_steps == appStore.completed_steps
-          ? ['complete']
-          : []
-      "
-    >
+    <div class="progress-text" :class="appStore.total_steps != 0 && appStore.total_steps == appStore.completed_steps
+      ? ['complete']
+      : []
+      ">
       <p>
         <span>Welcome</span>
       </p>
     </div>
-    <div
-      class="progress-bar"
-      :class="
-        appStore.total_steps != 0 && appStore.total_steps == appStore.completed_steps
-          ? ['complete']
-          : []
-      "
-      :style="{
+    <div class="progress-bar" :class="appStore.total_steps != 0 && appStore.total_steps == appStore.completed_steps
+      ? ['complete']
+      : []
+      " :style="{
         '--progress':
           appStore.total_steps == 0 ? 0 : appStore.completed_steps / appStore.total_steps,
-      }"
-    >
+      }">
       <!-- <p>{{ appStore.completed_steps }}/{{ appStore.total_steps }}</p> -->
     </div>
     <div class="progress-container">
-      <div
-        :class="p.complete ? ['hide'] : []"
-        class="progress"
-        v-for="(p, i) in appStore.progress"
-        :key="`progress${i}`"
-      >
+      <div :class="p.complete ? ['hide'] : []" class="progress" v-for="(p, i) in appStore.progress"
+        :key="`progress${i}`">
         <p v-if="!p.complete">{{ p.label }}{{ p.current }}/{{ p.total }}</p>
         <p v-else>{{ p.label }}</p>
       </div>
@@ -50,7 +37,7 @@ import gsap from 'gsap'
 
 const appStore = useAppStore()
 const progress = {
-  init() {},
+  init() { },
 }
 
 watch(
@@ -121,6 +108,7 @@ watch(
   // left: 50%;
   // top: 50%;
   // transform: translate(-50%, -50%);
+  transform: translateY(-3.2rem);
 
   &.complete {
     user-select: none;
@@ -146,6 +134,7 @@ watch(
 }
 
 .progress-bar {
+  position: absolute;
   width: 50rem;
   background-color: #111;
   outline: 1px solid #fff;

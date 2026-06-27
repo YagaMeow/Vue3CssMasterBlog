@@ -9,6 +9,11 @@
   background-color: #70CFF850;
 }
 
+  .character-count {
+    scale: 1.5;
+    transform-origin: 110% bottom;
+  }
+
 .ProseMirror {
 
   margin: 0;
@@ -203,8 +208,9 @@
 
   ul {
     li {
+      margin-left: 4rem;
       &::marker {
-        font-size: 2rem;
+        font-size: 4rem;
       }
 
       * {
@@ -216,8 +222,9 @@
 
   ol {
     li {
+      margin-left: 4rem;
       &::marker {
-        font-size: 2rem;
+        font-size: 4rem;
         font-weight: bold;
       }
     }
@@ -228,8 +235,11 @@
     background-color: #ccc;
     color: #000;
     border-radius: 0.2rem;
-    font-size: 2rem;
+    font-size: 4rem;
     padding: 0.1rem;
+    * {
+      font-size: 4rem;
+    }
   }
 
   pre {

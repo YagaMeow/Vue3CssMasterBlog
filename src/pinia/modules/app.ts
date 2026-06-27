@@ -162,6 +162,7 @@ export const useAppStore = defineStore('app', () => {
             audio_controller.toorfrompost.play()
           },
           () => {
+            ascii_pause.value?.();
             show_diagram.value?.()
           },
         )
@@ -174,6 +175,7 @@ export const useAppStore = defineStore('app', () => {
             audio_controller.toorfrompost.play()
           },
           () => {
+            ascii_pause.value?.();
             show_masonry.value?.()
           },
         )
@@ -186,6 +188,7 @@ export const useAppStore = defineStore('app', () => {
             audio_controller.toorfrompost.play()
           },
           () => {
+            ascii_pause.value?.();
             show_list.value?.()
           },
         )
@@ -207,6 +210,7 @@ export const useAppStore = defineStore('app', () => {
           },
           () => {
             show_menus.value?.()
+            ascii_resume.value?.()
           },
         )
         break
@@ -222,6 +226,7 @@ export const useAppStore = defineStore('app', () => {
           },
           () => {
             show_menus.value?.()
+            ascii_pause.value?.();
           },
         )
         break
@@ -237,6 +242,7 @@ export const useAppStore = defineStore('app', () => {
           },
           () => {
             show_menus.value?.()
+            ascii_pause.value?.();
           },
         )
         break

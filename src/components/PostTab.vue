@@ -133,7 +133,7 @@ import MyButton from '@/components/ui/btn.vue'
 import { onMounted, ref } from 'vue'
 import gsap from 'gsap'
 import { useAppStore } from '@/pinia'
-import { formatDate } from '@/utils/utils'
+import { formatDate, isMobile } from '@/utils/utils'
 import PostPage from '@/views/PostPage/PostPage.vue'
 import Lenis from 'lenis'
 import { ArticleAPI } from '@/api/api'
@@ -439,11 +439,20 @@ function handleScale() {
   const container = document.querySelector('.tab-container')
   if (posttap.has_scaled) {
     posttap.has_scaled = false
-    gsap.to(container, {
-      width: '90rem',
-      height: '120rem',
-      ease: 'power3.out',
-    })
+
+    if (isMobile()) {
+      gsap.to(container, {
+        width: '95vw',
+        height: '80dvh',
+        ease: 'power3.out',
+      })
+    } else {
+      gsap.to(container, {
+        width: '90rem',
+        height: '120rem',
+        ease: 'power3.out',
+      })
+    }
   } else {
     posttap.has_scaled = true
     gsap.to(container, {
@@ -493,7 +502,7 @@ async function onCoverSelected(event: Event) {
         const img = document.querySelector(
           `div[uri="${appStore.post_data.uri}"] .post-content img`,
         ) as HTMLElement
-        img.setAttribute("src",coverUrl)
+        img.setAttribute("src", coverUrl)
         appStore.notify?.('上传成功')
       })
       .catch((e) => {
@@ -733,20 +742,20 @@ onMounted(() => {
 
 @media screen and (max-aspect-ratio: 0.8/1) {
   .mask-container .tab-container {
-    width: 90rem;
-    height: 90rem;
+    width: 95vw;
+    height: 80dvh;
 
     .mybutton {
       width: 8rem !important;
       height: 8rem !important;
 
       span {
-        font-size: 5rem !important;
+        font-size: 3rem !important;
       }
 
       .svg-icon {
-        width: 5rem;
-        height: 5rem;
+        width: 3rem;
+        height: 3rem;
       }
     }
 

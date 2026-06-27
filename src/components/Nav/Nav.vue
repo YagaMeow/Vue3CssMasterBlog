@@ -460,12 +460,13 @@ onUnmounted(() => {
         font-weight: bolder;
         font-size: 1.7rem;
         padding-left: 0.5rem;
+        transform: translate(0,0);
         transition: transform ease-in-out 0.2s;
       }
 
       &:hover {
         .button-content::before {
-          transform: translateX(-0.3rem);
+          transform: translate(-0.3rem,0);
           transition: transform ease-in-out 0.2s;
         }
       }

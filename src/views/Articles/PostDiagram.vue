@@ -30,7 +30,7 @@ function handleInter(entries: IntersectionObserverEntry[]) {
       ; (entry.target as HTMLElement).style.backgroundImage =
         (entry.target as HTMLElement).dataset.bg || ''
     let dbg = (entry.target as HTMLElement).dataset.bg || ''
-    dbg = dbg.slice(dbg.indexOf('"')+1, dbg.lastIndexOf('"'))
+    dbg = dbg.slice(dbg.indexOf('"') + 1, dbg.lastIndexOf('"'))
       ; (entry.target as HTMLElement).querySelector("img")?.setAttribute("src", dbg || '')
     entry.target.classList.remove('lazy-load')
     observer.unobserve(entry.target)
@@ -186,8 +186,12 @@ const diagram = {
         }
 
         this.moving[idx] = gsap.timeline({
-          onStart: () => { appStore.ascii_pause?.() },
-          onComplete: () => { appStore.ascii_resume?.() }
+          onStart: () => {
+            // appStore.ascii_pause?.()
+          },
+          onComplete: () => {
+            // appStore.ascii_resume?.()
+          }
         }).to(p, {
           left: new_left + '%',
           top: new_top + '%',

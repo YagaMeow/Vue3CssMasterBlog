@@ -70,7 +70,8 @@ const day = {
       this.animator = gsap.timeline().to(container.value, {
         width: "200%",
         height: "calc(200% + 1rem)",
-        duration: 1,
+        scale: 1,
+        duration: .5,
         x: window.innerWidth - container.value.getBoundingClientRect().right < container.value.clientWidth ? "-50%" : container.value.getBoundingClientRect().left < container.value.clientWidth ? "2%" : 0,
         y: window.innerHeight - container.value.getBoundingClientRect().bottom < container.value.clientHeight ? "-50%" : 0,
         ease: "elastic.out(1,1)"
@@ -98,7 +99,7 @@ onMounted(() => {
 .day {
   cursor: pointer;
   // background-color: rgba($color: #000000, $alpha: 0.3);
-  background-color: rgba($color: #868686, $alpha: 0.8);
+  // background-color: rgba($color: #868686, $alpha: 0.8);
   border-radius: 1rem;
   // min-width: 20vh;
   // height: auto;
@@ -115,12 +116,13 @@ onMounted(() => {
   }
 
   &.current {
-    background-color: rgba($color: #3a3a3a, $alpha: 0.8);
+    background-color: rgba($color: #3a3a3a, $alpha: 0.6);
 
     &:hover {
       scale: 1.05 !important;
       z-index: 10;
-      background-color: #aaa;
+      background-color:rgba(51, 51, 51,.96);
+      backdrop-filter: blur(1px);
       transition: scale 0.2s cubic-bezier(0.29, 1.32, 0.74, 1.77), background-color 0.2s ease;
 
       .content {
@@ -189,7 +191,7 @@ onMounted(() => {
         align-items: center;
         list-style: none;
         font-size: 2rem;
-        color: #333;
+        color: #eee;
         opacity: 0;
         margin-top: 1rem;
         &::before {
