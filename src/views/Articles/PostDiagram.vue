@@ -58,9 +58,11 @@ const diagram = {
   init: () => {
     diagram.container = document.querySelector('.posts-diagram-container')
     document.addEventListener('mousedown', () => {
+      if (diagram.rafId) return
       if (diagram.if_visible.value) diagram.draggable.value = true
     })
     document.addEventListener('touchstart', () => {
+      if (diagram.rafId) return
       if (diagram.if_visible.value) diagram.draggable.value = true
     })
     document.addEventListener('mouseup', () => {
@@ -75,15 +77,20 @@ const diagram = {
     })
     document.addEventListener('touchend', () => {
       diagram.draggable.value = false
-      diagram.reset()
+      if (!diagram.resetId) {
+        diagram.resetId = requestAnimationFrame(() => {
+          diagram.reset()
+          diagram.resetId = null
+        })
+      }
     })
     document.addEventListener('mousemove', (e) => {
-      if (!diagram.draggable.value || appStore.show_detail) return
-      if (diagram.mouse_pos.value[0] === 0 && diagram.mouse_pos.value[1] === 0) {
-        diagram.mouse_pos.value = [e.x, e.y]
-        return
-      }
       if (!diagram.rafId) {
+        if (!diagram.draggable.value || appStore.show_detail) return
+        if (diagram.mouse_pos.value[0] === 0 && diagram.mouse_pos.value[1] === 0) {
+          diagram.mouse_pos.value = [e.x, e.y]
+          return
+        }
         diagram.rafId = requestAnimationFrame(() => {
           // console.log(diagram.mouse_pos.value)
           const delta = [e.x - diagram.mouse_pos.value[0], e.y - diagram.mouse_pos.value[1]]
@@ -94,18 +101,20 @@ const diagram = {
       }
     })
     document.addEventListener('touchmove', (e) => {
-      if (!diagram.draggable.value || appStore.show_detail) return
-      if (diagram.mouse_pos.value[0] === 0 || diagram.mouse_pos.value[1] === 0) {
-        diagram.mouse_pos.value = [e.touches[0].clientX, e.touches[0].clientY]
-        return
+      if (!diagram.rafId) {
+        if (!diagram.draggable.value || appStore.show_detail) return
+        if (diagram.mouse_pos.value[0] === 0 || diagram.mouse_pos.value[1] === 0) {
+          diagram.mouse_pos.value = [e.touches[0].clientX, e.touches[0].clientY]
+          return
+        }
+        diagram.rafId = requestAnimationFrame(() => {
+          // console.log(diagram.mouse_pos.value)
+          const delta = [e.touches[0].clientX- diagram.mouse_pos.value[0], e.touches[0].clientY - diagram.mouse_pos.value[1]]
+          diagram.mouse_pos.value = [e.touches[0].clientX, e.touches[0].clientY]
+          diagram.move(delta[0], delta[1])
+          diagram.rafId = null
+        })
       }
-      if (diagram.timer) return
-      diagram.timer = setTimeout(() => {
-        diagram.timer = 0
-      }, 10)
-      if (diagram.mouse_pos.value[0] !== 0 || diagram.mouse_pos.value[1] !== 0)
-        diagram.move(e.touches[0].clientX, e.touches[0].clientY)
-      diagram.mouse_pos.value = [e.touches[0].clientX, e.touches[0].clientY]
     })
   },
   async show() {
