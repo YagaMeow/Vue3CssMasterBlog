@@ -1,10 +1,6 @@
 <template>
   <div class="_fullscreen title_menu_container" v-show="(titleMenu.if_visible as Ref).value">
-    <div
-      class="title_menu"
-      ref="container"
-      @mouseenter="appStore.audio_controller.entermenubutton.play()"
-    >
+    <div class="title_menu" ref="container" @mouseenter="appStore.audio_controller.entermenubutton.play()">
       <!-- <svg class="middle_line _null" viewBox="0 0 50 50"> -->
       <!-- <circle class="_dashed" cx="25" cy="25" r="25" vector-effect="non-scaling-stroke"></circle> -->
       <!-- </svg> -->
@@ -12,11 +8,7 @@
       <!-- <circle class="orbit" cx="25" cy="25" r="25"></circle> -->
       <!-- <circle class="_dashed" cx="25" cy="25" r="25" vector-effect="non-scaling-stroke"></circle> -->
       <!-- </svg> -->
-      <div
-        @mouseleave="titleMenu.mouseout"
-        class="title_menu_button active"
-        @click="appStore.menus_to_posts()"
-      >
+      <div @mouseleave="titleMenu.mouseout" class="title_menu_button active" @click="appStore.menus_to_posts()">
         <div class="live">live now</div>
         Articles
       </div>
@@ -27,18 +19,10 @@
       >
         Scroll Trigger
       </div> -->
-      <div
-        class="title_menu_button"
-        @mouseleave="titleMenu.mouseout"
-        @click="appStore.menus_to_calendar_page"
-      >
+      <div class="title_menu_button" @mouseleave="titleMenu.mouseout" @click="appStore.menus_to_calendar_page">
         Calendar
       </div>
-      <div
-        class="title_menu_button"
-        @mouseleave="titleMenu.mouseout"
-        @click="appStore.menus_to_demo_page"
-      >
+      <div class="title_menu_button" @mouseleave="titleMenu.mouseout" @click="appStore.menus_to_demo_page">
         Demo
       </div>
       <!-- <div
@@ -165,7 +149,7 @@ const titleMenu = {
         duration: 0.2,
         ease: 'power3.in',
         onComplete: () => {
-          ;(this.if_visible as Ref).value = false
+          ; (this.if_visible as Ref).value = false
           if (next) next()
         },
       })
@@ -196,7 +180,7 @@ const titleMenu = {
       appStore.audio_controller.entermenubutton.play()
     } else if (e.code == 'Enter') {
       if (appStore.login_tab) return
-      ;(buttons[currentAcitveIndex] as HTMLElement).click()
+        ; (buttons[currentAcitveIndex] as HTMLElement).click()
     }
   },
 }
@@ -212,6 +196,7 @@ onMounted(() => {
   justify-content: center;
   align-items: center;
 }
+
 .title_menu {
   --scale: 1;
 
@@ -220,6 +205,7 @@ onMounted(() => {
   justify-content: center;
   align-items: center;
   gap: 1rem;
+
   .title_menu_button {
     &.active {
       background-color: #454545;
@@ -229,15 +215,15 @@ onMounted(() => {
         opacity 0.2s ease,
         height cubic-bezier(0, 0, 0.8, 1.2) 0.1s;
     }
+
     transform-origin: center center;
     width: calc(var(--scale) * 60rem);
     height: calc(var(--scale) * 16rem);
     overflow: hidden;
 
     margin: 0.3rem 0;
-    transition:
-      opacity 0.1s ease,
-      height cubic-bezier(0.11, 0.73, 0.37, 1.23) 0.1s;
+    transition: opacity 0.1s ease,
+    height cubic-bezier(0.11, 0.73, 0.37, 1.23) 0.1s;
     background-color: #616161;
     border-radius: 1rem;
     // box-shadow:
@@ -263,7 +249,7 @@ onMounted(() => {
 
       &:nth-child(1) {
         &::after {
-          opacity: 100;
+          opacity: 1;
           transition: all ease-in-out 0.5s;
           animation: scroll 50s linear infinite;
         }
@@ -336,6 +322,7 @@ onMounted(() => {
 
 .out_line {
   scale: 1.5;
+
   ._dashed {
     stroke-width: 1rem;
   }
@@ -346,18 +333,21 @@ onMounted(() => {
   position: absolute;
   width: 80rem;
   overflow: visible;
+
   circle {
     stroke-linecap: round;
     stroke-dasharray: 0 4rem;
     transform-origin: center;
     stroke: rgba($color: #000000, $alpha: 0.8);
   }
+
   .orbit {
     fill: none;
     stroke-dasharray: none;
     stroke-width: 0.001rem;
     stroke: rgba($color: #000, $alpha: 0.8);
   }
+
   // animation: rotate infinite 40s linear;
 }
 
@@ -365,23 +355,28 @@ onMounted(() => {
   0% {
     transform: rotate(0);
   }
+
   100% {
     transform: rotate(360deg);
   }
 }
 
 @media screen and (max-aspect-ratio: 0.8/1) {
+
   .middle_line,
   .out_line {
     display: none;
   }
+
   .title_menu {
     .title_menu_button {
       width: calc(var(--scale) * 80rem);
       height: calc(var(--scale) * 24rem);
       font-size: 10rem;
+
       .live {
         font-size: 4rem;
+
         &::after {
           margin-left: 2rem;
           width: 1.6rem;

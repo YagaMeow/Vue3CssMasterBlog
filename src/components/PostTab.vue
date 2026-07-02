@@ -449,7 +449,7 @@ function handleScale() {
     } else {
       gsap.to(container, {
         width: '90rem',
-        height: '120rem',
+        height: '90rem',
         ease: 'power3.out',
       })
     }

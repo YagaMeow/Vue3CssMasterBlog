@@ -13,7 +13,7 @@
     <MyNotify></MyNotify>
     <!-- <LoadTest /> -->
     <DemoPage></DemoPage>
-    <div class="hue-mask _fullscreen"></div>
+    <!-- <div class="hue-mask _fullscreen"></div> -->
   </div>
   <Progress></Progress>
 </template>
@@ -33,7 +33,7 @@ import TitleMenu from './TitleMenu.vue'
 import PostList from '@/views/Articles/PostList.vue'
 import MasonryPost from '@/views/Articles/MasonryPost.vue'
 import { useAppStore } from '@/pinia'
-import { onMounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import gsap from 'gsap'
 
 const appStore = useAppStore()
@@ -50,34 +50,38 @@ const index = {
       appStore.hajime = false
       this.animator = gsap
         .timeline()
-        .to(this.container, {
-          // clipPath: 'polygon(-100% 50%, 100% 50%, -100% 50%)',
-          // clipPath: 'circle(100%)',
-          clipPath: 'polygon(0 0, 100% 0,100% 100%,0 100%)',
-          duration: 0.8,
-          force3D: true,
-          ease: 'power1.out',
-        })
-        .fromTo(
-          this.hue,
-          {
-            clipPath: 'polygon(0 0, 100% 0,100% 100%,0 100%)',
-          },
-          {
-            clipPath: 'polygon(100% 0, 100% 0,100% 100%,100% 100%)',
-            ease: 'power1.out',
-            duration: 0.5,
-          },
-          '>-0.3',
-        )
+      // .fromTo(document.querySelectorAll(".brick"), {
+      //   scale:0,
+      //   rotate: "45deg",
+      // },{
+      //   scale:1,
+      //   rotate: 0,
+      //   stagger: {
+      //     from: this.count,
+      //     amount: 1
+      //   }
+      // })
+      // .fromTo(
+      //   this.hue,
+      //   {
+      //     clipPath: 'polygon(0 0, 100% 0,100% 100%,0 100%)',
+      //   },
+      //   {
+      //     clipPath: 'polygon(100% 0, 100% 0,100% 100%,100% 100%)',
+      //     ease: 'power1.out',
+      //     duration: 0.5,
+      //   },
+      //   '>-0.3',
+      // )
     }
-  },
+  }
 }
 appStore.show_loading = index.show.bind(index)
 
 onMounted(() => {
   index.init()
 })
+
 // const appStore = useAppStore()
 // const lenis = new Lenis({})
 // appStore.lenis = lenis
@@ -87,6 +91,7 @@ onMounted(() => {
 // }
 // requestAnimationFrame(raf)
 </script>
+
 <style lang="scss" scoped>
 .hue-mask {
   user-select: none;
@@ -94,8 +99,9 @@ onMounted(() => {
   background-color: #fff;
   backdrop-filter: hue-rotate(240deg);
   // filter: contrast(1.5) saturate(2);
-  mix-blend-mode: difference;
+  // mix-blend-mode: difference;
 }
+
 .index-container {
   /* background: linear-gradient(110deg, rgba(74, 47, 95, 0.5) 10%, #fff 50%),
     linear-gradient(
@@ -108,7 +114,7 @@ onMounted(() => {
   // clip-path: polygon(100% -50%,100% 50%,100% 150%);
   // clip-path: path("M10,150 C10,150 25,25 180,25 C180,25 195,150 180,150 L10,150 Z");
   // clip-path: path("M 100 0 a 50 50 180 1 0 0 100 Z");
-  clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+  // clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
   display: flex;
   will-change: clip-path;
   overflow: hidden;
