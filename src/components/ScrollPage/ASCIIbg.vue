@@ -283,7 +283,7 @@ const scroll = {
       if (!lastTime) lastTime = time
       const delta = time - lastTime
       if (delta > 100) {
-        if (this.asciibox)
+        if (this.asciibox && !this.pause)
           this.asciibox.innerText = this.texts[this.animate_status][this.current_idx]
         lastTime = time
         this.current_idx = (this.current_idx + 1) % this.texts[this.animate_status].length

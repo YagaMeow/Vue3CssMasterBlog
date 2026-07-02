@@ -27,7 +27,7 @@
 import { onMounted } from 'vue'
 import gsap from 'gsap'
 import { useAppStore, useUserStore } from '@/pinia'
-import { elasticEase2 } from '@/utils/utils'
+import { elasticEase2, isMobile } from '@/utils/utils'
 import { ref } from 'vue'
 gsap.registerEase('myEase', elasticEase2)
 const appStore = useAppStore()
@@ -55,25 +55,49 @@ const login = {
     this.content?.classList.add('show')
     appStore.login_tab = true
     this.is_visible.value = true
-    this.animator = gsap
-      .timeline()
-      .to(this.content, {
-        x: 0,
-        duration: 0.5,
-        ease: 'power1.out',
-      })
-      .to(
-        this.content,
-        {
-          rotate: 5,
-          duration: 1.5,
-          ease: 'power4.out',
-          onComplete: () => {
-            this.content?.classList.remove('show')
+    if (isMobile()) {
+      this.animator = gsap
+        .timeline()
+        .to(this.content, {
+          scale: 2,
+          x: 0,
+          duration: 0.5,
+          ease: 'power1.out',
+        })
+        .to(
+          this.content,
+          {
+            rotate: 5,
+            duration: 1.5,
+            ease: 'power4.out',
+            onComplete: () => {
+              this.content?.classList.remove('show')
+            },
           },
-        },
-        '<0.1',
-      )
+          '<0.1',
+        )
+    } else {
+      this.animator = gsap
+        .timeline()
+        .to(this.content, {
+          x: 0,
+          duration: 0.5,
+          ease: 'power1.out',
+        })
+        .to(
+          this.content,
+          {
+            rotate: 5,
+            duration: 1.5,
+            ease: 'power4.out',
+            onComplete: () => {
+              this.content?.classList.remove('show')
+            },
+          },
+          '<0.1',
+        )
+    }
+
   },
   hide() {
     if (this.animator?.isActive()) {
@@ -85,6 +109,7 @@ const login = {
       .to(this.content, {
         x: '100vw',
         rotate: -5,
+        scale: 1,
         duration: 0.5,
         ease: 'power1.in',
         onComplete: () => {
@@ -131,6 +156,7 @@ onMounted(() => {
     0% {
       transform: rotate(0);
     }
+
     100% {
       transform: rotate(10deg);
     }
@@ -143,6 +169,7 @@ onMounted(() => {
     transform: translateX(-100rem) rotate(15deg);
     width: 50rem;
     height: 30rem;
+
     &.show::after {
       animation: myrotate 1s ease-in-out forwards;
     }
@@ -231,7 +258,7 @@ onMounted(() => {
       align-items: center;
       grid-template-columns: 1fr minmax(0, 2.5fr);
 
-      > div {
+      >div {
         position: relative;
         margin-left: 1rem;
 

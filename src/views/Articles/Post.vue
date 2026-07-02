@@ -95,14 +95,15 @@ const post = {
   if_visible: ref(true),
   show_info: ref(false),
   init: () => {
-    console.log("init")
     const top = normalRange(50, 25)
-    const left = normalRange(50, 50)
+    const left = normalRange(50, 25)
     post.post = p.value
     post.info = info.value
     post.icon = i.value ? (i.value.$el as HTMLElement) : null
-      ; (post.post as HTMLElement).style.left = `${left}%`
-      ; (post.post as HTMLElement).style.top = `${top}%`
+    const width = document.body.offsetWidth
+    const height = document.body.offsetHeight
+    ; (post.post as HTMLElement).style.setProperty("--x", `${left / 100 * width}px`);
+    ; (post.post as HTMLElement).style.setProperty("--y", `${top / 100 * height}px`);
     const bgcontainer = post.post?.querySelector('.post-content')
     const bgstyle = range(1, 7)
     const colorstyle = range(1, 9)
@@ -220,7 +221,6 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .post-container {
   // opacity: 0;
-  scale: 0.8;
   --color1: rgb(112, 219, 246);
   --color2: rgb(0, 0, 0);
   --color3: rgb(246, 112, 197);
@@ -231,6 +231,7 @@ onUnmounted(() => {
   --color8: rgb(190, 246, 112);
   --x: 0;
   --y: 0;
+  // transition: transform 1s ease-out;
 
   &:hover {
     z-index: 998;
@@ -365,6 +366,7 @@ onUnmounted(() => {
     img {
       width: 32rem;
       height: auto;
+
       @media screen and (max-aspect-ratio: 0.8/1) {
         width: 48rem;
         height: auto;

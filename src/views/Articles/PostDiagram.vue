@@ -17,7 +17,7 @@ import { ArticleAPI } from '@/api/api'
 import { autoResizerProps, ElNotification } from 'element-plus'
 import { useAppStore } from '@/pinia'
 import gsap from 'gsap'
-import { fa } from 'element-plus/es/locales.mjs'
+import { fa, id } from 'element-plus/es/locales.mjs'
 import type { Article } from '@/utils/utils'
 
 const appStore = useAppStore()
@@ -30,7 +30,7 @@ function handleInter(entries: IntersectionObserverEntry[]) {
       ; (entry.target as HTMLElement).style.backgroundImage =
         (entry.target as HTMLElement).dataset.bg || ''
     let dbg = (entry.target as HTMLElement).dataset.bg || ''
-    dbg = dbg.slice(dbg.indexOf('"')+1, dbg.lastIndexOf('"'))
+    dbg = dbg.slice(dbg.indexOf('"') + 1, dbg.lastIndexOf('"'))
       ; (entry.target as HTMLElement).querySelector("img")?.setAttribute("src", dbg || '')
     entry.target.classList.remove('lazy-load')
     observer.unobserve(entry.target)
@@ -52,45 +52,69 @@ const diagram = {
   position: [] as { x: number; y: number }[],
   offset_per: ref([0, 0]),
   timer: null as null | number,
+  rafId: null as number | null,
+  resetId: null as number | null,
+  // setters: new Map<HTMLElement, { left: gsap.QuickToFunc; top: gsap.QuickToFunc }>(),
   init: () => {
     diagram.container = document.querySelector('.posts-diagram-container')
-    document.addEventListener('mousedown', () => {
+    document.addEventListener('mousedown', (e) => {
+      if (diagram.rafId || !(e.target as HTMLElement).classList.contains("posts-diagram-container")) return
       if (diagram.if_visible.value) diagram.draggable.value = true
     })
     document.addEventListener('touchstart', () => {
+      if (diagram.rafId) return
       if (diagram.if_visible.value) diagram.draggable.value = true
     })
     document.addEventListener('mouseup', () => {
       diagram.draggable.value = false
-      diagram.reset()
+      if (!diagram.resetId) {
+        diagram.resetId = requestAnimationFrame(() => {
+          diagram.reset()
+          diagram.resetId = null
+        })
+      }
+
     })
     document.addEventListener('touchend', () => {
       diagram.draggable.value = false
-      diagram.reset()
+      if (!diagram.resetId) {
+        diagram.resetId = requestAnimationFrame(() => {
+          diagram.reset()
+          diagram.resetId = null
+        })
+      }
     })
     document.addEventListener('mousemove', (e) => {
-      if (!diagram.draggable.value || appStore.show_detail) return
-      if (diagram.mouse_pos.value[0] === 0 || diagram.mouse_pos.value[1] === 0) {
-        diagram.mouse_pos.value = [e.x, e.y]
-        return
+      if (!diagram.rafId) {
+        if (!diagram.draggable.value || appStore.show_detail) return
+        if (diagram.mouse_pos.value[0] === 0 && diagram.mouse_pos.value[1] === 0) {
+          diagram.mouse_pos.value = [e.x, e.y]
+          return
+        }
+        diagram.rafId = requestAnimationFrame(() => {
+          // console.log(diagram.mouse_pos.value)
+          const delta = [e.x - diagram.mouse_pos.value[0], e.y - diagram.mouse_pos.value[1]]
+          diagram.mouse_pos.value = [e.x, e.y]
+          diagram.move(delta[0], delta[1])
+          diagram.rafId = null
+        })
       }
-      if (diagram.mouse_pos.value[0] !== 0 || diagram.mouse_pos.value[1] !== 0)
-        diagram.move(e.x, e.y)
-      diagram.mouse_pos.value = [e.x, e.y]
     })
     document.addEventListener('touchmove', (e) => {
-      if (!diagram.draggable.value || appStore.show_detail) return
-      if (diagram.mouse_pos.value[0] === 0 || diagram.mouse_pos.value[1] === 0) {
-        diagram.mouse_pos.value = [e.touches[0].clientX, e.touches[0].clientY]
-        return
+      if (!diagram.rafId) {
+        if (!diagram.draggable.value || appStore.show_detail) return
+        if (diagram.mouse_pos.value[0] === 0 || diagram.mouse_pos.value[1] === 0) {
+          diagram.mouse_pos.value = [e.touches[0].clientX, e.touches[0].clientY]
+          return
+        }
+        diagram.rafId = requestAnimationFrame(() => {
+          // console.log(diagram.mouse_pos.value)
+          const delta = [e.touches[0].clientX - diagram.mouse_pos.value[0], e.touches[0].clientY - diagram.mouse_pos.value[1]]
+          diagram.mouse_pos.value = [e.touches[0].clientX, e.touches[0].clientY]
+          diagram.move(delta[0], delta[1])
+          diagram.rafId = null
+        })
       }
-      if (diagram.timer) return
-      diagram.timer = setTimeout(() => {
-        diagram.timer = 0
-      }, 10)
-      if (diagram.mouse_pos.value[0] !== 0 || diagram.mouse_pos.value[1] !== 0)
-        diagram.move(e.touches[0].clientX, e.touches[0].clientY)
-      diagram.mouse_pos.value = [e.touches[0].clientX, e.touches[0].clientY]
     })
   },
   async show() {
@@ -106,29 +130,35 @@ const diagram = {
       .catch((error) => {
         console.error('Failed to fetch posts:', error)
       })
+    // this.initSetters()
     this.if_visible.value = true
     this.posts.value = document.querySelectorAll('.diagram-post')
-    this.posts.value.forEach((p) => {
+    this.posts.value?.forEach((p) => {
       this.position.push({
-        x: parseFloat(p.style.getPropertyValue('left')),
-        y: parseFloat(p.style.getPropertyValue('top')),
+        x: parseFloat(p.style.getPropertyValue('--x')),
+        y: parseFloat(p.style.getPropertyValue('--y')),
       })
     })
-    this.animator = gsap.timeline().fromTo(this.posts.value, {
-      opacity: 0
-    }, {
-      opacity: 1,
-      scale: 1,
-      duration: 0.2,
-      stagger: 0.1,
-      ease: 'power3.out',
-      x: 'var(--x) + "px"',
-      y: 'var(--y) + "px"',
+    this.posts.value?.forEach(p => {
+      console.log(p.style.getPropertyValue("--x"), p.style.getPropertyValue("--y"))
+
+      // p.style.setProperty("transform", `translate(10px,200px)`)
+      p.style.setProperty("transform", `translate(${p.style.getPropertyValue("--x")},${p.style.getPropertyValue("--y")})`)
     })
-    // this.posts?.forEach((p) => {
-    //   p.classList.add('glitch')
-    // })
+
+    this.animator = gsap.timeline()
+      .fromTo(this.posts.value, {
+        opacity: 0,
+        scale: .8,
+      }, {
+        opacity: 1,
+        scale: 1,
+        duration: 0.2,
+        stagger: 0.1,
+        ease: 'power3.out'
+      })
   },
+
   hide: (immediate: () => void, next: () => void) => {
     if (diagram.animator?.isActive()) {
       diagram.animator.kill()
@@ -138,7 +168,7 @@ const diagram = {
       diagram.animator = gsap.timeline().to(diagram.posts.value, {
         opacity: 0,
         duration: 0.2,
-        scale: 0.8,
+        scale: 1,
         ease: 'power3.out',
         onComplete: () => {
           diagram.if_visible.value = false
@@ -150,66 +180,65 @@ const diagram = {
     } else if (next) next()
   },
   move(x: number, y: number) {
-    const offet_x = (x - diagram.mouse_pos.value[0]) / document.body.offsetWidth
-    const offet_y = (y - diagram.mouse_pos.value[1]) / document.body.offsetHeight
-    diagram.offset_per.value[0] = offet_x * 100
-    diagram.offset_per.value[1] = offet_y * 100
     if (diagram.posts.value) {
-      console.log(diagram.posts.value.length, diagram.position.length)
       diagram.posts.value.forEach((p, idx) => {
-        if (this.lock.has(idx) && this.lock.get(idx) == true) return
-        if (this.moving[idx] != undefined && this.moving[idx].isActive()) this.moving[idx].kill()
-        diagram.position[idx].x = diagram.position[idx].x + diagram.offset_per.value[0]
-        diagram.position[idx].y = diagram.position[idx].y + diagram.offset_per.value[1]
-        let new_left = diagram.position[idx].x
-        let new_top = diagram.position[idx].y
-        const width = 300
+        // if (diagram.lock.get(idx)) return
+        if (this.moving[idx] != undefined && this.moving[idx].isActive()) {
+          this.moving[idx].kill()
+        }
+        diagram.position[idx].x = diagram.position[idx].x + x
+        diagram.position[idx].y = diagram.position[idx].y + y
+        const out_left = diagram.position[idx].x
+        const out_top = diagram.position[idx].y
+        const width_per = 300
         let flag = false
 
-        if (new_left < 50 - width / 2) {
-          this.lock.set(idx, true)
-          new_left += width
+        let new_left = out_left
+        let new_top = out_top
+        const width = document.body.offsetWidth
+        const height = document.body.offsetHeight
+        if (new_left < -width) {
+          new_left += 3 * width
           flag = true
-        } else if (new_left > width / 2 + 50) {
-          // this.lock.set(idx, true)
-          new_left -= width
-          flag = true
-        }
-        if (new_top < 50 - width / 2) {
-          // this.lock.set(idx, true)
-          new_top += width
-          flag = true
-        } else if (new_top > width / 2 + 50) {
-          // this.lock.set(idx, true)
-          new_top -= width
+        } else if (new_left > 2 * width) {
+          new_left -= 3 * width
           flag = true
         }
-
-        this.moving[idx] = gsap.timeline({
-          onStart: () => { appStore.ascii_pause?.() },
-          onComplete: () => { appStore.ascii_resume?.() }
-        }).to(p, {
-          left: new_left + '%',
-          top: new_top + '%',
-          duration: 1,
-        })
+        if (new_top < -height) {
+          new_top += 3 * height
+          flag = true
+        } else if (new_top > 2 * height) {
+          new_top -= 3 * height
+          flag = true
+        }
 
         if (flag) {
-          this.lock.set(idx, true)
+          diagram.lock.set(idx, true)
           gsap.fromTo(p, {
             opacity: 0
           }, {
-            left: new_left + '%',
-            top: new_top + '%',
+            x: new_left + 'px',
+            y: new_top + 'px',
             onComplete: () => {
-              p.style.setProperty('opacity', '1')
-              this.lock.set(idx, false)
+              p.style.setProperty("opacity", "1")
+              diagram.lock.set(idx, false)
+              diagram.position[idx].x = new_left
+              diagram.position[idx].y = new_top
+              p.style.setProperty("--x", new_left + 'px')
+              p.style.setProperty("--y", new_top + 'px')
             }
           })
+          return
         }
-
-        diagram.position[idx].x = new_left
-        diagram.position[idx].y = new_top
+        // if (diagram.lock.get(idx)) return
+        // if (flag) console.log(idx)
+        if (flag) console.log("fuck!")
+        gsap.to(p, {
+          x: out_left + 'px',
+          y: out_top + 'px',
+        })
+        p.style.setProperty("--x", out_left + 'px')
+        p.style.setProperty("--y", out_top + 'px')
       })
     }
   },
@@ -314,8 +343,8 @@ function onDrag(event: DragEvent) {
         target.style.setProperty('--x', offsetX.toString())
         target.style.setProperty('--y', offsetY.toString())
         gsap.to(target, {
-          x: 'var(--x) + "px"',
-          y: 'var(--y) + "px"',
+          // x: 'var(--x) + "px"',
+          // y: 'var(--y) + "px"',
         })
       }
     }
@@ -396,7 +425,6 @@ function handleDelete(uri: string) {
 
 .posts-diagram-container {
   overflow: hidden;
-  padding: 20px 100px;
   width: 100%;
   display: flex;
   gap: 30px;

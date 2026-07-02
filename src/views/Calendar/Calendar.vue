@@ -180,7 +180,7 @@ const calendar = {
         ease: 'elastic.out(1,0.8)',
       },
     )
-    document.addEventListener('mousedown', calendar.handle_md)
+    // document.addEventListener('mousedown', calendar.handle_md)
   },
   hide(im: () => void, nx: () => void) {
     this.if_visible.value = false
@@ -196,7 +196,7 @@ const calendar = {
     const startX = target.offsetLeft + target.offsetWidth / 2
     const startY = target.offsetTop + target.offsetHeight / 2
     console.log(startX, startY)
-    document.addEventListener('mousemove', this.handle_mv)
+    // document.addEventListener('mousemove', this.handle_mv)
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
     svg.setAttribute(
       'style',
@@ -229,8 +229,8 @@ const calendar = {
     calendar.svg = svg
     calendar.line = line
 
-    document.addEventListener('mousemove', calendar.handle_mv)
-    document.addEventListener('mouseup', calendar.handle_mu)
+    // document.addEventListener('mousemove', calendar.handle_mv)
+    // document.addEventListener('mouseup', calendar.handle_mu)
 
     e.preventDefault()
     // e.stopPropagation()
@@ -253,8 +253,8 @@ const calendar = {
     calendar.line.setAttribute('x2', endX.toString())
     calendar.line.setAttribute('y2', endY.toString())
     calendar.start_line.value = false
-    document.removeEventListener('mousemove', calendar.handle_mv)
-    document.removeEventListener('mouseup', calendar.handle_mu)
+    // document.removeEventListener('mousemove', calendar.handle_mv)
+    // document.removeEventListener('mouseup', calendar.handle_mu)
     calendar.container.removeChild(calendar.svg)
   },
 }
@@ -266,7 +266,7 @@ onMounted(() => {
 onUnmounted(() => {
   document.removeEventListener('mousemove', calendar.handlePlateMove)
   document.removeEventListener('mousedown', calendar.handle_md)
-  document.removeEventListener('mousemove', calendar.handle_mv)
+  // document.removeEventListener('mousemove', calendar.handle_mv)
   document.removeEventListener('mouseup', calendar.handle_mu)
 })
 
@@ -332,7 +332,7 @@ appStore.hide_calendar = calendar.hide.bind(calendar)
     border-radius: 2rem;
 
     .card {
-      background-color: rgba($color: #eee, $alpha: .8);
+      // background-color: rgba($color: #eee, $alpha: .4);
       backdrop-filter: blur(5px);
       border-radius: 2rem;
       // box-shadow:
@@ -341,10 +341,14 @@ appStore.hide_calendar = calendar.hide.bind(calendar)
       //   inset 1rem 0rem 1rem #636363,
       //   inset -1rem 0 1rem #636363,
       //   inset 0 -0.5rem 1rem rgba($color: #000000, $alpha: 0.8);
+      box-shadow: inset 1px 1px 1px #fff;
       padding: 1rem;
     }
 
     .month {
+      * {
+        color: #b7b7b7;
+      }
       height: 100%;
       aspect-ratio: 2;
       // height: 50%;
@@ -359,11 +363,11 @@ appStore.hide_calendar = calendar.hide.bind(calendar)
       }
 
       .date {
-        padding: 1rem 0;
+        padding: 1rem;
       }
 
       .message {
-        padding: 1rem 0;
+        padding: 1rem;
         font-size: medium;
 
         * {
@@ -394,14 +398,38 @@ appStore.hide_calendar = calendar.hide.bind(calendar)
       border-radius: 1rem;
 
       .light-plate {
+        @keyframes mscale {
+          0% {
+            scale: 0.8;
+            opacity: .5;
+          }
+          30% {
+            opacity: .6;
+          }
+          50% {
+            scale: 1.1;
+          }
+          60% {
+            opacity: .7;
+          }
+          90% {
+            opacity: .6;
+          }
+          100% {
+            scale: .8;
+            opacity: .5;
+          }
+        }
+        animation: mscale 3s ease-in-out infinite;
         opacity: 0;
+        transform-origin: 0 0;
         transform: translate(-50%, -50%);
         width: 50rem;
         height: 50rem;
         border-radius: 50%;
         position: absolute;
         // backdrop-filter: brightness(2);
-        background: #fff;
+        background: rgba($color: #fff, $alpha: .5);
         mix-blend-mode: soft-light;
         mask: radial-gradient(#000 0%, transparent 70%);
         user-select: none;
