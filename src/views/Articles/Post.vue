@@ -95,15 +95,30 @@ const post = {
   if_visible: ref(true),
   show_info: ref(false),
   init: () => {
-    const top = normalRange(50, 25)
-    const left = normalRange(50, 25)
+    let top = normalRange(50, 100)
+    let left = normalRange(50, 100)
+
     post.post = p.value
     post.info = info.value
     post.icon = i.value ? (i.value.$el as HTMLElement) : null
     const width = document.body.offsetWidth
     const height = document.body.offsetHeight
-    ; (post.post as HTMLElement).style.setProperty("--x", `${left / 100 * width}px`);
-    ; (post.post as HTMLElement).style.setProperty("--y", `${top / 100 * height}px`);
+    left = left / 100 * width
+    top = top/100*height
+    while (top > 2 * height) {
+      top -= 3 * height
+    }
+    while (top < -height) {
+      top += 3 * height
+    }
+    while (left > 2 * width) {
+      left -= 3 * width
+    }
+    while (left < -width) {
+      left += 3 * width
+    }
+    ; (post.post as HTMLElement).style.setProperty("--x", `${left}px`);
+    ; (post.post as HTMLElement).style.setProperty("--y", `${top}px`);
     const bgcontainer = post.post?.querySelector('.post-content')
     const bgstyle = range(1, 7)
     const colorstyle = range(1, 9)

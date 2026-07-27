@@ -146,9 +146,10 @@ export const useAppStore = defineStore('app', () => {
   function first_show() {
     hide_loading.value?.(
       () => {
+      },
+      () => {
         show_menus.value?.()
       },
-      () => {},
     )
   }
 
@@ -441,7 +442,10 @@ export const useAppStore = defineStore('app', () => {
     )
   }
 
+  function hajime_show() {}
+
   return {
+    hajime_show,
     current_mode,
     show_demo,
     hide_demo,

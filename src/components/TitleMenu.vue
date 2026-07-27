@@ -66,6 +66,22 @@ const titleMenu = {
     //   },
     //   '<',
     // )
+    // .fromTo(
+    //   document.querySelector('.middle_line'),
+    //   {
+    //     scale: 0,
+    //   },
+    //   {
+    //     scale: 1,
+    //     duration: 2,
+    //     onComplete: () => {
+    //       document.addEventListener('keydown', titleMenu.arrowKey)
+    //     },
+    //   },
+    //   '<-0.2',
+    // )
+  },
+  hajime_show() {
     this.animator = gsap
       .timeline()
       .fromTo(
@@ -100,20 +116,6 @@ const titleMenu = {
         },
         '<+0.3',
       )
-    // .fromTo(
-    //   document.querySelector('.middle_line'),
-    //   {
-    //     scale: 0,
-    //   },
-    //   {
-    //     scale: 1,
-    //     duration: 2,
-    //     onComplete: () => {
-    //       document.addEventListener('keydown', titleMenu.arrowKey)
-    //     },
-    //   },
-    //   '<-0.2',
-    // )
   },
   show() {
     if (this.animator?.isActive()) return
@@ -186,6 +188,7 @@ const titleMenu = {
 }
 appStore.show_menus = titleMenu.show.bind(titleMenu)
 appStore.hide_menus = titleMenu.hide.bind(titleMenu)
+appStore.hajime_show = titleMenu.hajime_show.bind(titleMenu)
 onMounted(() => {
   titleMenu.init()
 })
@@ -199,7 +202,7 @@ onMounted(() => {
 
 .title_menu {
   --scale: 1;
-
+  scale: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -242,7 +245,8 @@ onMounted(() => {
     flex-direction: column;
     position: relative;
 
-    &:hover {
+    &:hover,
+    &.hover {
       height: calc(var(--scale) * 32rem);
       transition: height cubic-bezier(0.11, 0.73, 0.37, 1.23) 0.2s;
       background-color: rgba(0, 0, 0, 0.1);

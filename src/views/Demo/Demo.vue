@@ -2,17 +2,16 @@
   <div class="demo-item-container">
     <div class="demo-header">
       <slot name="header">
-        <h3>{{name}}</h3>
+        <h3>{{ name }}</h3>
       </slot>
     </div>
     <div class="demo-content">
-      <img src="" alt="">
+      <slot></slot>
+      <!-- <img src="" alt=""> -->
     </div>
-    <!-- <LoadTest style="width: 100%;height: 100%;"></LoadTest> -->
   </div>
 </template>
 <script lang="ts" setup>
-// import LoadTest from './pages/Feathers.vue'
 defineOptions({
   name: "DemoItem"
 })
@@ -25,7 +24,6 @@ defineProps({
 })
 </script>
 <style lang="scss" scoped>
-
 .demo-item-container {
   cursor: pointer;
   display: flex;
@@ -33,16 +31,26 @@ defineProps({
   padding: 2rem;
   align-items: flex-start;
   justify-content: flex-end;
+
   .demo-header {
     * {
       font-size: 2rem;
     }
   }
+
+  .demo-content {
+    width: 100%;
+    height: 100%;
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+
   &:hover {
     scale: 1.01;
     transition: scale .5s ease;
   }
-  transition: scale .2s ease;
+
+  transition: scale .1s ease;
   z-index: 1;
   position: relative;
   width: 40rem;
@@ -50,6 +58,8 @@ defineProps({
   background-color: #eee;
   border-radius: 2rem;
   margin: 2rem;
+
+
   &::after {
     mix-blend-mode: screen;
     content: "";

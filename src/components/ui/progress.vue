@@ -137,35 +137,38 @@ watch(
         )
         .to(document.querySelectorAll(".brick"), {
           duration: .6,
-          rotate: "45deg",
+          // rotate: "-45deg",
           scale: 0,
           borderRadius: "1%",
           // backgroundColor: '#9be1f3',
           // "--color": '#71dcf7',
           // "--blur": "100px",
-          stagger: {
-            grid: 'auto',
-            from: isMobile() ? progress.count - 1 : 4 * progress.count,
-            amount: .5,
-          },
-          y: '-50%',
-          x: '50%',
-          opacity: .8,
+          // stagger: {
+          //   grid: 'auto',
+          //   from: isMobile() ? progress.count - 1 : 4 * progress.count,
+          //   amount: 1,
+          // },
+          // y: '50%',
+          // x: '-50%',
+          // opacity: .5,
           onComplete: () => {
             window.removeEventListener("resize", progress.handleResize)
           },
         }, "<+0.3")
       setTimeout(() => {
         if (appStore.show_loading) appStore?.show_loading()
+          ; (document.querySelector(".progress-n-welcome") as HTMLElement).style.setProperty("pointer-events", "none")
         appStore.show_scroll_page?.()
-      }, 1300)
+      }, 1500)
+      setTimeout(() => {
+        appStore.hajime_show?.()
+      }, 600);
     }
   },
 )
 </script>
 <style lang="scss">
 .bricks {
-  pointer-events: none;
   user-select: none;
   // background-color: red;
   display: grid;
@@ -189,9 +192,9 @@ watch(
       color: #9be1f3;
       --color: #fff;
       --blur: 10px;
-      box-shadow: 1px 1px var(--blur) var(--color), -1px -1px var(--blur) var(--color);
+      // box-shadow: 1px 1px var(--blur) var(--color), -1px -1px var(--blur) var(--color);
       // border: 1px solid #fff;
-      background-color: #eee;
+      background-color: rgb(26, 26, 26);
       width: auto;
       height: 100%;
       aspect-ratio: 1;
@@ -230,7 +233,6 @@ watch(
 }
 
 .progress-n-welcome {
-  pointer-events: none;
   display: flex;
   align-items: center;
   justify-content: center;
