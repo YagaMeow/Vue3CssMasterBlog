@@ -6,9 +6,9 @@
     <MyButton id="collect" @click="nav.handleCollect">
       <div class="button-content">collect</div>
     </MyButton>
-    <MyButton id="sound">
+    <MyButton id="sound" @click="nav.switchVolume">
       <div class="button-content">
-        <svg-icon iconClass="volumeHigh"></svg-icon>
+        <svg-icon :iconClass="nav.is_mute.value ? 'volumeDisable': 'volumeHigh'"></svg-icon>
       </div>
     </MyButton>
     <MyButton id="info">
@@ -114,6 +114,16 @@ const nav = {
   date: null as HTMLElement | null,
   date_list: null as HTMLElement | null,
   date_after: null as HTMLElement | null,
+  is_mute: ref(false),
+  switchVolume() {
+    if(nav.is_mute.value) {
+      appStore.handleVolume()
+      nav.is_mute.value = false
+    }else {
+      appStore.handleMute()
+      nav.is_mute.value = true
+    }
+  },
   init: () => {
     nav.container = document.querySelector('.nav-container')
     nav.discover = document.querySelector('#discover')

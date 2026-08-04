@@ -55,9 +55,8 @@ export const useAppStore = defineStore('app', () => {
   const show_diary = ref<(() => void) | null>(null)
   const hide_diary = ref<((im: () => void, nx: () => void) => void) | null>(null)
   //demo页面
- const show_demo = ref<(() => void) | null>(null)
+  const show_demo = ref<(() => void) | null>(null)
   const hide_demo = ref<((im: () => void, nx: () => void) => void) | null>(null)
-
 
   //加载完成
   const show_loading = ref<(() => void) | null>(null)
@@ -118,6 +117,12 @@ export const useAppStore = defineStore('app', () => {
       audio_controller.toorfrompost.stop()
     },
   }
+  function handleVolume() {
+    Howler.mute(false)
+  }
+  function handleMute() {
+    Howler.mute(true)
+  }
 
   const post_data = ref<Article>({
     title: '',
@@ -145,8 +150,7 @@ export const useAppStore = defineStore('app', () => {
 
   function first_show() {
     hide_loading.value?.(
-      () => {
-      },
+      () => {},
       () => {
         show_menus.value?.()
       },
@@ -445,6 +449,8 @@ export const useAppStore = defineStore('app', () => {
   function hajime_show() {}
 
   return {
+    handleMute,
+    handleVolume,
     hajime_show,
     current_mode,
     show_demo,
@@ -514,6 +520,6 @@ export const useAppStore = defineStore('app', () => {
     masonry_to_list,
     audio_controller,
     ascii_pause,
-    ascii_resume
+    ascii_resume,
   }
 })
