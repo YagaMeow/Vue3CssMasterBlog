@@ -89,6 +89,7 @@ const masonry = {
           // } else
           {
             const randomheight = range(32, 50)
+            console.log(p.id,p.cover)
             if (p.cover && p.cover.height && p.cover.width && p.cover?.width != 0) {
               const scale = p.cover.height / p.cover.width
               this.height.set(p.id, scale)
@@ -154,11 +155,13 @@ const masonry = {
     this.current_height.clear()
     this.colList.value = Array.from({ length: cols.value }, () => [])
     this.h_queue = Array.from({ length: cols.value }, (v: undefined, idx: number) => idx)
+    console.log(this.h_queue)
     this.postList.value.forEach((p, idx) => {
       this.h_queue.sort(this.cmp)
       const coltoadd = this.h_queue[0]
       const minheight = this.current_height.get(coltoadd)
       const randomheight = this.height.get(p.id)
+      console.log(p.id,randomheight)
       if (minheight !== undefined && randomheight !== undefined)
         this.current_height.set(coltoadd, minheight + randomheight)
       this.colList.value[this.h_queue[0]].push(p)

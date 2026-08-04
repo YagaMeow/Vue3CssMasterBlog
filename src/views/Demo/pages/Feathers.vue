@@ -64,22 +64,7 @@ defineOptions({
 const feathers = {
   feathers: null as null | NodeListOf<HTMLElement>,
   container: null as null | HTMLElement,
-  init() {
-    this.container = document.querySelector(".f-container")
-    this.feathers = document.querySelectorAll(".f-container img")
-    this.feathers.forEach(f => {
-      f.style.setProperty("--d", 3 + 's')
-      f.style.setProperty("--s", range(0.4, 0.6).toString())
-      f.style.setProperty("--rx", range(-1, 1).toString())
-      f.style.setProperty("--ry", range(-1, 1).toString())
-      f.style.setProperty("--rz", range(-1, 1).toString())
-      f.style.setProperty("--ra", range(0, 360) + "deg")
-      f.style.setProperty("--v", range(1,2) + 's')
-      const x = range(-20, 150)
-      const y = normalRange(x, 10)
-      f.style.setProperty("--x", `calc(${x}vw - 100%)`)
-      f.style.setProperty("--y", y + 'vh')
-    })
+  show() {
     gsap.timeline().to(this.container, {
       "--p": "100%",
       delay: 3.8,
@@ -91,6 +76,23 @@ const feathers = {
     },
       "<"
     )
+  },
+  init() {
+    this.container = document.querySelector(".f-container")
+    this.feathers = document.querySelectorAll(".f-container img")
+    this.feathers.forEach(f => {
+      f.style.setProperty("--d", 3 + 's')
+      f.style.setProperty("--s", range(0.4, 0.6).toString())
+      f.style.setProperty("--rx", range(-1, 1).toString())
+      f.style.setProperty("--ry", range(-1, 1).toString())
+      f.style.setProperty("--rz", range(-1, 1).toString())
+      f.style.setProperty("--ra", range(0, 360) + "deg")
+      f.style.setProperty("--v", range(1, 2) + 's')
+      const x = range(-20, 150)
+      const y = normalRange(x, 10)
+      f.style.setProperty("--x", `calc(${x}vw - 100%)`)
+      f.style.setProperty("--y", y + 'vh')
+    })
   }
 }
 
@@ -122,9 +124,12 @@ onMounted(() => {
 }
 
 .f-container {
+  // background-color: red;
   --p: 0%;
   --tp: 0%;
   pointer-events: none;
+  width: 100%;
+  height: 100%;
 
   img {
     position: absolute;
@@ -142,7 +147,7 @@ onMounted(() => {
     width: 100%;
     height: 100%;
     background-color: rgba($color: #000000, $alpha: 1);
-    mask: radial-gradient(circle at left bottom, transparent var(--tp) , #fff var(--p));
+    mask: radial-gradient(circle at left bottom, transparent var(--tp), #fff var(--p));
   }
 }
 </style>

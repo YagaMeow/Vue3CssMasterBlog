@@ -7,12 +7,12 @@
     <MasonryPost></MasonryPost>
     <TitleMenu></TitleMenu>
     <PostTab></PostTab>
-    <Login></Login>
     <ScrollIndex></ScrollIndex>
     <CalendarSchedule></CalendarSchedule>
     <MyNotify></MyNotify>
     <!-- <LoadTest /> -->
     <DemoPage></DemoPage>
+    <Login></Login>
     <!-- <div class="hue-mask _fullscreen"></div> -->
   </div>
   <Progress></Progress>

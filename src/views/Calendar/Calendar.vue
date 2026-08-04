@@ -1,6 +1,6 @@
 <template>
   <div class="calendar-container _fullscreen" v-show="calendar.if_visible.value">
-    <div class="pre-input" v-show="calendar.show_input.value">
+    <div class="pre-input" v-show="calendar.show_input.value" @keydown.enter="calendar.addNote">
       <input v-model="calendar.inputText.value" type="text" />
     </div>
     <div class="calendar-header card">
@@ -15,7 +15,8 @@
     </div>
     <div class="days-container">
       <SingleDay v-for="i in calendar.date.value" :key="`date${i}`" :date="i.date" :current="i.current" :week="i.week"
-        class="card" @pre-input="calendar.preInput" @close-input="calendar.closeInput">
+        class="card" :notes="i.notes" @pre-input="calendar.preInput" @close-input="calendar.closeInput"
+        @click="calendar.focusDate(i)">
       </SingleDay>
       <div class="light-plate-container">
         <div class="light-plate"></div>
@@ -25,14 +26,20 @@
 </template>
 <script lang="ts" setup>
 import { useAppStore } from '@/pinia'
-import { nextTick, onMounted, onUnmounted, ref } from 'vue'
+import { nextTick, onMounted, onUnmounted, provide, ref } from 'vue'
 import SingleDay from './SingleDay.vue'
 import gsap, { Cubic } from 'gsap'
-import { elasticEase } from '@/utils/utils'
-import { ca } from 'element-plus/es/locales.mjs'
+import { CalendarAPI } from '@/api/calendar.ts'
 defineOptions({
   name: 'CalendarSchedule',
 })
+
+interface note {
+  ID: number,
+  content: string
+  status: number,
+  date: string
+}
 
 function formatMonth(month: number): string {
   const table = [
@@ -51,12 +58,24 @@ function formatMonth(month: number): string {
   ]
   return table[month] || 'Null'
 }
+const now = new Date()
+interface date {
+  date: number
+  current: boolean
+  week: string
+  year: number,
+  month: number,
+  notes?: note[]
+}
 
+interface var_note extends note {
+  note: note
+}
 const calendar = {
   inputText: ref(""),
   if_visible: ref(false),
   start_line: ref(false),
-  date: ref([] as { date: number; current: boolean, week: string }[]),
+  date: ref([] as date[]),
   container: null as HTMLElement | null,
   svg: null as null | SVGSVGElement,
   line: null as null | SVGLineElement,
@@ -65,15 +84,27 @@ const calendar = {
   animator: null as null | gsap.core.Timeline,
   input: null as null | HTMLElement,
   show_input: ref(false),
-  init() {
+  year: ref(now.getFullYear()),
+  month: ref(now.getMonth()),
+  focus: null as null | date,
+  focus_note: {
+    ID: 0,
+    date: "",
+    content: "",
+    status: 0,
+    note: {}
+  } as var_note,
+  async init() {
+    provide('note', this.focus_note)
     this.container = document.querySelector('.days-container')
     this.card = document.querySelectorAll('.card')
     this.plate = document.querySelector(".light-plate")
-    this.initDate()
+    await this.initDate()
     this.container?.addEventListener('mousemove', calendar.handlePlateMove)
     this.container?.addEventListener('mouseenter', calendar.handlePlateEnter)
     this.container?.addEventListener('mouseleave', calendar.handlePlateLeave)
     this.input = document.querySelector(".pre-input input")
+    console.log(this.date)
   },
   preInput() {
     calendar.show_input.value = true
@@ -82,26 +113,67 @@ const calendar = {
         calendar.input.focus()
     })
   },
+  addNote() {
+    if (this.focus_note.status == 0)
+      CalendarAPI.createNote({
+        date: new Date(this.year.value, this.month.value, this.focus?.date, 0, 0, 0, 0).toISOString(),
+        content: calendar.inputText.value
+      }).then((resp) => {
+        if (calendar.focus?.notes)
+          calendar.focus.notes.push({
+            ID: resp.data.id,
+            content: calendar.inputText.value,
+            status: resp.data.status,
+            date: resp.data.date
+          })
+        calendar.inputText.value = ""
+      }).catch(e => {
+        if (appStore.notify)
+          appStore.notify(e.message)
+      })
+    else {
+      CalendarAPI.updateNote({
+        ID: this.focus_note.ID,
+        date: this.focus_note.date,
+        content: calendar.inputText.value,
+        status: 0
+      }).then(() => {
+        this.focus_note.note.content = calendar.inputText.value
+        this.focus_note.note.status = 0
+        this.focus_note.status = 0
+        calendar.inputText.value = ""
+      }).catch(e => {
+        if (appStore.notify)
+          appStore.notify(e.message)
+      })
+    }
+  },
   closeInput() {
     if (calendar.input) {
       calendar.show_input.value = false
       calendar.inputText.value = ""
     }
   },
+  focusDate(date: date) {
+    this.focus = date
+  },
   handlePlateEnter(e: MouseEvent) {
-
     if (calendar.plate) {
+      calendar.plate.classList.remove("leave")
       if (calendar.animator?.isActive()) calendar.animator.kill()
       calendar.animator = gsap.timeline().to(calendar.plate, {
-        opacity: 1
+        opacity: 1,
+        transform: 'translate(-50%, -50%) scale(1)'
       })
     }
   },
   handlePlateLeave(e: MouseEvent) {
     if (calendar.plate) {
+      calendar.plate.classList.add("leave")
       if (calendar.animator?.isActive()) calendar.animator.kill()
       calendar.animator = gsap.timeline().to(calendar.plate, {
-        opacity: 0
+        opacity: 0,
+        transform: 'translate(-50%, -50%) scale(0)'
       })
     }
   },
@@ -121,12 +193,10 @@ const calendar = {
       "周四",
       "周五",
       "周六",
-
     ]
     return table[week % 7]
   },
-  initDate() {
-    const now = new Date()
+  async initDate() {
     const year = now.getFullYear()
     const month = now.getMonth()
     const pastLast = new Date(year, month, 0)
@@ -139,14 +209,20 @@ const calendar = {
       this.date.value.push({
         date: pastLastDay - i,
         current: false,
-        week: this.formatWeek(pastLastWeek - i)
+        week: this.formatWeek(pastLastWeek - i),
+        year: month == 0 ? year - 1 : year,
+        month: month == 0 ? 12 : month,
+        notes: []
       })
     }
     for (let i = 1; i <= lastDay.getDate(); ++i) {
       this.date.value.push({
         date: i,
         current: true,
-        week: this.formatWeek(currentWeek++)
+        week: this.formatWeek(currentWeek++),
+        year: year,
+        month: month + 1,
+        notes: []
       })
     }
 
@@ -154,9 +230,30 @@ const calendar = {
       this.date.value.push({
         date: i,
         current: false,
-        week: this.formatWeek(currentWeek++)
+        week: this.formatWeek(currentWeek++),
+        year: month == 11 ? year + 1 : year,
+        month: month == 11 ? 1 : month + 2,
+        notes: []
       })
     }
+    await CalendarAPI.getNote({
+      start: new Date(this.date.value[0].year, this.date.value[0].month - 1, this.date.value[0].date, 0, 0, 0, 0).toISOString(),
+      end: new Date(this.date.value[41].year, this.date.value[41].month - 1, this.date.value[41].date, 0, 0, 0, 0).toISOString()
+    }).then(resp => {
+      for (const data_key in resp.data) {
+        const data_date = new Date(data_key)
+        const year = data_date.getFullYear()
+        const month = (data_date.getMonth() + 1) % 13
+        const date = data_date.getDate()
+        this.date.value.forEach(d => {
+          if (d.year == year && d.month == month && d.date == date) {
+            d.notes = resp.data[data_key]
+          }
+        })
+      }
+
+    })
+
   },
   show() {
     this.card = document.querySelectorAll('.card')
@@ -349,6 +446,7 @@ appStore.hide_calendar = calendar.hide.bind(calendar)
       * {
         color: #b7b7b7;
       }
+
       height: 100%;
       aspect-ratio: 2;
       // height: 50%;
@@ -398,31 +496,41 @@ appStore.hide_calendar = calendar.hide.bind(calendar)
       border-radius: 1rem;
 
       .light-plate {
+        &.leave {
+          animation: none;
+        }
+
         @keyframes mscale {
           0% {
-            scale: 0.8;
+            transform: translate(-50%, -50%) scale(.8);
             opacity: .5;
           }
+
           30% {
             opacity: .6;
           }
+
           50% {
-            scale: 1.1;
+            transform: translate(-50%, -50%) scale(1.1);
           }
+
           60% {
             opacity: .7;
           }
+
           90% {
             opacity: .6;
           }
+
           100% {
-            scale: .8;
+            transform: translate(-50%, -50%) scale(.8);
             opacity: .5;
           }
         }
+
         animation: mscale 3s ease-in-out infinite;
         opacity: 0;
-        transform-origin: 0 0;
+        transform-origin: center center;
         transform: translate(-50%, -50%);
         width: 50rem;
         height: 50rem;

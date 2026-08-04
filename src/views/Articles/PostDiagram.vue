@@ -190,7 +190,6 @@ const diagram = {
         diagram.position[idx].y = diagram.position[idx].y + y
         const out_left = diagram.position[idx].x
         const out_top = diagram.position[idx].y
-        const width_per = 300
         let flag = false
 
         let new_left = out_left
