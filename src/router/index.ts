@@ -12,6 +12,10 @@ const router = createRouter({
       meta: {
         title: 'test'
       }
+    },{
+      path: '/test',
+      name: 'test',
+      component: () => import('@/components/RPG/index.vue')
     },
     {
       path: '/login',

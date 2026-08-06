@@ -222,7 +222,7 @@ onMounted(() => {
     }
 
     &:hover::after {
-      transform: rotate(13deg);
+      // transform: rotate(13deg);
       transition: transform 0.5s ease;
     }
 

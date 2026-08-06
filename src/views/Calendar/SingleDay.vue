@@ -364,14 +364,14 @@ onMounted(() => {
       //   inset 0rem 1rem 2rem rgba($color: #a5a5a5, $alpha: 0.5),
       //   inset 0rem -1rem 2rem rgba($color: #a5a5a5, $alpha: 0.5);
 
-      &:hover {
-        scale: 0.9;
-        transition: scale 0.05s ease;
-        filter: brightness(0.5);
-      }
+      // &:hover {
+      //   scale: 0.9;
+      //   transition: scale 0.05s ease;
+      //   filter: brightness(0.5);
+      // }
 
-      transition: scale 0.2s 0.3s cubic-bezier(0.175, 0.885, 0.32, 2.275),
-      filter 0.5s ease;
+      // transition: scale 0.2s 0.3s cubic-bezier(0.175, 0.885, 0.32, 2.275),
+      // filter 0.5s ease;
     }
   }
 }

@@ -87,6 +87,12 @@ const scroll = {
       res += count
     }
 
+    // res += 10
+
+    // setTimeout(() => {
+    //   appStore.completed_steps += 10
+    // }, 5000);
+
     appStore.total_steps = res
 
     // this.animate("/img/p3r_4.gif")

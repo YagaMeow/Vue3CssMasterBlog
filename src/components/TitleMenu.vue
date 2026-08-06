@@ -22,9 +22,9 @@
       <div class="title_menu_button" @mouseleave="titleMenu.mouseout" @click="appStore.menus_to_calendar_page">
         Calendar
       </div>
-      <div class="title_menu_button" @mouseleave="titleMenu.mouseout" @click="appStore.menus_to_demo_page">
+      <!-- <div class="title_menu_button" @mouseleave="titleMenu.mouseout" @click="appStore.menus_to_demo_page">
         Demo
-      </div>
+      </div> -->
       <!-- <div
         @mouseleave="titleMenu.mouseout"
         class="title_menu_button"

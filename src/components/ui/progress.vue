@@ -16,6 +16,10 @@
         '--progress':
           appStore.total_steps == 0 ? 0 : appStore.completed_steps / appStore.total_steps,
       }">
+      <svg class="svg-loading" width="30" height="30" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+        <circle class="loading" cx="20" cy="20" r="15" stroke-width="5" stroke="#fff" stroke-dasharray="190 10">
+        </circle>
+      </svg>
       <!-- <p>{{ appStore.completed_steps }}/{{ appStore.total_steps }}</p> -->
     </div>
     <div class="progress-container">
@@ -119,12 +123,15 @@ watch(
     if (appStore.total_steps != 0 && appStore.total_steps == appStore.completed_steps) {
       gsap
         .timeline()
+        .to(document.querySelector('.svg-loading'),{
+          opacity: 0
+        })
         .to(document.querySelector('.progress-text'), {
           x: '8rem',
           duration: 2,
           ease: 'power3.out',
           delay: 0.6,
-        })
+        },"<")
         .to(
           document.querySelector('.progress-text'),
           {
@@ -159,7 +166,7 @@ watch(
         if (appStore.show_loading) appStore?.show_loading()
           ; (document.querySelector(".progress-n-welcome") as HTMLElement).style.setProperty("pointer-events", "none")
         appStore.show_scroll_page?.()
-      }, 1500)
+      }, 1000)
       setTimeout(() => {
         appStore.hajime_show?.()
       }, 600);
@@ -239,6 +246,28 @@ watch(
   flex-direction: column;
 }
 
+
+@keyframes loading {
+  0% {
+    stroke-dasharray: 10 200;
+    stroke-dashoffset: 0;
+    transform: rotate(0);
+  }
+
+  100% {}
+
+  50% {
+    stroke-dashoffset: 120 190;
+    stroke-dashoffset: -50;
+  }
+
+  100% {
+    stroke-dasharray: 130 190;
+    stroke-dashoffset: -120;
+    transform: rotate(720deg);
+  }
+}
+
 .progress-text {
   overflow: hidden;
   // position: absolute;
@@ -246,6 +275,7 @@ watch(
   // top: 50%;
   // transform: translate(-50%, -50%);
   transform: translateY(-3.2rem);
+
 
   &.complete {
     user-select: none;
@@ -282,6 +312,19 @@ watch(
   outline: 1px solid #fff;
   height: 2rem;
   border-radius: 1rem;
+
+  .svg-loading {
+    position: absolute;
+    top: -200%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+  }
+
+  .loading {
+    animation: loading 2s infinite;
+    transform-origin: center center;
+  }
+
   // position: absolute;
   // left: 50%;
   // top: 50%;
