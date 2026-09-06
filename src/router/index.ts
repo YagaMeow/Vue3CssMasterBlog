@@ -15,7 +15,11 @@ const router = createRouter({
     },{
       path: '/test',
       name: 'test',
-      component: () => import('@/components/RPG/index.vue')
+      component: () => import('@/views/Music/index.vue')
+    },{
+      path: '/work',
+      name: 'work',
+      component: () => import('@/views/Diagram/index.vue')
     },
     {
       path: '/login',
