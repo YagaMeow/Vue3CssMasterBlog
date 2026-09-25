@@ -316,7 +316,6 @@ const music = {
           ctx.rotate(2 * Math.PI / 200)
           ctx.fillRect(x, y, rectWidth, rectHeight)
         }
-
       }
     }
 
