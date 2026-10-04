@@ -8,7 +8,7 @@
       </drag-handle>
     </div> -->
     <div class="loading" v-show="myeditor.is_loading.value">Loading...</div>
-    <div
+    <!-- <div
       :class="{
         'character-count': true,
         'character-count--warning': editor.storage.characterCount.characters() === limit,
@@ -32,7 +32,7 @@
       {{ editor.storage.characterCount.characters() }} / {{ limit }} characters
       <br />
       {{ editor.storage.characterCount.words() }} words
-    </div>
+    </div> -->
 
     <editor-content :editor="editor" class="editor-text" />
   </div>
