@@ -233,7 +233,6 @@
 </template>
 <script lang="ts" setup>
 import { MusicAPI } from '@/api/music';
-import { da, id } from 'element-plus/es/locales.mjs';
 import { onMounted, onUnmounted, provide, ref } from 'vue';
 import type { Ref } from 'vue';
 import gsap from 'gsap';

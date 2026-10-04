@@ -400,6 +400,7 @@ onUnmounted(() => {
 </script>
 <style lang="scss" scoped>
 .nav-container {
+  pointer-events: none;
   z-index: 999;
   width: 100%;
   // background-color: rgba(255, 255, 255, 0.3);
@@ -410,6 +411,7 @@ onUnmounted(() => {
   padding: 1rem 1rem;
 
   .mybutton {
+    pointer-events: all;
     color: var(--white);
     scale: 1;
     transition:
@@ -509,6 +511,7 @@ onUnmounted(() => {
 
     #type,
     #date {
+      pointer-events: all;
       user-select: none;
       cursor: pointer;
       display: flex;

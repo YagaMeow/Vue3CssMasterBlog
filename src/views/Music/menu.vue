@@ -50,8 +50,6 @@ import type { Ref } from 'vue';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
-import Timeline from 'element-plus/es/components/timeline/src/timeline.mjs';
-import { tr } from 'element-plus/es/locales.mjs';
 defineOptions({
   name: "MusicMenu",
 })

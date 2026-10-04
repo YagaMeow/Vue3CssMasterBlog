@@ -27,6 +27,18 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  build: {
+    chunkSizeWarningLimit: 1200,
+    rollupOptions: {
+      output: {
+        manualChunks(id: string) {
+          if (id.includes('node_modules/element-plus')) return 'element-plus'
+          if (id.includes('node_modules/gsap')) return 'gsap'
+          return undefined
+        },
+      },
+    },
+  },
   // server: {
   //   open: true,
   //   port: parseInt(env.VITE_CLI_PORT),

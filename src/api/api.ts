@@ -1,5 +1,4 @@
 import service from '@/utils/request'
-import { da } from 'element-plus/es/locales.mjs'
 
 interface ArticlesListParams {
   page: number

@@ -173,7 +173,6 @@ import Dropcursor from '@tiptap/extension-dropcursor'
 import { Mathematics } from '@tiptap-pro/extension-mathematics'
 import CharacterCount from '@tiptap/extension-character-count'
 import 'katex/dist/katex.min.css'
-import { sv } from 'element-plus/es/locales.mjs'
 import { getAuth } from '@/api/user'
 import { useAppStore } from '@/pinia'
 

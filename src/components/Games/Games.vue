@@ -68,7 +68,6 @@ import { onMounted, ref } from 'vue'
 import Card from './Card.vue'
 import { range } from '@/utils/utils'
 import gsap, { toArray } from 'gsap'
-import { da } from 'element-plus/es/locales.mjs'
 defineOptions({
   name: 'CardGame',
 })
