@@ -23,14 +23,12 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
   (response) => {
-    // console.log(response)
     const useStore = useUserStore()
     if (response.data.code === 200) {
       return response.data
     } else return response.data.msg ? response.data : response
   },
   (error) => {
-
     if (error.response) {
       switch (error.response.status) {
         case 400: {

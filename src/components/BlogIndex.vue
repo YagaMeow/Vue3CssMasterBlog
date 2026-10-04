@@ -7,18 +7,17 @@
     <MasonryPost></MasonryPost>
     <TitleMenu></TitleMenu>
     <PostTab></PostTab>
-    <ScrollIndex></ScrollIndex>
+    <!-- <ScrollIndex></ScrollIndex> -->
     <CalendarSchedule></CalendarSchedule>
     <MyNotify></MyNotify>
     <!-- <LoadTest /> -->
-    <DemoPage></DemoPage>
+    <!-- <DemoPage></DemoPage> -->
     <Login></Login>
     <!-- <div class="hue-mask _fullscreen"></div> -->
   </div>
   <Progress></Progress>
 </template>
 <script setup lang="ts">
-import DemoPage from '@/views/Demo/DemoPage.vue'
 // import LoadTest from './Feathers.vue'
 import CalendarSchedule from '@/views/Calendar/Calendar.vue'
 import Progress from './ui/progress.vue'
@@ -27,13 +26,13 @@ import MyNotify from './ui/notofication.vue'
 import Login from './Login.vue'
 import PostTab from './PostTab.vue'
 import Nav from './Nav/Nav.vue'
-import Posts from '@/views/Articles/PostDiagram.vue'
+import Posts from '@/views/Articles/PostDiagramCanvas.vue'
 import BackGround from './background.vue'
 import TitleMenu from './TitleMenu.vue'
 import PostList from '@/views/Articles/PostList.vue'
 import MasonryPost from '@/views/Articles/MasonryPost.vue'
 import { useAppStore } from '@/pinia'
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted } from 'vue'
 import gsap from 'gsap'
 
 const appStore = useAppStore()

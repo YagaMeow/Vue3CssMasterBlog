@@ -12,6 +12,14 @@ const router = createRouter({
       meta: {
         title: 'test'
       }
+    },{
+      path: '/test',
+      name: 'test',
+      component: () => import('@/views/Music/index.vue')
+    },{
+      path: '/work',
+      name: 'work',
+      component: () => import('@/views/Diagram/index.vue')
     },
     {
       path: '/login',

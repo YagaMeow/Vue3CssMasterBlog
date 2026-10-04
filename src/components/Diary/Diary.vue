@@ -55,7 +55,6 @@
 </template>
 <script lang="ts" setup>
 import { useAppStore } from '@/pinia'
-import { dialogEmits } from 'element-plus'
 import { nextTick, onMounted, onUnmounted, ref } from 'vue'
 import gsap from 'gsap'
 import { range } from '@/utils/utils'

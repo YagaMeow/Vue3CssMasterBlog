@@ -3,14 +3,55 @@
     <div class="pre-input" v-show="calendar.show_input.value" @keydown.enter="calendar.addNote">
       <input v-model="calendar.inputText.value" type="text" />
     </div>
-    <div class="calendar-header card">
-      <div class="card month">
+    <div class="calendar-header">
+      <!-- <div class="card month">
         <div class="date">
           <span>{{ formatMonth(new Date().getMonth()) }}</span>
           <span>{{ new Date().getDate() }}</span>
         </div>
         <hr />
         <div class="message">Nothing to do. Just waste your life.</div>
+      </div> -->
+      <div class="switch-table">
+        <div class="switch year">
+          <div class="left round-button" @click="calendar.addYear(-1)">
+            <span>
+              &lt;
+            </span>
+          </div>
+          <div class="value">
+            <span>
+              {{ calendar.year }}
+            </span>
+          </div>
+          <div class="right round-button" @click="calendar.addYear(1)">
+            <span>
+              >
+            </span>
+          </div>
+        </div>
+        <div class="switch month">
+          <div class="left round-button" @click="calendar.addMonth(-1)">
+            <span>
+              &lt;
+            </span>
+          </div>
+          <div class="value">
+            <span>
+              {{ calendar.month.value + 1 }}
+            </span>
+          </div>
+          <div class="right round-button" @click="calendar.addMonth(1)">
+            <span>
+              >
+            </span>
+          </div>
+        </div>
+        <div class="switch reset">
+          <div class="round-button" @click="calendar.resetTime">
+            <svg-icon icon-class="reset_line"></svg-icon>
+          </div>
+        </div>
       </div>
     </div>
     <div class="days-container">
@@ -106,6 +147,190 @@ const calendar = {
     this.input = document.querySelector(".pre-input input")
     console.log(this.date)
   },
+  addYear(count: number) {
+    const span = document.querySelector(".year .value")
+    gsap.timeline().to(span, {
+      filter: "blur(2rem)",
+      duration: .6,
+      onComplete: () => {
+        this.year.value += count
+        if (this.animator?.isActive()) this.animator.kill()
+        if (this.card)
+          this.animator = gsap.timeline().fromTo(
+            Array.from(this.card).sort((a, b) => Math.random() - 0.5),
+            {
+              scale: 1,
+              // transformOrigin: 'top left',
+              opacity: 1,
+              y: 0,
+            },
+            {
+              stagger: 0.01,
+              scale: .9,
+              duration: 0.3,
+              opacity: 0,
+              y: 10,
+              ease: 'elastic.out(1,0.8)',
+            },
+          )
+      }
+    }).to(span, {
+      filter: "blur(0)",
+      duration: .1,
+      onComplete: () => {
+        this.date.value = []
+        this.initDate().then(() => {
+          if (this.animator?.isActive()) this.animator.kill()
+          if (this.card)
+            this.animator = gsap.timeline().fromTo(
+              Array.from(this.card).sort((a, b) => Math.random() - 0.5),
+              {
+                scale: .9,
+                // transformOrigin: 'top left',
+                opacity: 0,
+                y: 10,
+              },
+              {
+                stagger: 0.01,
+                scale: 1,
+                duration: 0.3,
+                opacity: 1,
+                y: 0,
+                ease: 'elastic.out(1,0.8)',
+              },
+            )
+        })
+      }
+    })
+
+  },
+  resetTime() {
+    const year_span = document.querySelector(".year .value")
+    const mont_span = document.querySelector(".month .value")
+    gsap.timeline().to([year_span,mont_span], {
+      filter: "blur(2rem)",
+      duration: .6,
+      onComplete: () => {
+        this.year.value = new Date().getFullYear()
+        this.month.value = new Date().getMonth()
+        if (this.animator?.isActive()) this.animator.kill()
+        if (this.card)
+          this.animator = gsap.timeline().fromTo(
+            Array.from(this.card).sort((a, b) => Math.random() - 0.5),
+            {
+              scale: 1,
+              // transformOrigin: 'top left',
+              opacity: 1,
+              y: 0,
+            },
+            {
+              stagger: 0.01,
+              scale: .9,
+              duration: 0.3,
+              opacity: 0,
+              y: 10,
+              ease: 'elastic.out(1,0.8)',
+            },
+          )
+      }
+    }).to([year_span,mont_span], {
+      filter: "blur(0)",
+      duration: .1,
+      onComplete: () => {
+        this.date.value = []
+        this.initDate().then(() => {
+          if (this.animator?.isActive()) this.animator.kill()
+          if (this.card)
+            this.animator = gsap.timeline().fromTo(
+              Array.from(this.card).sort((a, b) => Math.random() - 0.5),
+              {
+                scale: .9,
+                // transformOrigin: 'top left',
+                opacity: 0,
+                y: 10,
+              },
+              {
+                stagger: 0.01,
+                scale: 1,
+                duration: 0.3,
+                opacity: 1,
+                y: 0,
+                ease: 'elastic.out(1,0.8)',
+              },
+            )
+        })
+      }
+    })
+  },
+  addMonth(count: number) {
+    const span = document.querySelector(".month .value")
+    let animated = false;
+    gsap.timeline().to(span, {
+      filter: "blur(2rem)",
+      duration: .6,
+      onComplete: () => {
+        this.month.value += count
+        if (this.month.value == 12) {
+          this.addYear(1)
+          this.month.value = (this.month.value + 12) % 12
+          animated = true
+        }
+        else if (this.month.value == -1) {
+          this.addYear(-1)
+          this.month.value = (this.month.value + 12) % 12
+          animated = true
+        } else {
+          if (this.animator?.isActive()) this.animator.kill()
+          if (this.card)
+            this.animator = gsap.timeline().fromTo(
+              Array.from(this.card).sort((a, b) => Math.random() - 0.5),
+              {
+                scale: 1,
+                // transformOrigin: 'top left',
+                opacity: 1,
+                y: 0,
+              },
+              {
+                stagger: 0.01,
+                scale: .9,
+                duration: 0.3,
+                opacity: 0,
+                y: 10,
+                ease: 'elastic.out(1,0.8)',
+              },
+            )
+        }
+      }
+    }).to(span, {
+      filter: "blur(0)",
+      duration: .1,
+      onComplete: () => {
+        this.date.value = []
+        this.initDate().then(() => {
+          if (animated) return
+          if (this.animator?.isActive()) this.animator.kill()
+          if (this.card)
+            this.animator = gsap.timeline().fromTo(
+              Array.from(this.card).sort((a, b) => Math.random() - 0.5),
+              {
+                scale: .9,
+                // transformOrigin: 'top left',
+                opacity: 0,
+                y: 10,
+              },
+              {
+                stagger: 0.01,
+                scale: 1,
+                duration: 0.3,
+                opacity: 1,
+                y: 0,
+                ease: 'elastic.out(1,0.8)',
+              },
+            )
+        })
+      }
+    })
+  },
   preInput() {
     calendar.show_input.value = true
     nextTick(() => {
@@ -160,8 +385,8 @@ const calendar = {
   handlePlateEnter(e: MouseEvent) {
     if (calendar.plate) {
       calendar.plate.classList.remove("leave")
-      if (calendar.animator?.isActive()) calendar.animator.kill()
-      calendar.animator = gsap.timeline().to(calendar.plate, {
+      // if (calendar.animator?.isActive()) calendar.animator.kill()
+      gsap.timeline().to(calendar.plate, {
         opacity: 1,
         transform: 'translate(-50%, -50%) scale(1)'
       })
@@ -170,8 +395,8 @@ const calendar = {
   handlePlateLeave(e: MouseEvent) {
     if (calendar.plate) {
       calendar.plate.classList.add("leave")
-      if (calendar.animator?.isActive()) calendar.animator.kill()
-      calendar.animator = gsap.timeline().to(calendar.plate, {
+      // if (calendar.animator?.isActive()) calendar.animator.kill()
+      gsap.timeline().to(calendar.plate, {
         opacity: 0,
         transform: 'translate(-50%, -50%) scale(0)'
       })
@@ -197,15 +422,22 @@ const calendar = {
     return table[week % 7]
   },
   async initDate() {
-    const year = now.getFullYear()
-    const month = now.getMonth()
+    let year = now.getFullYear()
+    let month = now.getMonth()
+    if (this.year.value != undefined && this.month.value != undefined) {
+      year = this.year.value
+      month = this.month.value
+    }
+    // const year = 2027
+    // const month = 7
     const pastLast = new Date(year, month, 0)
     const pastLastDay = pastLast.getDate()
     const pastLastWeek = pastLast.getDay()
     const firstDay = new Date(year, month, 1)
-    const lastDay = new Date(month == 11 ? year + 1 : year, month == 11 ? 1 : month + 1, 0)
+    const lastDay = new Date(month == 11 ? year + 1 : year, month == 11 ? 0 : month + 1, 0)
     let currentWeek = firstDay.getDay()
-    for (let i = firstDay.getDay() - 2; i >= 0; --i) {
+    const pastmonthcount = firstDay.getDay() ? firstDay.getDay() - 2 : 5;
+    for (let i = pastmonthcount; i >= 0; --i) {
       this.date.value.push({
         date: pastLastDay - i,
         current: false,
@@ -226,7 +458,7 @@ const calendar = {
       })
     }
 
-    for (let i = 1; i <= 43 - firstDay.getDay() - lastDay.getDate(); ++i) {
+    for (let i = 1; i <= 41 - pastmonthcount - lastDay.getDate(); ++i) {
       this.date.value.push({
         date: i,
         current: false,
@@ -237,8 +469,8 @@ const calendar = {
       })
     }
     await CalendarAPI.getNote({
-      start: new Date(this.date.value[0].year, this.date.value[0].month - 1, this.date.value[0].date, 0, 0, 0, 0).toISOString(),
-      end: new Date(this.date.value[41].year, this.date.value[41].month - 1, this.date.value[41].date, 0, 0, 0, 0).toISOString()
+      start: new Date(this.date.value[0].year, this.date.value[0].month - 1, this.date.value[0].date + 1, 0, 0, 0, 0).toISOString(),
+      end: new Date(this.date.value[41].year, this.date.value[41].month - 1, this.date.value[41].date + 1, 0, 0, 0, 0).toISOString()
     }).then(resp => {
       for (const data_key in resp.data) {
         const data_date = new Date(data_key)
@@ -253,7 +485,6 @@ const calendar = {
       }
 
     })
-
   },
   show() {
     this.card = document.querySelectorAll('.card')
@@ -422,11 +653,85 @@ appStore.hide_calendar = calendar.hide.bind(calendar)
   }
 
   .calendar-header {
+    display: flex;
     flex-shrink: 0;
     // background-color: rgba($color: #000, $alpha: 0.8);
     // backdrop-filter: blur(3rem);
-    height: 20vh;
+    // height: 20vh;
     border-radius: 2rem;
+    flex-wrap: wrap;
+
+    .switch-table {
+      padding: 1rem;
+      width: 100%;
+      height: 20rem;
+      display: flex;
+      align-items: center;
+
+      --line-height: 50px;
+      gap: 20px;
+
+      .switch {
+        gap: 20px;
+        display: flex;
+        align-items: center;
+
+        .value {
+          span {
+            color: #fff;
+            font-size: var(--line-height);
+            line-height: var(--line-height);
+            user-select: none;
+          }
+        }
+
+        &.month {
+          .value span {
+            display: block;
+            width: calc(1.1 * var(--line-height));
+          }
+        }
+
+        &.reset {
+          .round-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+
+          .svg-icon {
+            display: block;
+            width: 60%;
+            height: 60%;
+          }
+        }
+      }
+
+      .round-button {
+        cursor: pointer;
+        width: calc(var(--line-height) * .8);
+        height: calc(var(--line-height) * .8);
+        border-radius: 50%;
+        box-shadow: -1px -1px 1px #fff,
+          1px 1px 1px #666;
+        text-align: center;
+
+        &:hover {
+          scale: .95;
+          transition: scale .2s ease;
+        }
+
+        span {
+          user-select: none;
+          line-height: calc(var(--line-height) * .8);
+          font-size: 30px;
+          color: #fff;
+          font-family: monospace;
+          font-weight: bolder;
+        }
+      }
+    }
+
 
     .card {
       // background-color: rgba($color: #eee, $alpha: .4);
@@ -439,40 +744,40 @@ appStore.hide_calendar = calendar.hide.bind(calendar)
       //   inset -1rem 0 1rem #636363,
       //   inset 0 -0.5rem 1rem rgba($color: #000000, $alpha: 0.8);
       box-shadow: inset 1px 1px 1px #fff;
-      padding: 1rem;
+      // padding: 1rem;
     }
 
-    .month {
-      * {
-        color: #b7b7b7;
-      }
+    // .month {
+    //   * {
+    //     color: #b7b7b7;
+    //   }
 
-      height: 100%;
-      aspect-ratio: 2;
-      // height: 50%;
-      // display: none;
-      flex-direction: column;
-      justify-content: center;
-      padding-left: 1.5rem;
+    //   height: 100%;
+    //   aspect-ratio: 2;
+    //   // height: 50%;
+    //   // display: none;
+    //   flex-direction: column;
+    //   justify-content: center;
+    //   padding-left: 1.5rem;
 
-      span {
-        font-size: 4rem;
-        font-weight: bold;
-      }
+    //   span {
+    //     font-size: 4rem;
+    //     font-weight: bold;
+    //   }
 
-      .date {
-        padding: 1rem;
-      }
+    //   .date {
+    //     padding: 1rem;
+    //   }
 
-      .message {
-        padding: 1rem;
-        font-size: medium;
+    //   .message {
+    //     padding: 1rem;
+    //     font-size: medium;
 
-        * {
-          font-size: medium;
-        }
-      }
-    }
+    //     * {
+    //       font-size: medium;
+    //     }
+    //   }
+    // }
   }
 
   .days-container {

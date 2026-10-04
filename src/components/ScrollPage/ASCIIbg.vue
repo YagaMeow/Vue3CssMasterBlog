@@ -9,7 +9,6 @@ import { onMounted, onUnmounted, ref } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Worker from './gif-worker?worker'
-import { da } from 'element-plus/es/locales.mjs'
 gsap.registerPlugin(ScrollTrigger)
 
 const color = ref(['#fff', '#bcd', '#cde', '#def', '#fed', '#edc', '#dcb', '#cba'])
@@ -86,6 +85,12 @@ const scroll = {
     for (const count of frameCounts) {
       res += count
     }
+
+    // res += 10
+
+    // setTimeout(() => {
+    //   appStore.completed_steps += 10
+    // }, 5000);
 
     appStore.total_steps = res
 

@@ -2,53 +2,53 @@
   <div class="f-container">
     <div class="mask"></div>
 
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 50rem;--s:0">
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 50rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 50rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 50rem;--s:0">
 
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 60rem;--s:0">
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 60rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 60rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 60rem;--s:0">
 
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 70rem;--s:0">
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 70rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 70rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 70rem;--s:0">
 
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 80rem;--s:0">
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 80rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 80rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 80rem;--s:0">
 
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 90rem;--s:0">
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 90rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 90rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 90rem;--s:0">
 
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 100rem;--s:0">
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 100rem;--s:0">
-
-
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 110rem;--s:0">
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 110rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 100rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 100rem;--s:0">
 
 
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 40rem;--s:0">
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 40rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 110rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 110rem;--s:0">
 
 
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 30rem;--s:0">
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 30rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 40rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 40rem;--s:0">
 
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 20rem;--s:0">
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 20rem;--s:0">
 
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 10rem;--s:0">
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 10rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 30rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 30rem;--s:0">
 
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 0rem;--s:0">
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 0rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 20rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 20rem;--s:0">
 
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: -10rem;--s:0">
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: -10rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 10rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 10rem;--s:0">
 
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: -20rem;--s:0">
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: -20rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 0rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: 0rem;--s:0">
 
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: -30rem;--s:0">
-    <img src="../assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: -30rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: -10rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: -10rem;--s:0">
+
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: -20rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: -20rem;--s:0">
+
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: -30rem;--s:0">
+    <img src="@/assets/img/feather.png" alt="" style="--x: 0;--y: 0;--z: -30rem;--s:0">
 
   </div>
 </template>

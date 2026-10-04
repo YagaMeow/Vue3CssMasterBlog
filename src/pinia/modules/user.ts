@@ -8,7 +8,6 @@ import { ElMessage } from 'element-plus'
 import { useRouterStore } from './router'
 import router from '@/router'
 import type { RouteRecordRaw } from 'vue-router'
-import { fa } from 'element-plus/es/locales.mjs'
 
 interface LoginResponse {
   code: number

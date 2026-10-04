@@ -91,13 +91,17 @@ const diagram = {
           diagram.mouse_pos.value = [e.x, e.y]
           return
         }
-        diagram.rafId = requestAnimationFrame(() => {
-          // console.log(diagram.mouse_pos.value)
+        let prev_time = 0
+        const handle_move = (time: number) => {
+          if (prev_time == 0) prev_time = time
           const delta = [e.x - diagram.mouse_pos.value[0], e.y - diagram.mouse_pos.value[1]]
           diagram.mouse_pos.value = [e.x, e.y]
           diagram.move(delta[0], delta[1])
           diagram.rafId = null
-        })
+          prev_time = time
+          // diagram.rafId = requestAnimationFrame(handle_move)
+        }
+        diagram.rafId = requestAnimationFrame(handle_move)
       }
     })
     document.addEventListener('touchmove', (e) => {
@@ -180,67 +184,132 @@ const diagram = {
     } else if (next) next()
   },
   move(x: number, y: number) {
-    if (diagram.posts.value) {
-      diagram.posts.value.forEach((p, idx) => {
-        // if (diagram.lock.get(idx)) return
-        if (this.moving[idx] != undefined && this.moving[idx].isActive()) {
-          this.moving[idx].kill()
-        }
-        diagram.position[idx].x = diagram.position[idx].x + x
-        diagram.position[idx].y = diagram.position[idx].y + y
-        const out_left = diagram.position[idx].x
-        const out_top = diagram.position[idx].y
-        let flag = false
+    x*=10
+    y*=10
+    if (!diagram.posts.value) return
+    const W = 3 * document.body.offsetWidth
+    const H = 3 * document.body.offsetHeight
 
-        let new_left = out_left
-        let new_top = out_top
-        const width = document.body.offsetWidth
-        const height = document.body.offsetHeight
-        if (new_left < -width) {
-          new_left += 3 * width
-          flag = true
-        } else if (new_left > 2 * width) {
-          new_left -= 3 * width
-          flag = true
-        }
-        if (new_top < -height) {
-          new_top += 3 * height
-          flag = true
-        } else if (new_top > 2 * height) {
-          new_top -= 3 * height
-          flag = true
-        }
+    diagram.posts.value.forEach((p, idx) => {
+      if (this.moving[idx]?.isActive()) this.moving[idx].kill()
 
-        if (flag) {
-          diagram.lock.set(idx, true)
-          gsap.fromTo(p, {
-            opacity: 0
-          }, {
-            x: new_left + 'px',
-            y: new_top + 'px',
-            onComplete: () => {
-              p.style.setProperty("opacity", "1")
-              diagram.lock.set(idx, false)
-              diagram.position[idx].x = new_left
-              diagram.position[idx].y = new_top
-              p.style.setProperty("--x", new_left + 'px')
-              p.style.setProperty("--y", new_top + 'px')
-            }
-          })
-          return
-        }
-        // if (diagram.lock.get(idx)) return
-        // if (flag) console.log(idx)
-        if (flag) console.log("fuck!")
-        gsap.to(p, {
-          x: out_left + 'px',
-          y: out_top + 'px',
-        })
-        p.style.setProperty("--x", out_left + 'px')
-        p.style.setProperty("--y", out_top + 'px')
-      })
-    }
+      const pos = diagram.position[idx]
+      const pw = p.offsetWidth
+      const ph = p.offsetHeight
+
+      const periodX = W + pw
+      const periodY = H + ph
+
+      let nextX = pos.x + x
+      let nextY = pos.y + y
+
+      let jump = false
+      if (nextX > W || nextX < -pw || nextY > H || nextY < -ph) jump = true
+      nextX = (((nextX + pw) % periodX) + periodX) % periodX - pw
+      nextY = (((nextY + ph) % periodY) + periodY) % periodY - ph
+
+      pos.x = nextX
+      pos.y = nextY
+
+      nextX -= W / 2
+      nextY -= H / 2
+
+      let duration = 0.2
+      if (jump) duration = 0
+      if (this.moving[idx] != undefined && this.moving[idx].isActive()) this.moving[idx].kill()
+      this.moving[idx] = gsap.timeline().to(p, { x: nextX, y: nextY, duration: duration, ease: 'none' })
+
+      p.style.setProperty('--x', nextX + 'px')
+      p.style.setProperty('--y', nextY + 'px')
+    })
   },
+  // move(x: number, y: number) {
+  //   if (diagram.posts.value) {
+  //     diagram.posts.value.forEach((p, idx) => {
+  //       // if (diagram.lock.get(idx)) return
+  //       if (this.moving[idx] != undefined && this.moving[idx].isActive()) {
+  //         this.moving[idx].kill()
+  //       }
+  //       diagram.position[idx].x = diagram.position[idx].x + x
+  //       diagram.position[idx].y = diagram.position[idx].y + y
+  //       const out_left = diagram.position[idx].x
+  //       const out_top = diagram.position[idx].y
+  //       let flag = false
+
+  //       let new_left = out_left
+  //       let new_top = out_top
+  //       const width = document.body.offsetWidth
+  //       const height = document.body.offsetHeight
+  //       const status = {
+  //         x: 0,
+  //         y: 0,
+  //       }
+  //       while (new_left < -width) {
+  //         new_left += 3 * width
+  //         flag = true
+  //         status.x = -1
+  //       }
+  //       while (new_left > 2 * width) {
+  //         new_left -= 3 * width
+  //         flag = true
+  //         status.x = 1
+  //       }
+  //       while (new_top < -height) {
+  //         new_top += 3 * height
+  //         flag = true
+  //         status.y = -1
+  //       }
+  //       while (new_top > 2 * height) {
+  //         new_top -= 3 * height
+  //         flag = true
+  //         status.y = 1
+  //       }
+  //       if (flag) {
+  //         diagram.lock.set(idx, true)
+  //         const s = p.style.transform
+  //         const current_pos = {
+  //           x: parseInt(s.split(',')[1]),
+  //           y: parseInt(s.split(',')[1])
+  //         }
+
+  //         this.moving[idx] = gsap.timeline().to(p, {
+  //           x: status.x == 0 ? out_left : (status.x == -1 ? -width : 2 * width) + 'px',
+  //           y: status.y == 0 ? out_top : (status.y == -1 ? -height : 2 * height) + 'px',
+  //           // onComplete: () => {
+  //           //   p.style.setProperty('opacity', '0')
+  //           // }
+  //         }).to(p, {
+  //           x: (status.x == 0 ? out_left : (status.x == 1 ? -width : 2 * width)) + 'px',
+  //           y: (status.y == 0 ? out_top : (status.y == 1 ? -height : 2 * height)) + 'px',
+  //           duration: 0
+  //           // onComplete: () => {
+  //           //   p.style.setProperty('opacity', '1')
+  //           // }
+  //         }).to(p, {
+  //           x: new_left,
+  //           y: new_top,
+  //           onComplete: () => {
+  //             diagram.position[idx].x = new_left
+  //             diagram.position[idx].y = new_top
+  //             p.style.setProperty("--x", new_left + 'px')
+  //             p.style.setProperty("--y", new_top + 'px')
+  //           }
+  //         })
+  //         return
+  //       }
+  //       // if (flag) console.log(idx)
+  //       if (flag) console.log("fuck!")
+  //       // console.log('[normal]',out_left,out_top)
+  //       this.moving[idx] = gsap.timeline().to(p, {
+  //         x: out_left + 'px',
+  //         y: out_top + 'px',
+  //         duration: 0.2
+  //       })
+  //       p.style.setProperty("--x", out_left + 'px')
+  //       p.style.setProperty("--y", out_top + 'px')
+  //     })
+  //   }
+  // },
   reset() {
     this.mouse_pos.value = [0, 0]
     dragData.value.isDragging = false
@@ -423,7 +492,9 @@ function handleDelete(uri: string) {
 }
 
 .posts-diagram-container {
-  overflow: hidden;
+  // overflow: hidden;
+  background-color: red;
+  // scale: .2;
   width: 100%;
   display: flex;
   gap: 30px;
