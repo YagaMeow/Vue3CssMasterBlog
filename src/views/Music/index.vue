@@ -1,560 +1,439 @@
 <template>
   <div class="music-container _fullscreen">
     <div class="mask _fullscreen"></div>
-    <div class="album-container">
-      <canvas class="canvas-container" width="700" height="700"></canvas>
-      <svg class="svg-container" viewBox="0 0 120 160" width="700" height="700" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <clipPath id="cover">
-            <circle cx="60" cy="80" r="35"></circle>
-          </clipPath>
-        </defs>
-        <g v-if="music.mode == 'svg'">
-          <rect id="rect-1" class="rect"></rect>
-          <rect id="rect-2" class="rect"></rect>
-          <rect id="rect-3" class="rect"></rect>
-          <rect id="rect-4" class="rect"></rect>
-          <rect id="rect-5" class="rect"></rect>
-          <rect id="rect-6" class="rect"></rect>
-          <rect id="rect-7" class="rect"></rect>
-          <rect id="rect-8" class="rect"></rect>
-          <rect id="rect-9" class="rect"></rect>
-          <rect id="rect-10" class="rect"></rect>
-          <rect id="rect-11" class="rect"></rect>
-          <rect id="rect-12" class="rect"></rect>
-          <rect id="rect-13" class="rect"></rect>
-          <rect id="rect-14" class="rect"></rect>
-          <rect id="rect-15" class="rect"></rect>
-          <rect id="rect-16" class="rect"></rect>
-          <rect id="rect-17" class="rect"></rect>
-          <rect id="rect-18" class="rect"></rect>
-          <rect id="rect-19" class="rect"></rect>
-          <rect id="rect-20" class="rect"></rect>
-          <rect id="rect-21" class="rect"></rect>
-          <rect id="rect-22" class="rect"></rect>
-          <rect id="rect-23" class="rect"></rect>
-          <rect id="rect-24" class="rect"></rect>
-          <rect id="rect-25" class="rect"></rect>
-          <rect id="rect-26" class="rect"></rect>
-          <rect id="rect-27" class="rect"></rect>
-          <rect id="rect-28" class="rect"></rect>
-          <rect id="rect-29" class="rect"></rect>
-          <rect id="rect-30" class="rect"></rect>
-          <rect id="rect-31" class="rect"></rect>
-          <rect id="rect-32" class="rect"></rect>
-          <rect id="rect-33" class="rect"></rect>
-          <rect id="rect-34" class="rect"></rect>
-          <rect id="rect-35" class="rect"></rect>
-          <rect id="rect-36" class="rect"></rect>
-          <rect id="rect-37" class="rect"></rect>
-          <rect id="rect-38" class="rect"></rect>
-          <rect id="rect-39" class="rect"></rect>
-          <rect id="rect-40" class="rect"></rect>
-          <rect id="rect-41" class="rect"></rect>
-          <rect id="rect-42" class="rect"></rect>
-          <rect id="rect-43" class="rect"></rect>
-          <rect id="rect-44" class="rect"></rect>
-          <rect id="rect-45" class="rect"></rect>
-          <rect id="rect-46" class="rect"></rect>
-          <rect id="rect-47" class="rect"></rect>
-          <rect id="rect-48" class="rect"></rect>
-          <rect id="rect-49" class="rect"></rect>
-          <rect id="rect-50" class="rect"></rect>
-          <rect id="rect-51" class="rect"></rect>
-          <rect id="rect-52" class="rect"></rect>
-          <rect id="rect-53" class="rect"></rect>
-          <rect id="rect-54" class="rect"></rect>
-          <rect id="rect-55" class="rect"></rect>
-          <rect id="rect-56" class="rect"></rect>
-          <rect id="rect-57" class="rect"></rect>
-          <rect id="rect-58" class="rect"></rect>
-          <rect id="rect-59" class="rect"></rect>
-          <rect id="rect-60" class="rect"></rect>
-          <rect id="rect-61" class="rect"></rect>
-          <rect id="rect-62" class="rect"></rect>
-          <rect id="rect-63" class="rect"></rect>
-          <rect id="rect-64" class="rect"></rect>
-          <rect id="rect-65" class="rect"></rect>
-          <rect id="rect-66" class="rect"></rect>
-          <rect id="rect-67" class="rect"></rect>
-          <rect id="rect-68" class="rect"></rect>
-          <rect id="rect-69" class="rect"></rect>
-          <rect id="rect-70" class="rect"></rect>
-          <rect id="rect-71" class="rect"></rect>
-          <rect id="rect-72" class="rect"></rect>
-          <rect id="rect-73" class="rect"></rect>
-          <rect id="rect-74" class="rect"></rect>
-          <rect id="rect-75" class="rect"></rect>
-          <rect id="rect-76" class="rect"></rect>
-          <rect id="rect-77" class="rect"></rect>
-          <rect id="rect-78" class="rect"></rect>
-          <rect id="rect-79" class="rect"></rect>
-          <rect id="rect-80" class="rect"></rect>
-          <rect id="rect-81" class="rect"></rect>
-          <rect id="rect-82" class="rect"></rect>
-          <rect id="rect-83" class="rect"></rect>
-          <rect id="rect-84" class="rect"></rect>
-          <rect id="rect-85" class="rect"></rect>
-          <rect id="rect-86" class="rect"></rect>
-          <rect id="rect-87" class="rect"></rect>
-          <rect id="rect-88" class="rect"></rect>
-          <rect id="rect-89" class="rect"></rect>
-          <rect id="rect-90" class="rect"></rect>
-          <rect id="rect-91" class="rect"></rect>
-          <rect id="rect-92" class="rect"></rect>
-          <rect id="rect-93" class="rect"></rect>
-          <rect id="rect-94" class="rect"></rect>
-          <rect id="rect-95" class="rect"></rect>
-          <rect id="rect-96" class="rect"></rect>
-          <rect id="rect-97" class="rect"></rect>
-          <rect id="rect-98" class="rect"></rect>
-          <rect id="rect-99" class="rect"></rect>
-          <rect id="rect-100" class="rect"></rect>
-          <rect id="rect-101" class="rect"></rect>
-          <rect id="rect-102" class="rect"></rect>
-          <rect id="rect-103" class="rect"></rect>
-          <rect id="rect-104" class="rect"></rect>
-          <rect id="rect-105" class="rect"></rect>
-          <rect id="rect-106" class="rect"></rect>
-          <rect id="rect-107" class="rect"></rect>
-          <rect id="rect-108" class="rect"></rect>
-          <rect id="rect-109" class="rect"></rect>
-          <rect id="rect-110" class="rect"></rect>
-          <rect id="rect-111" class="rect"></rect>
-          <rect id="rect-112" class="rect"></rect>
-          <rect id="rect-113" class="rect"></rect>
-          <rect id="rect-114" class="rect"></rect>
-          <rect id="rect-115" class="rect"></rect>
-          <rect id="rect-116" class="rect"></rect>
-          <rect id="rect-117" class="rect"></rect>
-          <rect id="rect-118" class="rect"></rect>
-          <rect id="rect-119" class="rect"></rect>
-          <rect id="rect-120" class="rect"></rect>
-          <rect id="rect-121" class="rect"></rect>
-          <rect id="rect-122" class="rect"></rect>
-          <rect id="rect-123" class="rect"></rect>
-          <rect id="rect-124" class="rect"></rect>
-          <rect id="rect-125" class="rect"></rect>
-          <rect id="rect-126" class="rect"></rect>
-          <rect id="rect-127" class="rect"></rect>
-          <rect id="rect-128" class="rect"></rect>
-          <rect id="rect-129" class="rect"></rect>
-          <rect id="rect-130" class="rect"></rect>
-          <rect id="rect-131" class="rect"></rect>
-          <rect id="rect-132" class="rect"></rect>
-          <rect id="rect-133" class="rect"></rect>
-          <rect id="rect-134" class="rect"></rect>
-          <rect id="rect-135" class="rect"></rect>
-          <rect id="rect-136" class="rect"></rect>
-          <rect id="rect-137" class="rect"></rect>
-          <rect id="rect-138" class="rect"></rect>
-          <rect id="rect-139" class="rect"></rect>
-          <rect id="rect-140" class="rect"></rect>
-          <rect id="rect-141" class="rect"></rect>
-          <rect id="rect-142" class="rect"></rect>
-          <rect id="rect-143" class="rect"></rect>
-          <rect id="rect-144" class="rect"></rect>
-          <rect id="rect-145" class="rect"></rect>
-          <rect id="rect-146" class="rect"></rect>
-          <rect id="rect-147" class="rect"></rect>
-          <rect id="rect-148" class="rect"></rect>
-          <rect id="rect-149" class="rect"></rect>
-          <rect id="rect-150" class="rect"></rect>
-          <rect id="rect-151" class="rect"></rect>
-          <rect id="rect-152" class="rect"></rect>
-          <rect id="rect-153" class="rect"></rect>
-          <rect id="rect-154" class="rect"></rect>
-          <rect id="rect-155" class="rect"></rect>
-          <rect id="rect-156" class="rect"></rect>
-          <rect id="rect-157" class="rect"></rect>
-          <rect id="rect-158" class="rect"></rect>
-          <rect id="rect-159" class="rect"></rect>
-          <rect id="rect-160" class="rect"></rect>
-          <rect id="rect-161" class="rect"></rect>
-          <rect id="rect-162" class="rect"></rect>
-          <rect id="rect-163" class="rect"></rect>
-          <rect id="rect-164" class="rect"></rect>
-          <rect id="rect-165" class="rect"></rect>
-          <rect id="rect-166" class="rect"></rect>
-          <rect id="rect-167" class="rect"></rect>
-          <rect id="rect-168" class="rect"></rect>
-          <rect id="rect-169" class="rect"></rect>
-          <rect id="rect-170" class="rect"></rect>
-          <rect id="rect-171" class="rect"></rect>
-          <rect id="rect-172" class="rect"></rect>
-          <rect id="rect-173" class="rect"></rect>
-          <rect id="rect-174" class="rect"></rect>
-          <rect id="rect-175" class="rect"></rect>
-          <rect id="rect-176" class="rect"></rect>
-          <rect id="rect-177" class="rect"></rect>
-          <rect id="rect-178" class="rect"></rect>
-          <rect id="rect-179" class="rect"></rect>
-          <rect id="rect-180" class="rect"></rect>
-          <rect id="rect-181" class="rect"></rect>
-          <rect id="rect-182" class="rect"></rect>
-          <rect id="rect-183" class="rect"></rect>
-          <rect id="rect-184" class="rect"></rect>
-          <rect id="rect-185" class="rect"></rect>
-          <rect id="rect-186" class="rect"></rect>
-          <rect id="rect-187" class="rect"></rect>
-          <rect id="rect-188" class="rect"></rect>
-          <rect id="rect-189" class="rect"></rect>
-          <rect id="rect-190" class="rect"></rect>
-          <rect id="rect-191" class="rect"></rect>
-          <rect id="rect-192" class="rect"></rect>
-          <rect id="rect-193" class="rect"></rect>
-          <rect id="rect-194" class="rect"></rect>
-          <rect id="rect-195" class="rect"></rect>
-          <rect id="rect-196" class="rect"></rect>
-          <rect id="rect-197" class="rect"></rect>
-          <rect id="rect-198" class="rect"></rect>
-          <rect id="rect-199" class="rect"></rect>
-          <rect id="rect-200" class="rect"></rect>
-        </g>
-        <g class="svg-img" :class="{ 'playing': music.playing.value && !music.pause.value }">
-          <circle cx="60" cy="80" r="45" fill="#000" stroke="#666" stroke-width=".1"></circle>
-          <image @contextmenu="music.swap" @click="music.start" href="http://localhost:8889/api/covers/jpg/cover.jpg"
-            x="20" y="40" width="80" height="80" clip-path="url(#cover)">
-          </image>
-        </g>
-      </svg>
+
+    <div class="bg-layer _fullscreen">
+      <div class="orb-field">
+        <span class="orb orb-1"></span>
+        <span class="orb orb-2"></span>
+        <span class="orb orb-3"></span>
+      </div>
+      <div class="vignette"></div>
     </div>
+
+    <canvas ref="trailRef" class="trail-canvas _fullscreen"></canvas>
+
+    <div class="album-container">
+      <div class="song-info-wrap">
+        <Transition :name="music.slideName.value" mode="out-in">
+          <div class="song-info" :key="music.currentSong.value?.id ?? 'idle'" v-if="music.currentSong.value">
+            <div class="title">{{ music.currentSong.value.title || "当前未在播放" }}</div>
+            <div class="artist">
+              <span>{{ music.currentSong.value.artist || "未知歌手" }}</span>
+              <template v-if="music.currentSong.value.album"> · {{ music.currentSong.value.album }}</template>
+            </div>
+          </div>
+        </Transition>
+      </div>
+      <div class="album">
+        <canvas class="canvas-container" width="700" height="700"></canvas>
+        <svg class="svg-container" viewBox="0 0 120 160" width="700" height="700" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <clipPath id="cover">
+              <circle cx="60" cy="80" r="35"></circle>
+            </clipPath>
+          </defs>
+          <g v-if="music.mode == 'svg'">
+            <rect v-for="i in 200" :key="'rect-' + i" :id="'rect-' + i" class="rect"></rect>
+          </g>
+          <g class="svg-img" :class="{ 'playing': music.playing.value }">
+            <circle cx="60" cy="80" r="45" fill="#000" stroke="#666" stroke-width=".1"></circle>
+            <image @contextmenu="music.swap" @click="music.toggle" :href="music.coverUrl.value" x="20" y="40" width="80"
+              height="80" clip-path="url(#cover)">
+            </image>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+
     <div class="lrc-container">
-      <div class="lrc-tab">
-        <div class="lrc" :class="[(i == music.currentIdx.value) ? 'active' : 'inactive']"
-          v-for="(l, i) in music.lrcs.value" :key="'lrc-' + i" :style="{ '--r': `${music.currentIdx.value - i}` }">
+      <div class="panel-tabs">
+        <button type="button" :class="{ active: music.panel.value === 'lyrics' }"
+          @click="music.panel.value = 'lyrics'">歌词</button>
+        <button type="button" :class="{ active: music.panel.value === 'comment' }"
+          @click="music.panel.value = 'comment'">评论</button>
+      </div>
+
+      <div class="lrc-tab" :class="{ faded: music.panel.value !== 'lyrics' }">
+        <div v-if="!music.lrcs.value.length" class="lrc active">
+          <span>{{ music.currentSong.value ? '暂无歌词' : '请从下方选单中选择歌曲' }}</span>
+        </div>
+        <div v-else class="lrc" v-for="(l, i) in music.lrcs.value" :key="'lrc-' + i"
+          :class="[(i == music.currentIdx.value) ? 'active' : 'inactive']"
+          :style="{ '--r': `${music.currentIdx.value - i}` }">
           <span>{{ l.content || "..." }}</span>
         </div>
       </div>
 
+      <div class="comment-panel" :class="{ faded: music.panel.value !== 'comment' }">
+        <div class="comment-inner" v-if="music.currentSong.value">
+          <div class="comment-head">
+            <span class="comment-label">评论</span>
+            <h3>{{ music.currentSong.value.title || '未知歌曲' }}</h3>
+            <p class="comment-sub">{{ music.currentSong.value.artist || '未知歌手' }}</p>
+          </div>
+          <p class="comment-text">{{ music.currentSong.value.comment || '这首歌暂无评论信息' }}</p>
+          <dl class="meta-grid">
+            <div v-if="music.currentSong.value.album"><dt>专辑</dt><dd>{{ music.currentSong.value.album }}</dd></div>
+            <div v-if="music.currentSong.value.year"><dt>年份</dt><dd>{{ music.currentSong.value.year }}</dd></div>
+            <div v-if="music.currentSong.value.track"><dt>曲目号</dt><dd>{{ music.currentSong.value.track }}</dd></div>
+            <div v-if="music.currentSong.value.genre"><dt>流派</dt><dd>{{ music.currentSong.value.genre }}</dd></div>
+            <div v-if="music.currentSong.value.composer"><dt>作曲家</dt><dd>{{ music.currentSong.value.composer }}</dd></div>
+            <div v-if="music.currentSong.value.bpm"><dt>BPM</dt><dd>{{ music.currentSong.value.bpm }}</dd></div>
+            <div v-if="music.currentSong.value.mood"><dt>Mood</dt><dd>{{ music.currentSong.value.mood }}</dd></div>
+            <div v-if="music.currentSong.value.featuring"><dt>Featuring</dt><dd>{{ music.currentSong.value.featuring }}</dd></div>
+            <div v-if="music.currentSong.value.copyright"><dt>版权</dt><dd>{{ music.currentSong.value.copyright }}</dd></div>
+          </dl>
+        </div>
+        <div class="comment-empty" v-else>请从下方选单中选择歌曲</div>
+      </div>
     </div>
     <MusicMenu></MusicMenu>
   </div>
 </template>
 <script lang="ts" setup>
-import { MusicAPI } from '@/api/music';
-import { onMounted, onUnmounted, provide, ref } from 'vue';
-import type { Ref } from 'vue';
-import gsap from 'gsap';
-import MusicMenu from './menu.vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import gsap from 'gsap'
+import MusicMenu from './menu.vue'
+import { player, resolveUrl } from './player'
 
 defineOptions({
   name: "MusicPage"
 })
 
-interface LRC {
-  time: string,
-  content: string,
-  minute: number,
-  second: number,
-  millis: number
-}
-const music = {
-  rects: null as null | NodeListOf<HTMLElement>,
-  music_data: [] as number[][],
-  lrcContainer: null as null | HTMLElement,
-  animationID: 0,
-  min: 1,
-  max: 0,
-  audioContext: null as null | AudioContext,
-  sourceNode: null as null | AudioBufferSourceNode,
-  analyser: null as null | AnalyserNode,
-  playing: ref(false),
-  pause: ref(false),
-  lrcs: ref([]) as Ref<LRC[]>,
-  current: ref(0),
-  currentIdx: ref(0),
-  duration: ref(0),
-  loading: ref(true),
-  isSwapping: false,
-  svgImg: null as null | HTMLElement,
-  svgContainer: null as null | HTMLElement,
-  lrcElements: null as null | NodeListOf<HTMLElement>,
-  canvas: null as null | HTMLCanvasElement,
-  mode: 'canvas',
-  init() {
-    this.svgImg = document.querySelector('.svg-img');
-    this.lrcElements = document.querySelectorAll(".lrc");
-    this.rects = document.querySelectorAll(".rect")
-    this.canvas = document.querySelector(".canvas-container")
-    this.svgContainer = document.querySelector('.svg-container')
-    this.rects.forEach((rect, i) => {
-      rect.style.setProperty("--id", i.toString())
-    })
-    this.lrcContainer = document.querySelector(".lrc-container")
-    this.getData()
-    if (this.mode == 'canvas')
-      this.initCanvas()
-    console.log(this.svgContainer?.offsetWidth, this.svgContainer?.offsetHeight)
-    // this.setBgColor('http://localhost:8889/api/covers/jpg/cover.jpg')
-  },
-  initCanvas() {
-    if (this.canvas) {
-      const ctx = this.canvas.getContext("2d")
-      if (ctx) {
-        const dpr = window.devicePixelRatio || 1;
-        this.canvas.style.width = this.canvas.width + 'px';
-        this.canvas.style.height = this.canvas.height + 'px';
-        this.canvas.width = this.canvas.width * dpr;
-        this.canvas.height = this.canvas.height * dpr;
-        ctx.fillStyle = 'rgb(255,255,255)'
-        console.log(this.canvas.width)
-        ctx.translate(this.canvas.width / 2, this.canvas.height / 2)
-        // ctx.fillRect(-3.5, -227.5, 7, 35)
-        const ratio = this.canvas.width / parseInt(this.canvas.style.width)
-        const rectWidth = 5 * ratio
-        const rectHeight = 25 * ratio
-        const x = -rectWidth / 2
-        const y = -0.6 * this.canvas.height / 2 - rectHeight / 2
-        ctx.shadowColor = "#fff";
-        ctx.lineWidth = 3;
-        ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = 0;
-        ctx.shadowBlur = 10;
-        for (let i = 0; i < 200; ++i) {
-          ctx.rotate(2 * Math.PI / 200)
-          ctx.fillRect(x, y, rectWidth, rectHeight)
-        }
-      }
-    }
+const fallbackCover = resolveUrl('/api/covers/jpg/cover.jpg')
+const trailRef = ref<HTMLCanvasElement | null>(null)
 
+interface Point { x: number; y: number }
+
+const music = {
+  mode: 'canvas' as 'canvas' | 'svg',
+  rects: null as null | NodeListOf<HTMLElement>,
+  canvas: null as null | HTMLCanvasElement,
+  svgImg: null as null | HTMLElement,
+  isSwapping: false,
+  animationID: 0,
+  // State shared with the playback engine (see ./player.ts).
+  playing: player.playing,
+  lrcs: player.lyrics,
+  currentIdx: player.currentLrcIdx,
+  current: player.current,
+  duration: player.duration,
+  currentSong: player.currentSong,
+  direction: player.direction,
+  // 歌词 / 评论 面板切换
+  panel: ref<'lyrics' | 'comment'>('lyrics'),
+  slideName: computed(() => (player.direction.value >= 0 ? 'slide-left' : 'slide-right')),
+  coverUrl: computed(() => resolveUrl(player.currentSong.value?.cover_url) || resolveUrl(player.songs.value[0]?.cover_url) || fallbackCover),
+  // 视觉特效
+  trailCtx: null as null | CanvasRenderingContext2D,
+  trailDpr: 1,
+  trailPos: null as null | Point,
+  trailLast: null as null | Point,
+  parallax: null as null | { x: (v: number) => void; y: (v: number) => void },
+  orbTo: null as null | ((v: number) => void),
+  expandEl: null as null | HTMLElement,
+  reduceMotion: false,
+  toggle: () => {
+    void player.toggle()
   },
   swap(e: Event) {
     e.stopPropagation()
     e.preventDefault()
-    if (this.isSwapping) {
-      gsap.to(this.svgImg, {
-        y: 0,
-        ease: 'power3.out',
-        duration: .2
-      })
-      this.isSwapping = false
-    }
-    else {
-      gsap.to(this.svgImg, {
-        y: -20,
-        ease: 'power3.out',
-        duration: .2
-      })
-      this.isSwapping = true
-    }
-
+    gsap.to(music.svgImg, {
+      y: music.isSwapping ? 0 : -20,
+      ease: 'power3.out',
+      duration: .2
+    })
+    music.isSwapping = !music.isSwapping
   },
-  async getData() {
-    this.getLrc()
-    const resp = await MusicAPI.getMusic("http://localhost:8889/api/uploads/audio/test.mp3")
-    this.max = 0
-    this.min = 1
-    if (resp.data instanceof ArrayBuffer) {
-      this.audioContext = new AudioContext()
-      const sourceNode = this.audioContext.createBufferSource()
-      const analyser = this.audioContext.createAnalyser()
-      analyser.fftSize = 4096
-      const audio = await this.audioContext.decodeAudioData(resp.data as ArrayBuffer)
-      this.duration.value = audio.duration
-      const rate = audio.sampleRate
-      const duration = audio.duration
-      const data = audio.getChannelData(0)
-      const time = 0.1
-      const seg = time * rate
-      for (let i = 0; i < data.length; i += seg) {
-        const rectA = []
-        for (let j = i; j < i + seg && j < data.length; j += seg / 200) {
-          let sum = 0;
-          for (let k = j; k < j + seg / 200 && k < data.length; ++k) {
-            sum += data[k]
-          }
-          sum /= (seg / 200)
-          this.max = Math.max(this.max, sum)
-          this.min = Math.min(this.min, sum)
-          rectA.push(sum)
-        }
-        this.music_data.push(rectA)
-      }
-
-      sourceNode.buffer = audio;
-      const gain = this.audioContext.createGain()
-      gain.gain.value = 0.1
-      sourceNode.connect(gain)
-      gain.connect(analyser)
-      analyser.connect(this.audioContext.destination)
-      this.sourceNode = sourceNode
-      this.analyser = analyser
-      this.loading.value = false
-      gsap.to(document.querySelectorAll(".rect"), {
-        clipPath: 'none',
-        stagger: {
-          from: 'random',
-          amount: 0.4
-        },
-      })
-    }
-
+  init() {
+    music.svgImg = document.querySelector('.svg-img')
+    music.rects = document.querySelectorAll('.rect')
+    music.canvas = document.querySelector('.canvas-container')
+    music.rects.forEach((rect, i) => {
+      rect.style.setProperty("--id", i.toString())
+    })
+    if (music.mode == 'canvas')
+      music.initCanvas()
+    music.initEffects()
   },
-  async getLrc() {
-    const resp = await MusicAPI.getLrc("http://localhost:8889/api/uploads/audio/test.lrc")
-    const data_str = resp.data
-    const re = /(?<time>\[(?<minute>\d*):(?<second>\d*).(?<millis>\d*)\])(?<content>[^[\n]*)/g
-    // const  matches = data_str.match(re);
-    let matches
-    while ((matches = re.exec(data_str)) !== null) {
-      // console.log(matches);
-      this.lrcs.value.push({
-        content: matches?.groups?.content || "",
-        time: matches?.groups?.time || "",
-        minute: Number(matches?.groups?.minute) || 0,
-        second: Number(matches?.groups?.second) || 0,
-        millis: Number(matches?.groups?.millis) || 0
-      })
+  initCanvas() {
+    if (!music.canvas) return
+    const ctx = music.canvas.getContext("2d")
+    if (!ctx) return
+    const dpr = window.devicePixelRatio || 1
+    music.canvas.style.width = music.canvas.width + 'px'
+    music.canvas.style.height = music.canvas.height + 'px'
+    music.canvas.width = music.canvas.width * dpr
+    music.canvas.height = music.canvas.height * dpr
+    ctx.fillStyle = 'rgb(255,255,255)'
+    ctx.translate(music.canvas.width / 2, music.canvas.height / 2)
+    const ratio = music.canvas.width / parseInt(music.canvas.style.width)
+    const rectWidth = 5 * ratio
+    const rectHeight = 25 * ratio
+    const x = -rectWidth / 2
+    const y = -0.6 * music.canvas.height / 2 - rectHeight / 2
+    ctx.shadowColor = "#fff"
+    ctx.lineWidth = 3
+    ctx.shadowOffsetX = 0
+    ctx.shadowOffsetY = 0
+    ctx.shadowBlur = 10
+    for (let i = 0; i < 200; ++i) {
+      ctx.rotate(2 * Math.PI / 200)
+      ctx.fillRect(x, y, rectWidth, rectHeight)
     }
   },
-  start() {
-    if (this.loading.value) return
-        console.log('start!!')
-    if (this.playing.value) {
-      if (this.pause.value) {
-        this.pause.value = false
-        this.audioContext?.resume()
-        return
+  // ---- 视觉效果：鼠标拖尾 / 视差 ----
+  initEffects() {
+    music.reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (music.reduceMotion) return
+
+    const bg = document.querySelector('.bg-layer') as HTMLElement | null
+    // Note: only transform elements that are not the containing block of the
+    // absolutely positioned visualiser canvas, otherwise it would jump.
+    const cover = document.querySelector('.svg-container') as HTMLElement | null
+    if (bg && cover) {
+      const bgX = gsap.quickTo(bg, 'x', { duration: 1.1, ease: 'power3.out' })
+      const bgY = gsap.quickTo(bg, 'y', { duration: 1.1, ease: 'power3.out' })
+      const coverX = gsap.quickTo(cover, 'x', { duration: .8, ease: 'power3.out' })
+      const coverY = gsap.quickTo(cover, 'y', { duration: .8, ease: 'power3.out' })
+      music.parallax = {
+        x: (v: number) => { bgX(-v * 18); coverX(-v * 12) },
+        y: (v: number) => { bgY(-v * 12); coverY(-v * 8) },
       }
-      this.pause.value = true
-      this.audioContext?.suspend()
-      return
     }
-    this.playing.value = true
-    if (this.sourceNode)
-      this.sourceNode.start(0);
-    let lastTime = 0
-    const update = (time: number) => {
-      if (!lastTime) lastTime = time
-      const delta = time - lastTime
-      if (delta > 17 && this.audioContext?.state == 'running') {
-        if (this.current.value > this.duration.value) {
-          this.audioContext.close()
-          return
+
+    music.resizeTrail()
+    window.addEventListener('resize', music.resizeTrail)
+    window.addEventListener('mousemove', music.onPointerMove, { passive: true })
+    window.addEventListener('mouseout', music.onPointerLeave)
+
+    // 选单横向滚动时，背景光斑做视差
+    music.expandEl = document.querySelector('.card-container') as HTMLElement | null
+    const orbField = document.querySelector('.orb-field') as HTMLElement | null
+    if (music.expandEl && orbField) {
+      music.orbTo = gsap.quickTo(orbField, 'x', { duration: .6, ease: 'power2.out' })
+      music.expandEl.addEventListener('scroll', music.onExpandScroll, { passive: true })
+    }
+  },
+  cleanupEffects() {
+    window.removeEventListener('resize', music.resizeTrail)
+    window.removeEventListener('mousemove', music.onPointerMove)
+    window.removeEventListener('mouseout', music.onPointerLeave)
+    music.expandEl?.removeEventListener('scroll', music.onExpandScroll)
+  },
+  resizeTrail() {
+    const canvas = trailRef.value
+    if (!canvas) return
+    const dpr = window.devicePixelRatio || 1
+    music.trailDpr = dpr
+    canvas.width = Math.floor(window.innerWidth * dpr)
+    canvas.height = Math.floor(window.innerHeight * dpr)
+    canvas.style.width = window.innerWidth + 'px'
+    canvas.style.height = window.innerHeight + 'px'
+    music.trailCtx = canvas.getContext('2d')
+  },
+  onPointerMove(e: MouseEvent) {
+    const nx = (e.clientX / window.innerWidth) * 2 - 1
+    const ny = (e.clientY / window.innerHeight) * 2 - 1
+    music.parallax?.x(nx)
+    music.parallax?.y(ny)
+    music.trailPos = { x: e.clientX * music.trailDpr, y: e.clientY * music.trailDpr }
+  },
+  onPointerLeave() {
+    music.trailLast = null
+    music.trailPos = null
+  },
+  onExpandScroll() {
+    const el = music.expandEl
+    if (!el || !music.orbTo) return
+    const max = Math.max(el.scrollWidth - el.clientWidth, 1)
+    music.orbTo(-(el.scrollLeft / max) * 140)
+  },
+  drawTrail() {
+    const ctx = music.trailCtx
+    const canvas = trailRef.value
+    if (!ctx || !canvas) return
+    ctx.globalCompositeOperation = 'destination-out'
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.16)'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    if (music.trailLast && music.trailPos) {
+      const { x: x0, y: y0 } = music.trailLast
+      const { x: x1, y: y1 } = music.trailPos
+      if (Math.hypot(x1 - x0, y1 - y0) > 0.6) {
+        const dpr = music.trailDpr
+        const grad = ctx.createLinearGradient(x0, y0, x1, y1)
+        grad.addColorStop(0, 'rgba(113, 220, 247, 0)')
+        grad.addColorStop(1, 'rgba(160, 240, 255, 0.9)')
+        ctx.globalCompositeOperation = 'lighter'
+        ctx.strokeStyle = grad
+        ctx.lineWidth = 3.5 * dpr
+        ctx.lineCap = 'round'
+        ctx.shadowColor = 'rgba(113, 220, 247, 0.9)'
+        ctx.shadowBlur = 14 * dpr
+        ctx.beginPath()
+        ctx.moveTo(x0, y0)
+        ctx.lineTo(x1, y1)
+        ctx.stroke()
+        ctx.shadowBlur = 0
+      }
+    }
+    music.trailLast = music.trailPos ? { ...music.trailPos } : null
+  },
+  animate() {
+    const canvas = music.canvas
+    if (music.mode == 'canvas' && canvas) {
+      const ctx = canvas.getContext("2d")
+      if (ctx) {
+        const data = player.getFrequencyData()
+        const ratio = canvas.width / parseInt(canvas.style.width)
+        const rectWidth = 5 * ratio
+        const rectHeight = 25 * ratio
+        const x = -rectWidth / 2
+        const y = -0.6 * canvas.height / 2 - rectHeight / 2
+        ctx.setTransform(1, 0, 0, 1, 0, 0)
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        ctx.fillStyle = 'rgb(255,255,255)'
+        ctx.shadowColor = "#fff"
+        ctx.lineWidth = 3
+        ctx.shadowOffsetX = 0
+        ctx.shadowOffsetY = 0
+        ctx.shadowBlur = 10
+        ctx.translate(canvas.width / 2, canvas.height / 2)
+        for (let i = 0; i < 200; ++i) {
+          ctx.rotate(2 * Math.PI / 200)
+          const height = Math.max((data ? data[i] : 0) / 255 * 3, 1)
+          ctx.fillRect(x, y - rectHeight * height + rectHeight, rectWidth, rectHeight * height)
         }
-        if (this.analyser?.frequencyBinCount) {
-          const data = new Uint8Array(this.analyser?.frequencyBinCount);
-          this.analyser?.getByteFrequencyData(data)
-          this.current.value = this.audioContext?.currentTime || 0
-          this.updateLRC()
-
-          // canvas test'
-          if (this.mode == 'canvas') {
-            if (this.canvas) {
-
-              const ratio = this.canvas.width / parseInt(this.canvas.style.width)
-              const rectWidth = 5 * ratio
-              const rectHeight = 25 * ratio
-              const x = -rectWidth / 2
-              const y = -0.6 * this.canvas.height / 2 - rectHeight / 2
-              const ctx = this.canvas.getContext("2d")
-              if (ctx) {
-                ctx.setTransform(1, 0, 0, 1, 0, 0)
-                ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-
-
-                // ctx.fillStyle = 'rgba(0, 0, 0)'
-                // ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
-
-                ctx.shadowColor = "#fff";
-                ctx.lineWidth = 3;
-                ctx.shadowOffsetX = 0;
-                ctx.shadowOffsetY = 0;
-                ctx.shadowBlur = 10;
-                ctx.fillStyle = 'rgb(255,255,255)'
-                const centerX = this.canvas.width / 2
-                const centerY = this.canvas.height / 2
-                ctx.translate(centerX, centerY)
-
-                for (let i = 0; i < 200; ++i) {
-                  ctx.rotate(2 * Math.PI / 200)
-                  const height = data[i] / 255 * 5
-                  // ctx.strokeRect(x, y - rectHeight * height, rectWidth, rectHeight * height);
-                  ctx.fillRect(x, y - rectHeight * height + rectHeight, rectWidth, rectHeight * height)
-                }
-                // ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-                //  ctx.setTransform(1, 0, 0, 1, 0, 0)
-                // ctx.fillStyle = 'rgb(255,255,255)'
-                // ctx.translate(525, 525)
-                // // ctx.fillRect(-3.5, -227.5, 7, 35)
-                // for (let i = 0; i < 200; ++i) {
-                //   ctx.rotate(2 * Math.PI / 200)
-                //   ctx.fillRect(-3.5, -350, 7, data[i] * 0.7)
-                // }
-              }
-            }
-          }
-          else {
-            // console.log(data)
-            this.rects?.forEach((rect, idx) => {
-              rect.style.setProperty('height', data[idx] * 0.1 + 'px')
-              rect.style.setProperty('y', 35 - data[idx] * 0.1 + 'px')
-            })
-          }
-          lastTime = time
-          if (!this.svgImg?.classList.contains("playing")) {
-            this.svgImg?.classList.add('playing')
-          }
-        }
       }
-      this.animationID = requestAnimationFrame(update)
     }
-    this.animationID = requestAnimationFrame(update)
-  }, updateLRC() {
-    let idx = 0
-    this.lrcs.value.forEach((l, i) => {
-      const time = l.minute * 60 + l.second + l.millis * 0.01
-      if (time < this.current.value) {
-        idx = i
-        return
-      }
-    });
-    if (idx != this.currentIdx.value) {
-      this.currentIdx.value = idx
-      // console.log(idx)
-      gsap.timeline()
-        // .to(document.querySelectorAll(".lrc"), {
-        //   fontSize: (index) => {
-        //     return index == music.currentIdx.value ? '4rem' : '3rem'
-        //   },
-        //   ease: 'none',
-        //   duration: .2
-        // })
-        .to(document.querySelectorAll(".lrc"), {
-          y: idx * (-1 * (document.querySelector(".lrc") as HTMLElement).offsetHeight || 1),
-          rotate: (index) => index - music.currentIdx.value + 'deg',
-          ease: 'power3.out',
-        }, "<")
+    else if (music.mode == 'svg') {
+      const data = player.getFrequencyData()
+      music.rects?.forEach((rect, idx) => {
+        const value = data ? data[idx] * 0.1 : 5
+        rect.style.setProperty('height', value + 'px')
+        rect.style.setProperty('y', 35 - value + 'px')
+      })
     }
-
+    if (!music.reduceMotion) music.drawTrail()
+    music.animationID = requestAnimationFrame(() => music.animate())
   }
 }
 
-
-provide('playing', music.playing)
-provide('start', music.start.bind(music))
-provide('pause', music.pause)
-provide('current', music.current)
-provide('duration', music.duration)
+watch(() => player.currentLrcIdx.value, (idx) => {
+  const elements = document.querySelectorAll('.lrc')
+  const first = document.querySelector('.lrc') as HTMLElement | null
+  if (!elements.length || !first) return
+  gsap.to(elements, {
+    y: idx * (-1 * (first.offsetHeight || 1)),
+    rotate: (index: number) => index - idx + 'deg',
+    ease: 'power3.out',
+  })
+})
 
 onMounted(() => {
   music.init()
+  void player.loadList()
+  music.animate()
 })
 
 onUnmounted(() => {
-  music.audioContext?.close()
+  cancelAnimationFrame(music.animationID)
+  music.cleanupEffects()
+  player.dispose()
 })
 </script>
 <style lang="scss" scoped>
 .music-container {
   background: radial-gradient(circle at 30% 50%, rgb(45, 44, 44), black);
-  ;
   --view: 60;
-  // background-color: red;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+
+  .mask {
+    pointer-events: none;
+    user-select: none;
+    z-index: 1;
+  }
+
+  // ---- 背景光斑 ----
+  .bg-layer {
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+
+    .orb-field {
+      position: absolute;
+      inset: 0;
+    }
+
+    .orb {
+      position: absolute;
+      display: block;
+      border-radius: 50%;
+      filter: blur(70px);
+      opacity: .45;
+      mix-blend-mode: screen;
+      will-change: transform;
+    }
+
+    .orb-1 {
+      width: 42vw;
+      height: 42vw;
+      left: -8vw;
+      top: -6vw;
+      background: radial-gradient(circle, #1f8fae, transparent 68%);
+      animation: drift-a 22s ease-in-out infinite alternate;
+    }
+
+    .orb-2 {
+      width: 38vw;
+      height: 38vw;
+      right: -6vw;
+      top: 12vh;
+      background: radial-gradient(circle, #5a3f9e, transparent 68%);
+      animation: drift-b 27s ease-in-out infinite alternate;
+    }
+
+    .orb-3 {
+      width: 34vw;
+      height: 34vw;
+      left: 26vw;
+      bottom: -14vw;
+      background: radial-gradient(circle, #2a7f6a, transparent 68%);
+      animation: drift-c 31s ease-in-out infinite alternate;
+    }
+
+    .vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 45%, transparent 30%, rgba(0, 0, 0, .55) 100%);
+    }
+  }
+
+  .trail-canvas {
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  @keyframes drift-a {
+    0% { transform: translate3d(0, 0, 0) scale(1); }
+    100% { transform: translate3d(6vw, 8vh, 0) scale(1.15); }
+  }
+
+  @keyframes drift-b {
+    0% { transform: translate3d(0, 0, 0) scale(1.1); }
+    100% { transform: translate3d(-8vw, -6vh, 0) scale(.92); }
+  }
+
+  @keyframes drift-c {
+    0% { transform: translate3d(0, 0, 0) scale(.95); }
+    100% { transform: translate3d(-5vw, -9vh, 0) scale(1.2); }
+  }
 
   .canvas-container {
     mix-blend-mode: screen;
@@ -562,14 +441,81 @@ onUnmounted(() => {
     pointer-events: none;
   }
 
-  .mask {
-    pointer-events: none;
-    user-select: none;
-  }
-
   .album-container {
     width: 700px;
     height: 700px;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+  }
+
+  .song-info-wrap {
+    position: relative;
+    height: 96px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .song-info {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 30;
+    pointer-events: none;
+    color: #fff;
+
+    .title {
+      font-size: 3rem;
+      letter-spacing: .2rem;
+      text-shadow: 0 0 10px rgba($color: #fff, $alpha: .5);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .artist {
+      margin-top: 6px;
+      font-size: 2rem;
+      color: #bbb;
+      letter-spacing: .1rem;
+      text-wrap: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
+  // 上一首 / 下一首：标题左右滑动，艺术家淡入淡出
+  .slide-left-enter-from .title,
+  .slide-right-leave-to .title {
+    transform: translateX(72%);
+  }
+
+  .slide-left-leave-to .title,
+  .slide-right-enter-from .title {
+    transform: translateX(-72%);
+  }
+
+  .slide-left-enter-from .artist,
+  .slide-left-leave-to .artist,
+  .slide-right-enter-from .artist,
+  .slide-right-leave-to .artist {
+    opacity: 0;
+  }
+
+  .slide-left-enter-active,
+  .slide-left-leave-active,
+  .slide-right-enter-active,
+  .slide-right-leave-active {
+    .title {
+      transition: transform .5s cubic-bezier(.22, .61, .36, 1);
+    }
+
+    .artist {
+      transition: opacity .4s ease;
+    }
   }
 
   .svg-container {
@@ -581,11 +527,6 @@ onUnmounted(() => {
       transform-origin: 50% 50%;
       transform: rotate(0);
       transition: transform linear .1s;
-
-      &:hover {
-        // transform: scale(.98);
-        // transition: none;
-      }
 
       @keyframes rolling {
         0% {
@@ -621,7 +562,6 @@ onUnmounted(() => {
     fill: #fff;
     transform: rotate(calc(var(--id) / 200 * 360deg));
     transform-origin: center center;
-    // animation: roll 1s infinite calc(var(--id) * 0.02s);
     transition: height .2s ease, y .2s ease;
     filter: drop-shadow(0 0 2px #fff);
   }
@@ -629,107 +569,384 @@ onUnmounted(() => {
   .lrc-container {
     position: relative;
     width: 50vw;
+    z-index: 10;
+  }
 
-    .lrc-tab {
-      width: 100vw;
-      position: absolute;
-      transform: perspective(1500px) rotateY(-10deg) translateX(-20vw);
-      display: flex;
-      flex-direction: column;
-      // margin-left: 10vw;
-      overflow: visible;
-      align-self: flex-start;
-      align-items: center;
-      // padding-top: calc(50vh - 5rem);
-      height: 120vh;
-      transition: ease all 1s;
-    }
+  .panel-tabs {
+    position: absolute;
+    top: -8vh;
+    right: 2vw;
+    display: flex;
+    gap: 6px;
+    z-index: 40;
 
+    button {
+      cursor: pointer;
+      padding: 4px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .22);
+      background: rgba(255, 255, 255, .06);
+      color: #bbb;
+      font-size: 1.4rem;
+      letter-spacing: .2rem;
+      backdrop-filter: blur(6px);
+      transition: color .25s, border-color .25s, background-color .25s;
 
-    .lrc {
-      transform: rotate(calc(var(--r) * -1deg));
-      // pointer-events: none;
-
-      &.inactive {
-        * {
-          color: #ccc;
-        }
+      &:hover {
+        color: #fff;
+        border-color: rgba(113, 220, 247, .6);
       }
 
       &.active {
-        * {
-          color: #fff;
-        }
+        color: #04222b;
+        background: #71dcf7;
+        border-color: #71dcf7;
+      }
+    }
+  }
+
+  .lrc-tab {
+    width: 100vw;
+    position: absolute;
+    transform: perspective(1500px) rotateY(-10deg) translateX(-20vw);
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+    align-self: flex-start;
+    align-items: center;
+    height: 120vh;
+    transition: opacity .4s ease, visibility .4s;
+
+    &.faded {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+  }
+
+  .comment-panel {
+    position: absolute;
+    top: 0;
+    width: 100vw;
+    transform: perspective(1500px) rotateY(-10deg) translateX(-20vw);
+    display: flex;
+    justify-content: center;
+    z-index: 20;
+    transition: opacity .4s ease, visibility .4s;
+
+    &.faded {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+
+      .comment-inner {
+        transform: translateY(18px);
+      }
+    }
+
+    .comment-inner {
+      width: min(620px, 62vw);
+      max-height: 74vh;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .05);
+      border: 1px solid rgba(255, 255, 255, .1);
+      backdrop-filter: blur(10px);
+      color: #e8e8e8;
+      transform: translateY(0);
+      transition: transform .45s cubic-bezier(.22, .61, .36, 1);
+    }
+
+    .comment-head {
+      .comment-label {
+        display: inline-block;
+        font-size: 1.3rem;
+        letter-spacing: .3rem;
+        color: #71dcf7;
+        padding: 2px 10px;
+        border: 1px solid rgba(113, 220, 247, .5);
+        border-radius: 999px;
       }
 
-      color: #fff;
-      font-size: 3rem;
-      font-family: Noto Sans JP;
+      h3 {
+        margin-top: 12px;
+        font-size: 2.6rem;
+        letter-spacing: .1rem;
+        color: #fff;
+      }
 
+      .comment-sub {
+        margin-top: 4px;
+        font-size: 1.6rem;
+        color: #9a9a9a;
+      }
+    }
 
-      text-align: center;
-      padding: 2rem 0;
+    .comment-text {
+      margin-top: 18px;
+      font-size: 1.7rem;
+      line-height: 1.8;
+      color: #ddd;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
 
-      // transform: translate3d(0,0,10rem);
+    .meta-grid {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 22px;
 
+      > div {
+        display: flex;
+        gap: 10px;
+        align-items: baseline;
+        border-bottom: 1px dashed rgba(255, 255, 255, .1);
+        padding-bottom: 6px;
+      }
+
+      dt {
+        flex-shrink: 0;
+        font-size: 1.4rem;
+        color: #71dcf7;
+        letter-spacing: .08rem;
+      }
+
+      dd {
+        font-size: 1.5rem;
+        color: #ccc;
+        word-break: break-word;
+      }
+    }
+
+    .comment-empty {
+      margin-top: 30vh;
+      color: #999;
+      font-size: 2rem;
+      letter-spacing: .2rem;
+    }
+  }
+
+  .lrc {
+    transform: rotate(calc(var(--r) * -1deg));
+
+    &.inactive {
+      * {
+        color: #ccc;
+      }
+    }
+
+    &.active {
+      * {
+        color: #fff;
+      }
+    }
+
+    color: #fff;
+    font-size: 3rem;
+    font-family: Noto Sans JP;
+
+    text-align: center;
+    padding: 2rem 0;
+
+    span {
+      display: block;
+      user-select: none;
+      text-shadow:
+        0 0 20px #ccc,
+        2px 2px 7px #fff,
+        1px 1px 5px #111;
+      color: inherit;
+      font-size: inherit;
+      font-family: inherit;
+      text-wrap: nowrap;
+      letter-spacing: .5rem;
+      transition: all cubic-bezier(0.52, 0.52, 0.17, 1.26) .2s;
+
+      &::after {
+        content: "";
+        position: absolute;
+        height: 10px;
+        width: 120%;
+        background-color: transparent;
+        top: 50%;
+        left: 50%;
+        background-color: #999;
+        box-shadow:
+          0px 0px 5px #71dcf7,
+          0px 0px 10px #fff;
+        opacity: .8;
+        border-radius: 5px;
+        z-index: -1;
+        transform: scaleX(.6) translate(-50%, -50%);
+        transition:
+          opacity .2s linear,
+          transform .2s ease-out;
+        opacity: 0;
+        transform-origin: 0 0;
+      }
+    }
+
+    &:hover {
       span {
-        display: block;
-        user-select: none;
         text-shadow:
-          0 0 20px #ccc,
+          1px 1px 5px #111,
           2px 2px 7px #fff,
-          1px 1px 5px #111;
-        color: inherit;
-        font-size: inherit;
-        font-family: inherit;
-        text-wrap: nowrap;
-        letter-spacing: .5rem;
-        transition: all cubic-bezier(0.52, 0.52, 0.17, 1.26) .2s;
+          0 0 20px #ccc;
+        font-size: 4rem;
 
         &::after {
-          content: "";
-          position: absolute;
-          height: 10px;
-          width: 120%;
-          background-color: transparent;
-          top: 50%;
-          left: 50%;
-          background-color: #999;
-          box-shadow:
-            0px 0px 5px #71dcf7,
-            0px 0px 10px #fff;
-          opacity: .8;
-          border-radius: 5px;
-          z-index: -1;
-          transform: scaleX(.6) translate(-50%, -50%);
+          display: block;
+          transform: scaleX(1) translate(-50%, -50%);
+          opacity: 1;
           transition:
-            opacity .2s linear,
+            opacity .2s .1s linear,
             transform .2s ease-out;
-          opacity: 0;
           transform-origin: 0 0;
         }
       }
 
-      &:hover {
-        span {
-          text-shadow:
-            1px 1px 5px #111,
-            2px 2px 7px #fff,
-            0 0 20px #ccc;
-          // color: ;
-          font-size: 4rem;
+    }
+  }
 
-          &::after {
-            display: block;
-            transform: scaleX(1) translate(-50%, -50%);
-            opacity: 1;
-            transition:
-              opacity .2s .1s linear,
-              transform .2s ease-out;
-            transform-origin: 0 0;
-          }
+  // ---- 移动端适配 ----
+  @media (max-width: 1024px) {
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 6vh;
+
+    .bg-layer .orb {
+      filter: blur(50px);
+    }
+
+    .album-container {
+      width: 100%;
+      height: auto;
+      flex-shrink: 0;
+    }
+
+    .song-info-wrap {
+      height: 66px;
+    }
+
+    .song-info {
+      .title {
+        font-size: 24px;
+        letter-spacing: 1px;
+      }
+
+      .artist {
+        font-size: 14px;
+      }
+    }
+
+    .album {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .svg-container {
+      margin-right: 0;
+      width: min(76vw, 360px);
+      height: min(76vw, 360px);
+    }
+
+    .canvas-container {
+      transform: scale(.54);
+    }
+
+    .lrc-container {
+      width: 100vw;
+      flex: 1 1 auto;
+      min-height: 0;
+      margin-top: 6px;
+    }
+
+    .panel-tabs {
+      top: -2px;
+      right: 5vw;
+
+      button {
+        padding: 4px 14px;
+        font-size: 13px;
+        letter-spacing: 1px;
+      }
+    }
+
+    .lrc-tab {
+      transform: none;
+      width: 100vw;
+      height: 40vh;
+      top: 40px;
+      overflow: hidden;
+      padding-top: 12vh;
+    }
+
+    .comment-panel {
+      transform: none;
+      top: 40px;
+      height: 40vh;
+      align-items: flex-start;
+      overflow: hidden;
+
+      .comment-inner {
+        width: 90vw;
+        max-height: 40vh;
+        padding: 14px 16px;
+      }
+
+      .comment-head {
+        .comment-label {
+          font-size: 12px;
+          letter-spacing: 2px;
         }
 
+        h3 {
+          font-size: 20px;
+        }
+
+        .comment-sub {
+          font-size: 13px;
+        }
+      }
+
+      .comment-text {
+        margin-top: 12px;
+        font-size: 15px;
+      }
+
+      .meta-grid {
+        grid-template-columns: 1fr;
+
+        dt {
+          font-size: 12px;
+        }
+
+        dd {
+          font-size: 13px;
+        }
+      }
+
+      .comment-empty {
+        margin-top: 18vh;
+        font-size: 16px;
+      }
+    }
+
+    .lrc {
+      font-size: 21px;
+      padding: 8px 0;
+
+      span {
+        letter-spacing: 3px;
+      }
+
+      &:hover span {
+        font-size: 24px;
       }
     }
   }

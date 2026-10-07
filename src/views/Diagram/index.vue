@@ -49,6 +49,16 @@
         <!-- 右上：查看操作票 + 图例 -->
         <div class="hud-corner top-right" data-no-pan>
           <Transition name="reopen">
+            <button v-if="!agentOpen" class="hud reopen-btn agent-btn" @click="agentOpen = true">
+              <svg viewBox="0 0 24 24" width="15" height="15">
+                <path d="M12 3l2.2 5.3L20 9.3l-4 3.9.9 5.8L12 16.3 7.1 19l.9-5.8-4-3.9 5.8-1z" fill="none"
+                  stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+              </svg>
+              AI 智能开票
+            </button>
+          </Transition>
+
+          <Transition name="reopen">
             <button v-if="!panelOpen" class="hud reopen-btn" @click="panelOpen = true">
               <svg viewBox="0 0 24 24" width="15" height="15">
                 <path d="M8 6h9a2 2 0 012 2v9M4 9h9a2 2 0 012 2v9H6a2 2 0 01-2-2V9z" fill="none" stroke="currentColor"
@@ -186,15 +196,18 @@
         </Transition>
       </div>
 
-      <Transition name="dock">
-        <div v-if="panelOpen" class="dock-layer">
-          <OperationTicketPanel :ticket="ticket" :running="running" :auto-playing="autoPlaying"
+      <div class="dock-layer">
+        <Transition name="dock">
+          <AgentChat v-if="agentOpen" :model="model" :load-ticket="loadAgentTicket" @close="agentOpen = false" />
+        </Transition>
+        <Transition name="dock">
+          <OperationTicketPanel v-if="panelOpen" :ticket="ticket" :running="running" :auto-playing="autoPlaying"
             :current-index="currentIndex" @close="panelOpen = false" @load-sample="loadSample"
             @download-template="downloadTemplate" @upload="handleUpload" @start="start" @pause="pause" @auto="autoPlay"
             @reset="resetTicket" @execute-current="executeCurrent" @skip="skipStep" @focus="focusCurrent"
             @focus-step="focusStep" @export-record="exportRecord" @clear="clearTicket" />
-        </div>
-      </Transition>
+        </Transition>
+      </div>
     </div>
 
     <!-- 五防校核确认 -->
@@ -227,6 +240,7 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import gsap from 'gsap'
 
+import AgentChat from './AgentChat.vue'
 import OperationTicketPanel from './OperationTicketPanel.vue'
 import { DiagramRenderer } from './renderer'
 import {
@@ -245,6 +259,7 @@ import {
   type OperationTicket,
   type TicketStep
 } from './ticket'
+import type { TicketPreview } from './agentTicket'
 
 defineOptions({ name: 'EDiagram' })
 
@@ -255,7 +270,7 @@ const model = createStationModel()
 const sourceConfig = reactive<Record<string, boolean>>({})
 for (const s of model.sources) sourceConfig[s.id] = false
 // 默认投入三个电源，便于直接观察潮流与操作效果
-for (const id of ['b220_0', 'b110_0', 'b35_0']) {
+for (const id of ['b220_0']) {
   if (id in sourceConfig) sourceConfig[id] = true
 }
 
@@ -334,6 +349,7 @@ const menu = reactive({
 let menuDevice: DeviceDef | null = null
 
 function openMenu(device: DeviceDef, sx: number, sy: number): void {
+  if(menu.visible)return
   menuDevice = device
   menu.visible = true
   menu.deviceId = device.id
@@ -405,6 +421,7 @@ function onSourceChange(id: string, e: Event): void {
 
 const ticket = ref<OperationTicket | null>(null)
 const panelOpen = ref(false)
+const agentOpen = ref(false)
 const running = ref(false)
 const autoPlaying = ref(false)
 const currentIndex = ref(0)
@@ -442,8 +459,32 @@ function applyTicket(t: OperationTicket, errors: string[]): void {
   if (errors.length) {
     toast('warn', `已载入 ${t.steps.length} 步，其中 ${errors.length} 步无法识别，请检查设备编号`, 5200)
   } else {
-    toast('success', `操作票「${t.meta.title}」载入成功 · 共 ${t.steps.length} 步`)
+    toast('success', `操作票「${t.meta.title}」已载入待执行 · 共 ${t.steps.length} 步`)
   }
+}
+
+/**
+ * 智能体回答解析出的操作票 → 自动载入「待执行」。
+ * 返回结果供对话面板展示；执行中的操作票不会被静默覆盖。
+ */
+function loadAgentTicket(preview: TicketPreview): { ok: boolean; message: string } {
+  const { ticket: parsed, errors } = preview.result
+  if (!parsed) {
+    const msg = errors[0] || '未能从回答中解析出可执行的操作票'
+    toast('error', msg, 5000)
+    return { ok: false, message: msg }
+  }
+
+  const busy = !!ticket.value && running.value &&
+    !ticket.value.steps.every(s => s.status === 'done' || s.status === 'skipped')
+  if (busy) {
+    const msg = '当前操作票正在执行，新票未自动覆盖；请先移除操作票后再载入'
+    toast('warn', msg, 5600)
+    return { ok: false, message: msg }
+  }
+
+  applyTicket(parsed, errors)
+  return { ok: true, message: `已自动载入待执行 · 共 ${parsed.steps.length} 步` }
 }
 
 function readTicketFile(file: File): void {
@@ -1113,6 +1154,17 @@ onBeforeUnmount(() => {
   &:hover {
     transform: translateY(-1px);
     box-shadow: 0 10px 26px rgba(45, 200, 150, 0.3);
+  }
+}
+
+/* 智能体开票入口：与操作票入口做蓝色系区分 */
+.reopen-btn.agent-btn {
+  color: #06192e;
+  border-color: rgba(140, 200, 255, 0.55);
+  background: linear-gradient(135deg, rgba(150, 205, 255, 0.96), rgba(92, 140, 255, 0.96));
+
+  &:hover {
+    box-shadow: 0 10px 26px rgba(90, 150, 255, 0.32);
   }
 }
 

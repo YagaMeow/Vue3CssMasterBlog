@@ -16,7 +16,7 @@ import { ref, reactive, onMounted, onUnmounted, nextTick } from 'vue'
 import { ArticleAPI } from '@/api/api'
 import { useAppStore } from '@/pinia'
 import { formatDate, range } from '@/utils/utils'
-import type { Article } from '@/utils/utils'
+import type { Article,Tag } from '@/utils/utils'
 
 const appStore = useAppStore()
 
@@ -64,6 +64,7 @@ interface PostNode {
   data: Article
   title: string
   date: string
+  tags: Tag[]
   x: number
   y: number
   vx: number
@@ -134,6 +135,7 @@ function makeNode(a: Article, idx: number, total: number): PostNode {
     data: a,
     title: a.title ? String(a.title) : '',
     date: a.created_at ? formatDate(String(a.created_at)) : '',
+    tags: a.tags,
     x: cx,
     y: cy,
     vx: 0,
@@ -608,7 +610,6 @@ function hitTest(clientX: number, clientY: number): PostNode | null {
 /** 命中屏幕边缘的指示点 */
 function hitTestEdge(px: number, py: number) {
   const r = EDGE_DOT_OUTER + 4
-  console.log(px, py)
   for (const h of edgeHits) {
     if (Math.hypot(px - h.bx, py - h.by) <= r) return h
   }
@@ -871,6 +872,7 @@ const diagram = {
     const list: Article[] = await ArticleAPI.getList({ page: 1, limit: 10 })
       .then((r) => r.data as Article[])
       .catch(() => [])
+    console.log(list)
     diagram.postList.value = list
     hoverNode = null
     popoverNode = null

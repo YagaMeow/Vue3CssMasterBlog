@@ -631,9 +631,9 @@ export class DiagramRenderer {
     this.labels = L
 
     const grounds: Array<[number, number]> = []
-    for (const bay of this.model.bays220) if (bay.kind !== 'ml') grounds.push([bay.x - 62, GEOM[220].gnd + 60])
-    for (const bay of this.model.bays110) if (bay.kind !== 'ml') grounds.push([bay.x - 62, GEOM[110].gnd + 60])
-    for (const bay of this.model.bays35) if (bay.kind !== 'ml') grounds.push([bay.x - 62, GEOM[35].gnd + 60])
+    for (const bay of this.model.bays220) if (bay.kind !== 'ml') grounds.push([bay.x + 62, GEOM[220].gnd + 60],[bay.x - 62, GEOM[220].gndXlc + 60],[bay.x - 62, GEOM[220].gndMx + 60])
+    for (const bay of this.model.bays110) if (bay.kind !== 'ml') grounds.push([bay.x + 62, GEOM[110].gnd + 60],[bay.x - 62, GEOM[110].gndXlc + 60],[bay.x - 62, GEOM[110].gndMx + 60])
+    for (const bay of this.model.bays35) if (bay.kind !== 'ml') grounds.push([bay.x - 62, GEOM[35].gnd + 60],[bay.x + 62, GEOM[35].gndXlc + 60],[bay.x - 62, GEOM[35].gndMx + 60])
     grounds.push([TR110_X - 55, TR110_GND_Y + 12 + 44])
     grounds.push([TR35_X - 62, TR35_GND_Y + 12 + 48])
     this.groundPoints = grounds
@@ -683,13 +683,13 @@ export class DiagramRenderer {
     const en = this.isEnergized
 
     /* 世界坐标网格（一次构建，随手势缩放平移） */
-    for (let x = WORLD_X0; x <= WORLD_X1; x += 100) {
+    for (let x = WORLD_X0-500; x <= WORLD_X1 + 2500; x += 100) {
       grid.moveTo(x, WORLD_Y0)
       grid.lineTo(x, WORLD_Y1)
     }
     for (let y = WORLD_Y0; y <= WORLD_Y1; y += 100) {
-      grid.moveTo(WORLD_X0, y)
-      grid.lineTo(WORLD_X1, y)
+      grid.moveTo(WORLD_X0-500, y)
+      grid.lineTo(WORLD_X1+2500, y)
     }
 
     /* 母线 */

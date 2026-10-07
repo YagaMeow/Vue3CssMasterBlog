@@ -118,7 +118,10 @@ const coverInputEl = useTemplateRef<HTMLInputElement>('coverInputEl')
 
 const editor = computed(() => editorRef.value?.editor)
 const editorReady = computed(() => !!editor.value)
-const tags = computed(() => appStore.post_data.tags ?? [])
+const tags = computed(() => {
+  console.log(appStore.post_data.tags ?? [])
+  return appStore.post_data.tags ?? []
+})
 /** 仅作者在编辑已存在的文章时才允许增删标签 */
 const canEditTags = computed(
   () => isAuth.value && editable.value && !appStore.edit_mode && !!appStore.post_data.id,

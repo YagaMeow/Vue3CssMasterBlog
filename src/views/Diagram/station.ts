@@ -22,8 +22,10 @@ export interface Bay {
   qf: boolean
   zm: boolean
   fm: boolean
+  xl: boolean
   gnd: boolean
   gnd2?: boolean
+  gnd3?: boolean
 }
 
 export interface WireSeg {
@@ -85,10 +87,13 @@ export const GEOM = {
     bus2X0: -340, bus2X1: 2000,
     zmTop: 120, zmH: 70,
     fmTop: 360, fmH: 70,
+    xlTop: 680,xlH: 70,
     node: 480,
     qfTop: 540, qfH: 60,
-    gnd: 680,
-    term: 820,
+    gnd: 780,
+    gndMx: 380,
+    gndXlc: 660,
+    term: 920,
     dx: 100
   },
   110: {
@@ -97,18 +102,25 @@ export const GEOM = {
     bus2X0: -340, bus2X1: 1800,
     zmTop: 1520, zmH: 60,
     fmTop: 1760, fmH: 60,
+    xlTop: 2030,xlH: 60,
     node: 1870,
     qfTop: 1920, qfH: 50,
-    gnd: 2030,
-    term: 2180,
+    gnd: 2130,
+    gndMx: 1770,
+    gndXlc: 2000,
+    term: 2280,
     dx: 80
   },
   35: {
     busY: 1400,
     busX0: -340 + 2500, busX1: 1800 + 2500,
-    qfTop: 1920, qfH: 50,
+    zmTop: 1520,zmH: 60,
+    qfTop: 1760, qfH: 50,
+    xlTop: 1920,xlH: 60,
+    gndMx: 1710-100,
+    gndXlc: 1860,
     gnd: 2030,
-    term: 2180,
+    term: 2280,
     dx: 80
   }
 } as const
@@ -194,30 +206,30 @@ export const COLOR = {
 /* =============================== 间隔数据 ================================ */
 
 const BAY_220: Array<Omit<Bay, 'voltage'>> = [
-  { id: 'b220_0', kind: 'line', x: 0, name: '220kV 出线 1', qf: true, zm: true, fm: true, gnd: false },
-  { id: 'b220_1', kind: 'line', x: 240, name: '220kV 出线 2', qf: true, zm: true, fm: true, gnd: false },
-  { id: 'b220_2', kind: 'line', x: 480, name: '220kV 出线 3', qf: true, zm: true, fm: true, gnd: false },
-  { id: 'b220_3', kind: 'ml', x: 960, name: '220kV 母联', qf: true, zm: true, fm: true, gnd: false, gnd2: false },
-  { id: 'b220_4', kind: 'line', x: 1200, name: '220kV 出线 4', qf: true, zm: true, fm: true, gnd: false },
-  { id: 'b220_5', kind: 'line', x: 1440, name: '220kV 出线 5', qf: true, zm: true, fm: true, gnd: false },
-  { id: 'b220_6', kind: 'zb', x: 1680, name: '主变 1', qf: true, zm: true, fm: true, gnd: false }
+  { id: 'b220_0', kind: 'line', x: 0, name: '220kV 出线 1', qf: true, zm: false, fm: true, gnd: false,xl: true },
+  { id: 'b220_1', kind: 'line', x: 240, name: '220kV 出线 2', qf: true, zm: false, fm: true, gnd: false,xl: true },
+  { id: 'b220_2', kind: 'line', x: 480, name: '220kV 出线 3', qf: true, zm: false, fm: true, gnd: false,xl: true },
+  { id: 'b220_3', kind: 'ml', x: 960, name: '220kV 母联', qf: true, zm: true, fm: true, gnd: false, gnd2: false,xl: true },
+  { id: 'b220_4', kind: 'line', x: 1200, name: '220kV 出线 4', qf: true, zm: true, fm: false, gnd: false,xl: true },
+  { id: 'b220_5', kind: 'line', x: 1440, name: '220kV 出线 5', qf: true, zm: true, fm: false, gnd: false,xl: true },
+  { id: 'b220_6', kind: 'zb', x: 1680, name: '主变 1', qf: true, zm: true, fm: false, gnd: false,xl:true }
 ]
 
 const BAY_110: Array<Omit<Bay, 'voltage'>> = [
-  { id: 'b110_0', kind: 'line', x: 0, name: '110kV 出线 1', qf: true, zm: false, fm: true, gnd: false },
-  { id: 'b110_1', kind: 'line', x: 240, name: '110kV 出线 2', qf: true, zm: false, fm: true, gnd: false },
-  { id: 'b110_2', kind: 'line', x: 480, name: '110kV 出线 3', qf: true, zm: false, fm: true, gnd: false },
-  { id: 'b110_3', kind: 'ml', x: 720, name: '110kV 母联', qf: false, zm: false, fm: false, gnd: false, gnd2: false },
-  { id: 'b110_4', kind: 'line', x: 960, name: '110kV 出线 4', qf: true, zm: true, fm: false, gnd: false },
-  { id: 'b110_5', kind: 'line', x: 1200, name: '110kV 出线 5', qf: true, zm: true, fm: false, gnd: false }
+  { id: 'b110_0', kind: 'line', x: 0, name: '110kV 出线 1', qf: true, zm: false, fm: true, gnd: false,xl:true },
+  { id: 'b110_1', kind: 'line', x: 240, name: '110kV 出线 2', qf: true, zm: false, fm: true, gnd: false,xl:true },
+  { id: 'b110_2', kind: 'line', x: 480, name: '110kV 出线 3', qf: true, zm: false, fm: true, gnd: false,xl:true },
+  { id: 'b110_3', kind: 'ml', x: 720, name: '110kV 母联', qf: false, zm: false, fm: false, gnd: false, gnd2: false,xl:true },
+  { id: 'b110_4', kind: 'line', x: 960, name: '110kV 出线 4', qf: true, zm: true, fm: false, gnd: false,xl:true },
+  { id: 'b110_5', kind: 'line', x: 1200, name: '110kV 出线 5', qf: true, zm: true, fm: false, gnd: false,xl:true}
 ]
 
 const BAY_35: Array<Omit<Bay, 'voltage'>> = [
-  { id: 'b35_0', kind: 'line', x: 0, name: '35kV 出线 1', qf: true, zm: false, fm: false, gnd: false },
-  { id: 'b35_1', kind: 'line', x: 240, name: '35kV 出线 2', qf: true, zm: false, fm: false, gnd: false },
-  { id: 'b35_2', kind: 'line', x: 480, name: '35kV 出线 3', qf: true, zm: false, fm: false, gnd: false },
-  { id: 'b35_3', kind: 'line', x: 960, name: '35kV 出线 4', qf: true, zm: false, fm: false, gnd: false },
-  { id: 'b35_4', kind: 'line', x: 1200, name: '35kV 出线 5', qf: true, zm: false, fm: false, gnd: false }
+  { id: 'b35_0', kind: 'line', x: 0, name: '35kV 出线 1', qf: true, zm: true, fm: false, gnd: false,gnd2: false,gnd3:false,xl:true },
+  { id: 'b35_1', kind: 'line', x: 240, name: '35kV 出线 2', qf: true, zm: true, fm: false, gnd: false,gnd2: false,gnd3:false,xl:true },
+  { id: 'b35_2', kind: 'line', x: 480, name: '35kV 出线 3', qf: true, zm: true, fm: false, gnd: false,gnd2: false,gnd3:false,xl:true },
+  { id: 'b35_3', kind: 'line', x: 960, name: '35kV 出线 4', qf: true, zm: true, fm: false, gnd: false,gnd2: false,gnd3:false,xl: true },
+  { id: 'b35_4', kind: 'line', x: 1200, name: '35kV 出线 5', qf: true, zm: true, fm: false, gnd: false,gnd2: false,gnd3:false,xl:true }
 ]
 
 /* ============================ 别名（操作票解析） ========================== */
@@ -311,7 +323,15 @@ export function createStationModel(): StationModel {
         a: id + '_fm_bot', b: id + '_node',
         points: [[xm, G.fmTop + G.fmH], [xm, G.node], [x, G.node]]
       })
-      wires.push({ a: id + '_node', b: id + '_qf_top', points: [[x, G.node], [x, G.qfTop]] })
+      wires.push({ a: id + '_node', b: id + '_gnd_xlc', points: [[x, G.gndMx], [x-62, G.gndMx],[x-62,G.gndMx+12]]})
+      addDevice(
+        {
+          id: id+'gnd-mx',label: bay.name + ' 母线侧接地闸刀',kind:'v-switch',role: 'ground',
+          voltage: v, bayId: id, x: x - 62, y: G.gndMx + 12 + 24, w: 40, h: 48,
+          nodeA: id + '_gnd_xlc', nodeB: 'ground'
+        },
+        () => bay.gnd3 || false, val => { bay.gnd3 = val }
+      )
       addDevice(
         {
           id: id + '-qf', label: bay.name + ' 断路器', kind: 'v-breaker', role: 'breaker',
@@ -320,20 +340,39 @@ export function createStationModel(): StationModel {
         },
         () => bay.qf, val => { bay.qf = val }
       )
-      wires.push({ a: id + '_qf_bot', b: id + '_gnd_bus', points: [[x, G.qfTop + G.qfH], [x, G.gnd]] })
+      wires.push({ a: id + '_node', b: id + '_qf_top', points: [[x, G.node], [x, G.qfTop]] })
+      wires.push({ a: id + '_qf_bot', b: id + '_gnd_bus', points: [[x, G.qfTop + G.qfH], [x, G.gndXlc]] })
       wires.push({
         a: id + '_gnd_bus', b: id + '_gnd_sw',
-        points: [[x, G.gnd], [x - 62, G.gnd], [x - 62, G.gnd + 12]]
+        points: [[x, G.gndXlc], [x - 62, G.gndXlc], [x - 62, G.gndXlc + 12]]
       })
       addDevice(
         {
-          id: id + '-gnd', label: bay.name + ' 接地刀闸', kind: 'v-switch', role: 'ground',
-          voltage: v, bayId: id, x: x - 62, y: G.gnd + 12 + 24, w: 40, h: 48,
+          id: id + '-gnd-xlc', label: bay.name + ' 开关线路侧接地刀闸', kind: 'v-switch', role: 'ground',
+          voltage: v, bayId: id, x: x - 62, y: G.gndXlc + 12 + 24, w: 40, h: 48,
+          nodeA: id + '_gnd_bus', nodeB: 'ground'
+        },
+        () => bay.gnd2 || false, val => { bay.gnd2 = val }
+      )
+      wires.push({ a: id + '_gnd_bus', b: id + '_xl_top', points: [[x, G.gndXlc], [x, G.xlTop]]})
+      addDevice(
+        {
+          id: id+'-xl',label:bay.name + ' 线路闸刀',kind: 'v-switch',role: 'disconnector',
+          voltage: v,bayId: id,x,y:G.xlTop+G.xlH/2,w:40,h:G.xlH,
+          nodeA: id+'_xl_top',nodeB: id+'_xl_bot'
+        },
+        () => bay.xl,val =>{bay.xl=val}
+      )
+      wires.push({ a: id + '_xl_bot', b: id + '_term', points: [[x, G.xlTop+G.xlH], [x, G.term]]})
+      wires.push({ a: id + '_xl_bot', b: id + '_gnd', points: [[x, G.gnd], [x+62, G.gnd],[x+62,G.gnd+12]]})
+      addDevice(
+        {
+          id: id + '-gnd', label: bay.name + ' 线路接地刀闸', kind: 'v-switch', role: 'ground',
+          voltage: v, bayId: id, x: x + 62, y: G.gnd + 12 + 24, w: 40, h: 48,
           nodeA: id + '_gnd_bus', nodeB: 'ground'
         },
         () => bay.gnd, val => { bay.gnd = val }
       )
-      wires.push({ a: id + '_gnd_bus', b: id + '_term', points: [[x, G.gnd], [x, G.term]] })
     } else {
       wires.push({ a: id + '_zm_bot', b: id + '_qf_zm', points: [[x, G.zmTop + G.zmH], [x, G.qfTop]] })
       addDevice(
@@ -357,7 +396,23 @@ export function createStationModel(): StationModel {
     const id = bay.id
     const busNode = x < SEG35_X ? 'bus35L' : 'bus35R'
 
-    wires.push({ a: busNode, b: id + '_qf_top', points: [[x, G.busY], [x, G.qfTop]] })
+    wires.push({ a: busNode, b: id + '_zm_top', points: [[x, G.busY], [x, G.zmTop]] })
+    addDevice({
+      id: id+'-zm', label: bay.name + ' 母线闸刀',kind:'v-switch',role:'disconnector',
+      voltage: 35,bayId:id,x, y: G.zmTop+G.zmH/2, w: 40, h: G.zmH,
+      nodeA: id + '_zm_top', nodeB: id + '_zm_bot'
+    },()=> bay.zm,val => {bay.zm = val})
+    wires.push({a: id + '_zm_bot',b: id + '_qf_top',points:[[x,G.zmTop+G.zmH],[x,G.qfTop]]})
+
+    wires.push({ a: id + '_zm_bot', b: id + '_gnd_mx', points: [[x, G.gndMx], [x-62, G.gndMx],[x-62,G.gndMx+12]]})
+    addDevice(
+      {
+        id: id + '-gnd-mx', label: bay.name + ' 开关母线侧接地刀闸', kind: 'v-switch', role: 'ground',
+        voltage: 35, bayId: id, x: x - 62, y: G.gndMx + 12 + 24, w: 40, h: 48,
+        nodeA: id + '_gnd_mx', nodeB: 'ground'
+      },
+      () => bay.gnd3 || false, val => { bay.gnd3 = val }
+    )
     addDevice(
       {
         id: id + '-qf', label: bay.name + ' 断路器', kind: 'v-breaker', role: 'breaker',
@@ -366,7 +421,26 @@ export function createStationModel(): StationModel {
       },
       () => bay.qf, val => { bay.qf = val }
     )
-    wires.push({ a: id + '_qf_bot', b: id + '_gnd_bus', points: [[x, G.qfTop + G.qfH], [x, G.gnd]] })
+    wires.push({ a: id + '_qf_bot', b: id + '_xl_top', points: [[x, G.qfTop + G.qfH], [x, G.xlTop]] })
+
+    wires.push({ a: id + '_qf_bot', b: id + '_gnd_xlc', points: [[x, G.gndXlc], [x+62, G.gndXlc],[x+62,G.gndXlc+12]]})
+    addDevice(
+      {
+        id: id + '-gnd-xlc', label: bay.name + ' 开关线路侧接地刀闸', kind: 'v-switch', role: 'ground',
+        voltage: 35, bayId: id, x: x + 62, y: G.gndXlc + 12 + 24, w: 40, h: 48,
+        nodeA: id + '_gnd_xlc', nodeB: 'ground'
+      },
+      () => bay.gnd2 || false, val => { bay.gnd2 = val }
+    )
+    addDevice(
+      {
+        id: id + '-xl', label: bay.name + ' 线路闸刀', kind: 'v-switch', role: 'disconnector',
+        voltage: 35, bayId: id, x, y: G.xlTop + G.xlH / 2, w: 40, h: G.xlH,
+        nodeA: id + '_xl_top', nodeB: id + '_xl_bot'
+      },
+      () => bay.xl, val => { bay.xl = val }
+    )
+    wires.push({ a: id + '_xl_bot', b: id + '_gnd_bus', points: [[x, G.xlTop + G.xlH], [x, G.gnd]] })
     wires.push({
       a: id + '_gnd_bus', b: id + '_gnd_sw',
       points: [[x, G.gnd], [x - 62, G.gnd], [x - 62, G.gnd + 12]]
@@ -559,7 +633,7 @@ export function createStationModel(): StationModel {
   wires.push({ a: 'bus35L', b: 'seg35_L_in', points: [[SEG35_BUS_LEFT_END, segY35], [lx35 - SEG35_DISC_W / 2, segY35]] })
   addDevice(
     {
-      id: 'seg35-disc-l', label: '35kV 母线分段 左刀闸', kind: 'h-switch', role: 'disconnector',
+      id: 'seg35-disc-l', label: '35kV 母线分段 I母闸刀', kind: 'h-switch', role: 'disconnector',
       voltage: 35, bayId: 'seg35', x: lx35, y: segY35, w: SEG35_DISC_W, h: 32,
       nodeA: 'seg35_L_in', nodeB: 'seg35_L_out'
     },
@@ -577,7 +651,7 @@ export function createStationModel(): StationModel {
   wires.push({ a: 'seg35_R_in', b: 'seg35_R_in', points: [[SEG35_X + SEG35_DISC_W / 2, segY35], [rx35 - SEG35_DISC_W / 2, segY35]] })
   addDevice(
     {
-      id: 'seg35-disc-r', label: '35kV 母线分段 右刀闸', kind: 'h-switch', role: 'disconnector',
+      id: 'seg35-disc-r', label: '35kV 母线分段 II母闸刀', kind: 'h-switch', role: 'disconnector',
       voltage: 35, bayId: 'seg35', x: rx35, y: segY35, w: SEG35_DISC_W, h: 32,
       nodeA: 'seg35_R_in', nodeB: 'seg35_R_out'
     },

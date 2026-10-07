@@ -317,13 +317,11 @@ export function createSampleTicket(): Record<string, unknown> {
     remark: '示例操作票：上传后按步骤在接线图上点击对应设备即可完成执行可视化。',
     steps: [
       { seq: 1, text: '拉开 220kV 出线 3 断路器', device: 'b220_2-qf', action: 'open', note: '检查断路器确在分位' },
-      { seq: 2, text: '拉开 220kV 出线 3 正母刀闸', device: 'b220_2-zm', action: 'open' },
-      { seq: 3, text: '拉开 220kV 出线 3 副母刀闸', device: 'b220_2-fm', action: 'open' },
-      { seq: 4, text: '合上 220kV 出线 3 接地刀闸', device: 'b220_2-gnd', action: 'close', note: '验明无电压后装设接地' },
-      { seq: 5, text: '拉开 220kV 出线 4 断路器', device: 'b220_4-qf', action: 'open' },
-      { seq: 6, text: '拉开 220kV 出线 4 正母刀闸', device: 'b220_4-zm', action: 'open' },
-      { seq: 7, text: '拉开 220kV 出线 4 副母刀闸', device: 'b220_4-fm', action: 'open' },
-      { seq: 8, text: '合上 220kV 出线 4 接地刀闸', device: 'b220_4-gnd', action: 'close' }
+      { seq: 2, text: '拉开 220kV 出线 3 副母刀闸', device: 'b220_2-fm', action: 'open' },
+      { seq: 3, text: '合上 220kV 出线 3 接地刀闸', device: 'b220_2-gnd', action: 'close', note: '验明无电压后装设接地' },
+      { seq: 4, text: '拉开 220kV 出线 4 断路器', device: 'b220_4-qf', action: 'open' },
+      { seq: 5, text: '拉开 220kV 出线 4 正母刀闸', device: 'b220_4-zm', action: 'open' },
+      { seq: 6, text: '合上 220kV 出线 4 接地刀闸', device: 'b220_4-gnd', action: 'close' }
     ]
   }
 }

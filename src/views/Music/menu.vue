@@ -1,373 +1,306 @@
 <template>
-  <div class="menu-min-container">
+  <div class="menu-min-container hit-area">
     <div class="bar"></div>
     <div class="buttons">
       <div class="list button" @click="menu.handleListButton">
         <svg-icon iconClass="more"></svg-icon>
       </div>
+      <div class="prev button" @click="menu.handlePrevButton">
+        <svg-icon iconClass="prev"></svg-icon>
+      </div>
       <div class="play button" @click="menu.handlePlayButton">
-        <svg-icon v-if="!menu.playing.value || menu.pause.value" iconClass="play"></svg-icon>
+        <svg-icon v-if="!menu.playing.value" iconClass="play"></svg-icon>
         <svg-icon v-else iconClass="pause"></svg-icon>
       </div>
-      <div class="duration"
-        :style="{ '--p': menu.duration.value == 0 ? 0 : (menu.current.value / menu.duration.value) }">
+      <div class="next button" @click="menu.handleNextButton">
+        <svg-icon iconClass="next"></svg-icon>
+      </div>
+      <div class="upload button" :class="{ loading: menu.uploading.value }" @click="menu.pickFile">
+        <svg-icon iconClass="upload"></svg-icon>
+      </div>
+      <div class="duration" @mousedown="menu.beginDrag" :style="{ '--p': menu.progress.value }">
         <div class="label"></div>
       </div>
+      <div class="time">{{ menu.currentLabel.value }} / {{ menu.durationLabel.value }}</div>
+      <input class="file-input" type="file" multiple accept=".ncm,audio/*,.mp3,.flac,.wav,.m4a,.aac,.lrc,.txt" hidden
+        @change="menu.handleFile" />
     </div>
   </div>
-  <!-- <div class="menu-expand-container">
-    <div class="song" v-for="song, i in menu.songs" :key="'song-' + i" :style="{ '--id': i }">
-      <div class="cover">
-        <svg width="180" height="180" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <clipPath id="small">
-            <circle cx="50" cy="50" r="35"></circle>
-          </clipPath>
-          <circle cx="50" cy="50" r="50" fill="#000"></circle>
-          <image x="10" y="10" :href="song.cover_url" width="80" height="80" clip-path="url(#small)"></image>
-        </svg>
-        <div class="text-content">
-          <div class="name">
-            《{{ song.name }}》
-          </div>
-          <div class="author">
-            {{ song.author }}
-          </div>
+
+  <div class="card-container _fullscreen" @contextmenu="menu.closeexpand" v-show="menu.if_expand.value"
+    :class="{ 'show': menu.if_expand.value }">
+    <div class="empty" v-if="!menu.songs.value.length">还没有歌曲，点击上传按钮添加吧</div>
+    <div class="card" v-for="(song, i) in menu.songs.value" :key="song.id"
+      :class="{ active: i === menu.currentIndex.value }" @click="menu.handleSelect(i)">
+      <img :src="menu.cover(song)" alt="" @error="menu.coverError($event)">
+      <div class="actions">
+        <div class="action download" @click.stop="menu.handleDownload(song)">
+          <svg-icon iconClass="download"></svg-icon>
+        </div>
+        <div class="action edit" @click.stop="menu.handleEdit(song)">
+          <svg-icon iconClass="pen"></svg-icon>
+        </div>
+        <div class="action remove" @click.stop="menu.handleRemove(song, $event)">
+          <svg-icon iconClass="bin"></svg-icon>
         </div>
       </div>
+      <div class="overlay">
+        <div class="name">{{ song.title || '未知歌曲' }}</div>
+        <div class="author">{{ song.artist || '未知歌手' }}</div>
+      </div>
     </div>
-  </div> -->
-  <div class="card-container _fullscreen" @contextmenu="menu.closeexpand" v-show="menu.if_expand.value" :class="{ 'show': menu.if_expand.value }">
-    <div class="card" v-for="song, i in menu.songs" :key="'song-' + i">
-      <img :src="song.cover_url" alt="">
-    </div>
-
   </div>
 
+  <MetaEdit v-model="editVisible" :song="editingSong" @saved="menu.onSaved" />
 </template>
 <script lang="ts" setup>
-import { inject, nextTick, onMounted, onUnmounted, ref } from 'vue';
-import type { Ref } from 'vue';
-import Lenis from 'lenis';
-import gsap from 'gsap';
-import ScrollTrigger from 'gsap/ScrollTrigger';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import Lenis from 'lenis'
+import gsap from 'gsap'
+import ScrollTrigger from 'gsap/ScrollTrigger'
+import { ElMessage } from 'element-plus'
+import MetaEdit from './MetaEdit.vue'
+import { formatTime, player, resolveUrl, type Song } from './player'
+
 defineOptions({
   name: "MusicMenu",
 })
+
 interface MyTimeLine {
   tl?: gsap.core.Timeline,
   el: HTMLElement
 }
+
+const DEFAULT_COVER = resolveUrl('/api/covers/jpg/cover.jpg')
+const editVisible = ref(false)
+const editingSong = ref<Song | null>(null)
+
 const menu = {
-  songs: [{
-    'cover_url': 'http://localhost:8889/api/covers/jpg/cover.jpg',
-    'source': '',
-    'name': '17',
-    'author': '椎名林檎',
-    'album': '罪と罰',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }, {
-    'cover_url': 'http://localhost:8889/api/covers/jpg/17.jpg',
-    'source': '',
-    'name': 'クロノスタシス',
-    'author': 'きのこ帝国',
-    'album': 'フェイクワールドワンダーランド',
-  }],
   if_expand: ref(false),
-  playing: inject('playing') as Ref<Boolean>,
-  pause: inject('pause') as Ref<Boolean>,
-  start: inject('start') as () => void,
-  duration: inject('duration') as Ref<number>,
-  current: inject('current') as Ref<number>,
+  songs: player.songs,
+  playing: player.playing,
+  uploading: player.uploading,
+  progress: player.progress,
+  currentIndex: player.currentIndex,
+  currentLabel: computed(() => formatTime(player.current.value)),
+  durationLabel: computed(() => formatTime(player.duration.value)),
   expandContainer: null as null | HTMLElement,
   lenis: null as null | Lenis,
   cards: null as null | NodeListOf<HTMLElement>,
   animator: null as null | gsap.core.Timeline,
   tls: [] as MyTimeLine[],
+  dragging: false,
+  cover(song: Song) {
+    return resolveUrl(song.cover_url) || DEFAULT_COVER
+  },
+  coverError(e: Event) {
+    const img = e.target as HTMLImageElement
+    if (img && img.getAttribute('src') !== DEFAULT_COVER) img.src = DEFAULT_COVER
+  },
+  handleDownload(song: Song) {
+    const link = document.createElement('a')
+    link.href = resolveUrl(`/api/music/${song.id}/download`)
+    link.rel = 'noopener'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  },
   handlePlayButton() {
-    this.start()
+    void player.toggle()
+  },
+  handleNextButton() {
+    void player.next()
+  },
+  handlePrevButton() {
+    void player.prev()
+  },
+  handleSelect(index: number) {
+    void player.playIndex(index)
+  },
+  handleEdit(song: Song) {
+    editingSong.value = song
+    editVisible.value = true
+  },
+  onSaved() {
+    void player.loadList()
+  },
+  pickFile() {
+    const input = document.querySelector('.file-input') as HTMLInputElement | null
+    input?.click()
+  },
+  async handleFile(e: Event) {
+    const input = e.target as HTMLInputElement
+    const files = Array.from(input.files || [])
+    input.value = ''
+    if (!files.length) return
+    const lyric = files.find(f => /\.(lrc|txt)$/i.test(f.name))
+    const audio = files.find(f => f !== lyric)
+    if (!audio) {
+      ElMessage.warning('请选择音频文件（可同时选择 .lrc 歌词）')
+      return
+    }
+    try {
+      await player.upload(audio, lyric)
+      ElMessage.success(`《${audio.name}》上传成功`)
+    } catch (err) {
+      ElMessage.error('上传失败：' + ((err as Error).message || '未知错误'))
+    }
+  },
+  async handleRemove(song: Song, e: Event) {
+    e.stopPropagation()
+    try {
+      await player.remove(song.id)
+      ElMessage.success('已删除')
+    } catch (err) {
+      ElMessage.error('删除失败：' + ((err as Error).message || '未知错误'))
+    }
   },
   handleListButton() {
-    if (this.if_expand.value) {
-      this.hide()
-    } else {
-      this.show()
-    }
-    // if (this.expandContainer?.classList.contains('show')) {
-    //   this.expandContainer.classList.remove('show')
-    //   this.if_expand.value = false
-    // }
-    // else {
-    //   this.if_expand.value = true
-    //   this.expandContainer?.classList.add('show')
-    // }
+    if (menu.if_expand.value) menu.hide()
+    else menu.show()
   },
-  closeexpand(e:Event) {
+  closeexpand(e: Event) {
     e.preventDefault()
-    this.hide()
+    menu.hide()
+  },
+  beginDrag(e: MouseEvent) {
+    const bar = e.currentTarget as HTMLElement
+    menu.dragging = true
+    menu.seekFromEvent(e, bar)
+    const move = (ev: MouseEvent) => menu.seekFromEvent(ev, bar)
+    const up = () => {
+      menu.dragging = false
+      window.removeEventListener('mousemove', move)
+      window.removeEventListener('mouseup', up)
+    }
+    window.addEventListener('mousemove', move)
+    window.addEventListener('mouseup', up)
+  },
+  seekFromEvent(e: MouseEvent, bar: HTMLElement) {
+    const rect = bar.getBoundingClientRect()
+    if (!rect.width) return
+    player.seekRatio((e.clientX - rect.left) / rect.width)
   },
   init() {
     gsap.registerPlugin(ScrollTrigger)
-    // this.expandContainer = document.querySelector('.menu-expand-container')
-    this.expandContainer = document.querySelector('.card-container')
-    this.cards = document.querySelectorAll('.card')
-    if (menu.expandContainer) {
-      menu.lenis = new Lenis({
-        wrapper: menu.expandContainer,
-        content: menu.expandContainer,
-        orientation: 'horizontal',
-        smoothWheel: true,
-        wheelMultiplier: 1,
-        touchMultiplier: 1,
-        duration: 1.2,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      })
-    }
+    menu.expandContainer = document.querySelector('.card-container')
+    menu.cards = document.querySelectorAll('.card')
 
     function raf(time: number) {
       menu.lenis?.raf(time)
       requestAnimationFrame(raf)
     }
     requestAnimationFrame(raf)
-    nextTick(() => {
-      document.querySelectorAll(".card").forEach(c => {
-        this.tls.push({
-          el: c as HTMLElement
-        })
-      })
+  },
+  // Lenis is created lazily: the playlist starts hidden (display: none), which
+  // would give it a zero-sized scroll range and break smooth scrolling.
+  ensureLenis() {
+    const el = menu.expandContainer
+    if (!el) return
+    if (menu.lenis) {
+      menu.lenis.resize()
+      return
+    }
+    menu.lenis = new Lenis({
+      wrapper: el,
+      content: el,
+      orientation: 'horizontal',
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 1,
+      duration: 1.2,
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     })
   },
-  show() {
-    if (this.animator?.isActive()) return
-    this.if_expand.value = true
-    nextTick(() => {
-      this.tls.forEach(tl => {
-        if (tl.tl?.isActive()) tl.tl.kill()
-        tl.tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: tl.el,
-            scroller: this.expandContainer,
-            horizontal: true,
-            scrub: true,
-          }
-        });
-        tl.tl.to(tl.el, {
-          scale: 1.5,
-          ease: 'power1.out',
-          zIndex: 10,
-        }).to(tl.el, {
-          scale: .8,
-          zIndex: 0,
-          ease: 'power1.in',
-        });
+  killCardTimelines() {
+    menu.tls.forEach(tl => {
+      const st = (tl.tl as unknown as { scrollTrigger?: { kill(): void } } | undefined)?.scrollTrigger
+      st?.kill()
+      tl.tl?.kill()
+    })
+    menu.tls = []
+  },
+  // (Re)build the per-card scroll timelines. Must be called after the card list
+  // changes, otherwise the ScrollTrigger start/end offsets stay stale and the
+  // cards scale at the wrong scroll position.
+  buildCards(animateIn = false) {
+    menu.expandContainer = document.querySelector('.card-container')
+    menu.cards = document.querySelectorAll('.card')
+    menu.killCardTimelines()
+    menu.cards.forEach(c => menu.tls.push({ el: c as HTMLElement }))
+    menu.tls.forEach(tl => {
+      tl.tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: tl.el,
+          scroller: menu.expandContainer,
+          horizontal: true,
+          scrub: true,
+        }
       })
-      this.animator = gsap.timeline().fromTo(this.cards, {
+      tl.tl.to(tl.el, {
+        scale: 1.5,
+        ease: 'power1.out',
+        zIndex: 10,
+      }).to(tl.el, {
+        scale: .8,
+        zIndex: 0,
+        ease: 'power1.in',
+      })
+    })
+    gsap.set(menu.cards, { opacity: 1 })
+    menu.ensureLenis()
+    ScrollTrigger.refresh()
+    if (animateIn) {
+      menu.animator = gsap.timeline().fromTo(menu.cards, {
         opacity: 0
       }, {
         opacity: 1,
         ease: "power3.out",
       })
-    })
-
+    }
+  },
+  onResize() {
+    menu.lenis?.resize()
+    ScrollTrigger.refresh()
+  },
+  show() {
+    if (menu.animator?.isActive()) return
+    menu.if_expand.value = true
+    nextTick(() => menu.buildCards(true))
   },
   hide() {
-    if (this.animator?.isActive()) return
-    this.tls.forEach(tl => {
-      tl.tl?.kill()
-    })
-    this.animator = gsap.timeline().to(this.cards, {
+    if (menu.animator?.isActive()) return
+    menu.killCardTimelines()
+    menu.animator = gsap.timeline().to(menu.cards, {
       scale: .8,
       opacity: 0,
       ease: "power3.in"
-    }).to(this.cards, {
+    }).to(menu.cards, {
       scale: 1,
       duration: 0,
       onComplete: () => {
-        this.if_expand.value = false
+        menu.if_expand.value = false
       }
     })
   }
 }
+
+// When the playlist changes (upload / delete / edit) while the overlay is open,
+// the cards are re-created and the horizontal scroll width changes. Rebuild the
+// ScrollTriggers and refresh their offsets so the parallax stays in sync.
+watch(() => player.songs.value.map(s => s.id).join(','), () => {
+  if (!menu.if_expand.value) return
+  nextTick(() => menu.buildCards(false))
+})
+
 onMounted(() => {
   menu.init()
-  // menu.expandContainer?.addEventListener("wheel", menu.handleScroll)
+  window.addEventListener('resize', menu.onResize)
 })
 onUnmounted(() => {
+  window.removeEventListener('resize', menu.onResize)
   menu.lenis?.destroy()
   ScrollTrigger.getAll().forEach(st => st.kill())
-  // menu.expandContainer?.removeEventListener("wheel", menu.handleScroll)
 })
 </script>
 <style lang="scss" scoped>
@@ -395,199 +328,21 @@ onUnmounted(() => {
   }
 }
 
-@keyframes expand {
-  0% {
-    width: 200px;
-    background-color: rgba($color: #fff, $alpha: 0);
-  }
-
-  20% {
-    width: 200px;
-    background-color: rgba($color: #fff, $alpha: 0);
-  }
-
-  100% {
-    width: 500px;
-    background-color: rgba($color: #fff, $alpha: 0);
-    // background-color: blue;
-  }
-}
-
-.menu-expand-container {
-  overflow: scroll;
-  z-index: 11;
-  height: 100dvh;
-  width: 100vw;
-  position: absolute;
-  left: 0;
-  transform: translateY(-100dvh);
-  background-color: rgba($color: #000000, $alpha: .5);
-  backdrop-filter: blur(5px);
-  display: grid;
-  grid-template-rows: repeat(3, 1fr);
-  direction: ltr;
-  grid-auto-flow: column;
-  // flex-direction: column;
-  padding: 50px;
-  clip-path: polygon(0 0, 100% 0, 100% 0%, 0 50%);
-  transition: clip-path .3s .5s linear, transform .3s .5s ease-in;
-
-  // border-radius: 0 0 50px 50px;
-  .song {
-    display: flex;
-    padding-top: 50px;
-
-    // !!out!!
-    .cover {
-      transform: translateX(-100px);
-      height: 190px;
-      width: 200px;
-      transition:
-        opacity linear .3s calc(.2s + var(--id) * .1s),
-        transform ease-out .5s calc(.15s + var(--id) * .1s);
-      display: flex;
-      align-items: center;
-      padding-left: 6px;
-      opacity: 0;
-
-      .text-content {
-        width: 900px;
-        height: 180px;
-        margin-left: 20px;
-        padding-left: 20px;
-        transform: translateX(10px);
-        position: absolute;
-        left: 200px;
-        top: 0;
-        display: flex;
-        flex-direction: column;
-        transition:
-          opacity .2s linear,
-          transform .2s ease-in;
-
-        // !!out!!
-        .name {
-          font-size: 3rem;
-          color: #fff;
-          opacity: 0;
-          transform: translateX(10px);
-          transition: opacity .2s linear;
-        }
-
-        .author {
-          font-size: 2rem;
-          color: #fff;
-          opacity: 0;
-          transform: translateX(10px);
-          transition: opacity .2s linear;
-        }
-
-        &::before {
-          content: "";
-          height: 20%;
-          opacity: 0;
-          width: 1px;
-          background-color: #fff;
-          position: absolute;
-          left: 0;
-          top: 0;
-          transition:
-            opacity .2s linear,
-            height .2s ease-in,
-            transform .2s ease-in;
-        }
-      }
-    }
-
-  }
-
-  &.show {
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-    transform: translateY(0dvh);
-    transition:
-      clip-path .2s linear,
-      transform .2s ease-out;
-
-    .song:nth-child(3n+2) {
-      transform: translateX(100px);
-    }
-
-    // border-radius: 0;
-    .song:hover {
-
-      // transform: translateX(0);
-      .cover {
-        width: 500px;
-        transition: width .4s .1s ease-out;
-        // animation: expand 1s forwards;
-
-        .text-content {
-          transform: translateX(0px);
-          transition: transform .2s .2s ease-out;
-
-          &::before {
-            transform: translateX(0);
-            opacity: 1;
-            height: 100%;
-            transition:
-              opacity .2s .2s linear,
-              height .2s .2s ease-out,
-              transform .2s .2s ease-out;
-          }
-
-          .name {
-            opacity: 1;
-            transform: translateX(0);
-            transition:
-              opacity .2s .4s linear,
-              transform .2s .4s ease-out;
-          }
-
-          .author {
-            opacity: 1;
-            transform: translateX(0);
-            transition: opacity .3s .5s linear,
-              transform .3s .4s ease-out;
-
-          }
-        }
-      }
-    }
-
-    // width !!out
-    .song .cover {
-      opacity: 1;
-      transform: translateX(0);
-      transition:
-        width .5s .5s ease,
-        opacity .3s calc(.2s + var(--id) * .1s) linear,
-        transform ease-out .5s calc(.15s + var(--id) * .1s);
-      cursor: pointer;
-
-      background-color: rgba($color: #000, $alpha: 0);
-      border-radius: 100px;
-
-    }
-  }
-}
-
 .menu-min-container {
-  position: absolute;
-  height: 110px;
-  width: 800px;
   // background-color: red;
+  position: absolute;
+  height: 50px;
+  width: 300px;
   left: 50%;
   transform: translateX(-50%);
   bottom: 0;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  // background-color: red;
-  // padding-bottom: 20px;
   z-index: 20;
-  // background-color: red;
 
   .bar {
+    // pointer-events: all;
     position: absolute;
     cursor: pointer;
     background-color: #ccc;
@@ -601,7 +356,8 @@ onUnmounted(() => {
   }
 
   .buttons {
-    width: 800px;
+    // pointer-events: all;
+    width: 900px;
     position: absolute;
     background-color: rgba($color: #000000, $alpha: .3);
     transform: scale(.6) translateY(calc(100% + 100px));
@@ -620,7 +376,6 @@ onUnmounted(() => {
     .button {
       width: 50px;
       aspect-ratio: 1;
-      // border-radius: 50%;
       background-color: transparent;
       overflow: hidden;
       display: flex;
@@ -628,9 +383,9 @@ onUnmounted(() => {
       justify-content: center;
       cursor: pointer;
       flex-shrink: 0;
-      // box-shadow: .5px .5px 1px #fff inset;
 
       .svg-icon {
+        color: #fff;
         width: 30%;
         height: 30%;
       }
@@ -642,38 +397,33 @@ onUnmounted(() => {
         }
       }
 
+      &.upload.loading {
+        opacity: .4;
+        pointer-events: none;
+      }
+
       &:hover {
         .svg-icon {
           scale: 1.1;
           transition: scale .2s cubic-bezier(0.52, 0.52, 0.17, 1.26);
         }
-
       }
     }
 
     .duration {
-      flex-shrink: 0;
-      width: 600px;
+      flex: 1 1 auto;
+      min-width: 160px;
       height: 10px;
       background-color: #ccc;
       border-radius: 5px;
       position: relative;
+      cursor: pointer;
       background: linear-gradient(to right,
           rgba($color: #71dcf7, $alpha: .3) calc(var(--p) * 100% + 7.5px),
           rgba($color: #fff, $alpha: .5) calc(var(--p) * 100% + 7.5px));
 
       .label {
-        // content: "";
         position: absolute;
-        // height: 22.5px;
-        // width: 15px;
-        // background: linear-gradient(to right,
-        //     #111 0%,
-        //     rgba($color: #fff, $alpha: .1) 50%);
-        // filter: drop-shadow(0px 0px 5px#111);
-        // top: -22.5px;
-        // clip-path: polygon(100% 0, 100% 60%, 50% 100%, 0 60%, 0 0);
-        // box-shadow: 0 4px 1px #fff inset, 0 5px 1px #111 inset;
         width: 15px;
         height: 15px;
         top: -2.5px;
@@ -681,7 +431,6 @@ onUnmounted(() => {
         z-index: 10;
         background-color: #fff;
         left: calc(var(--p) * 100%);
-        // cursor: grab;
         animation: shine infinite 1s ease-in-out;
 
         &:hover {
@@ -691,18 +440,15 @@ onUnmounted(() => {
 
         transition: scale .2s linear;
       }
+    }
 
-      // &::before {
-      //   content: "";
-      //   position: absolute;
-      //   background-color: #fff;
-      //   height: 26.5px;
-      //   width: 19px;
-      //   top: -22.5px;
-      //   // clip-path: polygon(50% 0, 100% 40%, 100% 100%, 0 100%, 0 40%);
-      //   clip-path: polygon(100% 0, 100% 60%, 50% 100%, 0 60%, 0 0);
-      //   transform: translate(-2px,-2px);
-      // }
+    .time {
+      flex-shrink: 0;
+      color: #fff;
+      font-size: 1.8rem;
+      letter-spacing: .05rem;
+      white-space: nowrap;
+      user-select: none;
     }
   }
 
@@ -710,7 +456,6 @@ onUnmounted(() => {
     .bar {
       transform: translateY(calc(100% + 100px));
       transition: transform .2s ease-out;
-
     }
 
     .buttons {
@@ -722,14 +467,22 @@ onUnmounted(() => {
 }
 
 .card-container {
-
-  // background-color: red;
   display: flex;
   overflow: scroll;
   align-items: center;
   padding: 0 20%;
+  gap: 30px;
+
+  .empty {
+    color: #fff;
+    font-size: 1.5rem;
+    margin: 0 auto;
+    letter-spacing: .2rem;
+    opacity: .8;
+  }
 
   .card {
+    position: relative;
     opacity: 0;
     flex-shrink: 0;
     width: 300px;
@@ -738,20 +491,176 @@ onUnmounted(() => {
     overflow: hidden;
     border: 2px solid #eee;
     box-shadow: 0 0 10px rgba($color: #000000, $alpha: .5);
+    cursor: pointer;
+    transition: border-color .2s ease;
 
     img {
       width: 100%;
       height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .actions {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: flex;
+      gap: 8px;
+      opacity: 0;
+      transition: opacity .2s ease;
+      z-index: 2;
+    }
+
+    .action {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background-color: rgba($color: #000, $alpha: .45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color .2s ease;
+
+      .svg-icon {
+        width: 55%;
+        height: 55%;
+        color: #fff;
+      }
+
+      &:hover {
+        background-color: rgba($color: #71dcf7, $alpha: .9);
+      }
+    }
+
+    .overlay {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 18px 16px;
+      background: linear-gradient(to top, rgba(0, 0, 0, .85), transparent);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      pointer-events: none;
+
+      .name {
+        color: #fff;
+        font-size: 1.2rem;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+
+      .author {
+        color: #ccc;
+        font-size: .9rem;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
     }
 
     &:hover {
       z-index: 10;
+
+      .actions {
+        opacity: 1;
+      }
+    }
+
+    &.active {
+      border-color: #71dcf7;
+      box-shadow: 0 0 20px rgba($color: #71dcf7, $alpha: .8);
     }
   }
 
   &.show {
     backdrop-filter: blur(3px);
     transition: backdrop-filter .2s linear;
+  }
+}
+
+// ---- 移动端适配 ----
+@media (max-width: 1024px) {
+  .menu-min-container {
+    width: 100vw;
+    height: 88px;
+    padding: 0 3vw 6px;
+
+    // 移动端不再用顶部细进度条，避免与常驻按钮重叠
+    .bar {
+      display: none;
+    }
+
+    .buttons {
+      width: 100%;
+      height: 62px;
+      padding: 10px 14px;
+      gap: 2px;
+      border-radius: 32px;
+      transform: none;
+      opacity: .95;
+      margin-bottom: 6px;
+
+      .button {
+        width: 38px;
+
+        .svg-icon {
+          width: 44%;
+          height: 44%;
+        }
+      }
+
+      .duration {
+        min-width: 0;
+      }
+
+      .time {
+        font-size: 12px;
+      }
+    }
+
+    &:hover {
+      .buttons {
+        transform: none;
+      }
+    }
+  }
+
+  .card-container {
+    padding: 0 10vw;
+    gap: 18px;
+
+    .card {
+      width: min(62vw, 260px);
+
+      .actions {
+        opacity: 1;
+        top: 8px;
+        right: 8px;
+        gap: 6px;
+      }
+
+      .action {
+        width: 30px;
+        height: 30px;
+      }
+
+      .overlay {
+        padding: 14px 12px;
+
+        .name {
+          font-size: 15px;
+        }
+
+        .author {
+          font-size: 12px;
+        }
+      }
+    }
   }
 }
 </style>

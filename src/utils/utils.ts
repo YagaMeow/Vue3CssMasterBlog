@@ -32,7 +32,10 @@ interface Article {
     width: number
     height: number
   }
-  tags: { name: string }[]
+  tags: Tag[]
+}
+interface Tag {
+  name: string
 }
 
 function elasticEase(progress: number) {
@@ -64,4 +67,4 @@ function isMobile() {
   const mobileReg = /momobile|android|iphone|ipad|ipod|windows phone|phone|webos/i
   return mobileReg.test(userAgent) ? true : false
 }
-export { type Progress, range, formatDate, type Article, elasticEase, elasticEase2, normalRange,isMobile }
+export { type Progress, range, formatDate, type Article, elasticEase, elasticEase2, normalRange,isMobile,type Tag}
